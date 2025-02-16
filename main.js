@@ -10,7 +10,6 @@
 // ==/UserScript==
 
 // TODO:
-// - snake_case para variables
 // - Refactorizar y modularizar
 // - Sacar los iconos de los equipos de forma local?
 // - Llenar con los otros equipos
@@ -26,35 +25,35 @@
     function spoilerBlockVideo(video)
     {
         // Check if the video is from ESPN Fans before trying to spoil it [Homepage]
-        var channelElement = video.querySelector("ytd-channel-name a");
-        if (!channelElement) {
+        var channel_element = video.querySelector("ytd-channel-name a");
+        if (!channel_element) {
             // [Suggested videos]
-            channelElement = video.querySelector("ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text");
+            channel_element = video.querySelector("ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text");
         }
 
-        if (channelElement) {
-            let channelName = channelElement ? channelElement.innerText.trim() : "";
+        if (channel_element) {
+            let channelName = channel_element ? channel_element.innerText.trim() : "";
             if (channelName !== "ESPN Fans") {
                 return;
             }
         }
 
-        var thumbnailElement = video.querySelector('#thumbnail');
-        const titleElement = video.querySelector('#video-title');
-        const titleLink = video.querySelector('#video-title-link');
+        var thumbnail_element = video.querySelector('#thumbnail');
+        const title_element = video.querySelector('#video-title');
+        const title_link = video.querySelector('#video-title-link');
 
-        if (!titleElement || typeof titleElement === 'undefined') {
+        if (!title_element || typeof title_element === 'undefined') {
             return;
         }
 
-        const titleText = titleElement.textContent || titleElement.innerText;
+        const title_text = title_element.textContent || title_element.innerText;
 
-        if (typeof titleText === 'undefined' || !titleText.includes('|')) {
+        if (typeof title_text === 'undefined' || !title_text.includes('|')) {
             return;
         }
 
         // Check title is from a highlights match
-        const match_teams_string = titleText.split('|')[1];
+        const match_teams_string = title_text.split('|')[1];
         if (!match_teams_string) {
             return;
         }
@@ -62,29 +61,29 @@
             return;
         }
 
-        if (!thumbnailElement) {
-            var thumbnailElement = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
+        if (!thumbnail_element) {
+            var thumbnail_element = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
         }
 
-        hideThumbnail(thumbnailElement);
+        hideThumbnail(thumbnail_element);
 
-        const titleReplace = spoilerTitle(titleText);
-        if (titleReplace === "") {
+        const title_replace = spoilerTitle(title_text);
+        if (title_replace === "") {
             return;
         }
 
-        titleElement.textContent = titleReplace;
-        titleElement.innerText = titleReplace;
-        if (titleLink) {
-            titleLink.title = titleReplace;
+        title_element.textContent = title_replace;
+        title_element.innerText = title_replace;
+        if (title_link) {
+            title_link.title = title_replace;
         }
 
-        let teams = getTeams(titleText);
+        let teams = getTeams(title_text);
         if (teams.lenth === 0) {
             return;
         }
-        let [teamA, teamB] = teams;
-        addTeamBadges(teamA, teamB, thumbnailElement);
+        let [team_a, team_b] = teams;
+        addTeamBadges(team_a, team_b, thumbnail_element);
 
     }
 
@@ -100,11 +99,11 @@
         let [part1, part2] = match_teams_string.split('-');
     
         // From the first part (TeamA X), remove everything after the last space to isolate TeamA
-        let teamA = part1.trim().split(' ').slice(0, -1).join(' ');
+        let team_a = part1.trim().split(' ').slice(0, -1).join(' ');
         // From the second part (Y TeamB), remove everything before the first space to isolate TeamB
-        let teamB = part2.trim().split(' ').slice(1).join(' ');
+        let team_b = part2.trim().split(' ').slice(1).join(' ');
 
-        return [teamA, teamB]
+        return [team_a, team_b]
     }
 
     function spoilerTitle(original_title){
@@ -113,43 +112,43 @@
             return "";
         }
 
-        let [teamA, teamB] = teams;
-        return teamA + " vs " + teamB;
+        let [team_a, team_b] = teams;
+        return team_a + " vs " + team_b;
     }
 
-    function addTeamBadges(teamA, teamB, thumbnailElement) {
-        if (thumbnailElement === 'undefined') {
+    function addTeamBadges(team_a, team_b, thumbnail_element) {
+        if (thumbnail_element === 'undefined') {
             return;
         }
     
-        const badgeA = getTeamBadge(teamA);
-        const badgeB = getTeamBadge(teamB);
+        const badge_a = getTeamBadge(team_a);
+        const badge_b = getTeamBadge(team_b);
 
-        if (badgeA) {
-            const imgA = document.createElement("img");
-            imgA.alt = teamA + "Badge";
-            imgA.src = badgeA;
-            imgA.width = thumbnailElement.clientWidth * 0.2;
-            imgA.style.height = "auto";
-            imgA.style.position = "absolute";
-            imgA.style.top = "35%";
-            imgA.style.left = "20%";
-            imgA.style.transform = "translate(-50%, -50%)";
-            imgA.style.pointerEvents = 'none';
-            thumbnailElement.appendChild(imgA);
+        if (badge_a) {
+            const img_a = document.createElement("img");
+            img_a.alt = team_a + "Badge";
+            img_a.src = badge_a;
+            img_a.width = thumbnail_element.clientWidth * 0.2;
+            img_a.style.height = "auto";
+            img_a.style.position = "absolute";
+            img_a.style.top = "35%";
+            img_a.style.left = "20%";
+            img_a.style.transform = "translate(-50%, -50%)";
+            img_a.style.pointerEvents = 'none';
+            thumbnail_element.appendChild(img_a);
         }
 
-        if (badgeB) {
-            const imgB = document.createElement("img");
-            imgB.alt = badgeB + "Badge";
-            imgB.src = badgeB;
-            imgB.width = thumbnailElement.clientWidth * 0.2;
-            imgB.style.position = "absolute";
-            imgB.style.top = "35%";
-            imgB.style.left = "80%";
-            imgB.style.transform = "translate(-50%, -50%)";
-            imgB.style.pointerEvents = 'none';
-            thumbnailElement.appendChild(imgB);
+        if (badge_b) {
+            const img_b = document.createElement("img");
+            img_b.alt = badge_b + "Badge";
+            img_b.src = badge_b;
+            img_b.width = thumbnail_element.clientWidth * 0.2;
+            img_b.style.position = "absolute";
+            img_b.style.top = "35%";
+            img_b.style.left = "80%";
+            img_b.style.transform = "translate(-50%, -50%)";
+            img_b.style.pointerEvents = 'none';
+            thumbnail_element.appendChild(img_b);
         }
 
         const betweenBadges = document.createElement("p");
@@ -160,29 +159,29 @@
         betweenBadges.style.fontSize = "50px";
         betweenBadges.style.color = "white";
         betweenBadges.style.pointerEvents = 'none';
-        thumbnailElement.appendChild(betweenBadges);
+        thumbnail_element.appendChild(betweenBadges);
     }
     
-    function hideThumbnail(thumbnailElement){
-        if (thumbnailElement === 'undefined') {
+    function hideThumbnail(thumbnail_element){
+        if (thumbnail_element === 'undefined') {
             return;
         }
     
-        var thumbnailImage = thumbnailElement.querySelector('#thumbnail');
-        if (thumbnailImage) {
-            thumbnailImage.style.opacity = '0';
+        var thumbnail_image = thumbnail_element.querySelector('#thumbnail');
+        if (thumbnail_image) {
+            thumbnail_image.style.opacity = '0';
             return;
         }
 
-        thumbnailImage = thumbnailElement.querySelector('#image');
-        if (thumbnailImage) {
-            thumbnailImage.style.opacity = '0';
+        thumbnail_image = thumbnail_element.querySelector('#image');
+        if (thumbnail_image) {
+            thumbnail_image.style.opacity = '0';
             return;
         }
 
-        thumbnailImage = thumbnailElement.querySelector("yt-image");
-        if (thumbnailImage) {
-            thumbnailImage.style.opacity = '0';
+        thumbnail_image = thumbnail_element.querySelector("yt-image");
+        if (thumbnail_image) {
+            thumbnail_image.style.opacity = '0';
             return;
         }
     }
@@ -267,48 +266,48 @@
     }
 
     function replaceVideoTitle() {
-        const titleElement = document.querySelector('h1.style-scope.ytd-watch-metadata');
-        if (titleElement) {
-            const titleText = titleElement.textContent || titleElement.innerText;
+        const title_element = document.querySelector('h1.style-scope.ytd-watch-metadata');
+        if (title_element) {
+            const title_text = title_element.textContent || title_element.innerText;
     
-            if (typeof titleText === 'undefined' || !titleText.includes('|')) {
+            if (typeof title_text === 'undefined' || !title_text.includes('|')) {
                 return;
             }
 
-            const titleReplace = spoilerTitle(titleText);
-            if (titleReplace === "") {
+            const title_replace = spoilerTitle(title_text);
+            if (title_replace === "") {
                 return;
             }
-            titleElement.title = titleReplace;
-            titleElement.textContent = titleReplace;
-            titleElement.innerText = titleReplace;
+            title_element.title = title_replace;
+            title_element.textContent = title_replace;
+            title_element.innerText = title_replace;
         }
     }
 
     function replacePlayerTitle() {
-        const titleElement = document.querySelector('a.ytp-title-link.yt-uix-sessionlink.ytp-title-fullerscreen-link');
+        const title_element = document.querySelector('a.ytp-title-link.yt-uix-sessionlink.ytp-title-fullerscreen-link');
 
-        if (titleElement) {
-            const titleText = titleElement.textContent || titleElement.innerText;
+        if (title_element) {
+            const title_text = title_element.textContent || title_element.innerText;
     
-            if (typeof titleText === 'undefined' || !titleText.includes('|')) {
+            if (typeof title_text === 'undefined' || !title_text.includes('|')) {
                 return;
             }
 
-            const titleReplace = spoilerTitle(titleText);
-            if (titleReplace === "") {
+            const title_replace = spoilerTitle(title_text);
+            if (title_replace === "") {
                 return;
             }
 
-            titleElement.title = titleReplace;
-            titleElement.textContent = titleReplace;
-            titleElement.innerText = titleReplace;
+            title_element.title = title_replace;
+            title_element.textContent = title_replace;
+            title_element.innerText = title_replace;
         }
     }
 
     function spoilerBlockTabTitle() {
-        const currentUrl = window.location.href;
-        if (!currentUrl.includes("watch?v=")) {
+        const current_url = window.location.href;
+        if (!current_url.includes("watch?v=")) {
             return;
         }
 
@@ -316,9 +315,9 @@
         if (teams.length === 0) {
             return;
         }
-        let [teamA, teamB] = teams;
+        let [team_a, team_b] = teams;
 
-        const non_spoiler_title = teamA + " vs. " + teamB;
+        const non_spoiler_title = team_a + " vs. " + team_b;
 
         if (document.title !== non_spoiler_title) {
             document.title = non_spoiler_title;
@@ -326,8 +325,8 @@
     }
     
     function spoilerBlockBody(){
-        const currentUrl = window.location.href;
-        if (currentUrl.includes("watch?v=")) {
+        const current_url = window.location.href;
+        if (current_url.includes("watch?v=")) {
             replaceVideoTitle();
             replacePlayerTitle();
 
