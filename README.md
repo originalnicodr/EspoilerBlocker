@@ -1,0 +1,1 @@
+# espn-fans-spoiler-blocker
