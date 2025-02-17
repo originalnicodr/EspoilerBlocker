@@ -1,26 +1,3 @@
-// ==UserScript==
-// @name         ESPN Fans Football Spoiler Block
-// @namespace    http://tampermonkey.net/
-// @version      2024-10-06
-// @description  try to take over the world!
-// @author       originalnicodr
-// @match        https://www.youtube.com/**
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
-// @grant        none
-// ==/UserScript==
-
-// TODO:
-// - Llenar con liga argentina
-// - Refactorizar y modularizar
-// - Problemas de centrado vertical de team badges (que pasa si es vacio?). Usar flexbox?
-// - Cambiar comportamiento de hover en home ya que puede mostrar el thumbnail original un ratito?
-
-// FUTURE:
-// - Agregar fecha
-// - Mostrar total goles al hacer hover?
-// - Desaparecer info en hover?
-// - Agregar soporte a la subpagina de "search"
-
 (function() {
     function spoilerBlockVideo(video)
     {
@@ -98,9 +75,7 @@
         }
         let [part1, part2] = match_teams_string.split('-');
     
-        // From the first part (TeamA X), remove everything after the last space to isolate TeamA
         let team_a = part1.trim().split(' ').slice(0, -1).join(' ');
-        // From the second part (Y TeamB), remove everything before the first space to isolate TeamB
         let team_b = part2.trim().split(' ').slice(1).join(' ');
 
         return [team_a, team_b]
