@@ -1,0 +1,20 @@
+{
+  "name": "espn-fans-spoiler-blocker",
+  "version": "1.0.0",
+  "description": "an ESPN fans spoiler blocker chrome extension",
+  "main": "main.js",
+  "scripts": {
+    "build": "tsc && cp manifest.json dist/manifest.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-2tt:originalnicodr/espn-fans-spoiler-blocker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
