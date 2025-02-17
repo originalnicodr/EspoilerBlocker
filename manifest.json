@@ -1,0 +1,28 @@
+{
+    "manifest_version": 3,
+    "name": "ESPN Fans Spoiler Blocker",
+    "description": "Oculta información de partidos en los highlights subidos en YouTube por la cuenta ESPN Fans.",
+    "version": "0.1",
+    "author": "originalnicodr",
+    "content_scripts": [
+        {
+            "matches": [
+                "*://www.youtube.com/ESPNFans/*",
+                "*://www.youtube.com/watch?v=*",
+                "*://www.youtube.com/"
+            ],
+            "js": [
+                "main.js"
+            ],
+            "type": "module"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["football-logos/**", "images/**"],
+            "matches": [
+                "*://www.youtube.com/*"
+            ]
+        }
+    ]
+}
