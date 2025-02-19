@@ -99,8 +99,10 @@ import { getTeamBadge } from './utils/getTeamBadge';
     const badge_a : string = getTeamBadge(team_a);
     const badge_b : string = getTeamBadge(team_b);
 
+    let img_a, img_b;
+
     if (badge_a) {
-      const img_a = document.createElement('img');
+      img_a = document.createElement('img');
       img_a.alt = team_a + 'Badge';
       img_a.src = badge_a;
       img_a.width = thumbnail_element.clientWidth * 0.2;
@@ -110,11 +112,12 @@ import { getTeamBadge } from './utils/getTeamBadge';
       img_a.style.left = '20%';
       img_a.style.transform = 'translate(-50%, -50%)';
       img_a.style.pointerEvents = 'none';
+      img_a.style.transition = "opacity 0.3s";
       thumbnail_element.appendChild(img_a);
     }
 
     if (badge_b) {
-      const img_b = document.createElement('img');
+      img_b = document.createElement('img');
       img_b.alt = badge_b + 'Badge';
       img_b.src = badge_b;
       img_b.width = thumbnail_element.clientWidth * 0.2;
@@ -123,6 +126,7 @@ import { getTeamBadge } from './utils/getTeamBadge';
       img_b.style.left = '80%';
       img_b.style.transform = 'translate(-50%, -50%)';
       img_b.style.pointerEvents = 'none';
+      img_b.style.transition = "opacity 0.3s";
       thumbnail_element.appendChild(img_b);
     }
 
@@ -134,7 +138,20 @@ import { getTeamBadge } from './utils/getTeamBadge';
     betweenBadges.style.fontSize = '50px';
     betweenBadges.style.color = 'white';
     betweenBadges.style.pointerEvents = 'none';
+    betweenBadges.style.transition = "opacity 0.3s";
     thumbnail_element.appendChild(betweenBadges);
+
+    thumbnail_element.addEventListener("mouseenter", () => {
+      img_a.style.opacity = "0";
+      img_b.style.opacity = "0";
+      betweenBadges.style.opacity = "0";
+    });
+
+    thumbnail_element.addEventListener("mouseleave", () => {
+      img_a.style.opacity = "100%";
+      img_b.style.opacity = "100%";
+      betweenBadges.style.opacity = "100%";
+    });
   }
 
   function hideThumbnail(thumbnail_element: HTMLInputElement): void {
