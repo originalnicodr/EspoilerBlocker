@@ -10,9 +10,21 @@ Se contemplan los videos mostrados en la página principal de YouTube, aquellos 
 
 Además, cuando se abre un video de highlights, se modifican el título del vídeo, del reproductor, y de la pestaña para evitar spoilers.
 
-## Build y test
+## Buildear y testear
 
-Para probar los cambios realizados localmente basta con activar el modo desarrollador en el navegador, y a la página de extensiones, clickear en el botón "Cargar extensión sin paquete" y seleccionar la carpeta del repositorio.
+- Instalar npm
+- Abrir una terminal dentro del repositorio y correr:
+```
+npm i 
+```
+Para instalar las dependencias.
+- Buildear la extensión con el siguiente comando:
+```
+npm run build
+```
+- Ir a la página de extensiones de tu navegador y activar el modo desarrollador
+- (En Chrome) clickear en el botón "Cargar extensión sin paquete" y seleccionar la carpeta del repositorio.
+
 
 ## Disclaimer
 
