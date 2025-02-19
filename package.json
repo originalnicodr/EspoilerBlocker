@@ -4,7 +4,7 @@
   "description": "Oculta información de partidos en los highlights subidos en YouTube por la cuenta ESPN Fans.",
   "main": "main.js",
   "scripts": {
-    "build": "webpack"
+    "build": "rm -rf ./dist && webpack"
   },
   "repository": {
     "type": "git",
