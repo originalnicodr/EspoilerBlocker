@@ -16,6 +16,12 @@ import { getTeamBadge } from './utils/getTeamBadge';
       }
     }
 
+    // Don't block spoilers from already watched videos
+    const progress_bar = video.querySelector<HTMLDivElement>('ytd-thumbnail-overlay-resume-playback-renderer #progress');
+    if (progress_bar && progress_bar.style.width === "100%") {
+      return;
+    }
+
     let thumbnail_element : HTMLInputElement = video.querySelector('#thumbnail');
     const title_element : HTMLInputElement = video.querySelector('#video-title');
     const title_link : HTMLInputElement = video.querySelector('#video-title-link');
