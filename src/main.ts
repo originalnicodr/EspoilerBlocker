@@ -1,37 +1,37 @@
 import { getTeamBadge } from './utils/getTeamBadge';
 
 (function () {
-  function spoilerBlockVideo(video) {
+  function spoilerBlockVideo(video: HTMLInputElement): void {
     // Check if the video is from ESPN Fans before trying to spoil it [Homepage]
-    var channel_element = video.querySelector('ytd-channel-name a');
+    let channel_element : HTMLInputElement = video.querySelector('ytd-channel-name a');
     if (!channel_element) {
       // [Suggested videos]
       channel_element = video.querySelector('ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text');
     }
 
     if (channel_element) {
-      let channelName = channel_element ? channel_element.innerText.trim() : '';
+      let channelName : string = channel_element ? channel_element.innerText.trim() : '';
       if (channelName !== 'ESPN Fans') {
         return;
       }
     }
 
-    var thumbnail_element = video.querySelector('#thumbnail');
-    const title_element = video.querySelector('#video-title');
-    const title_link = video.querySelector('#video-title-link');
+    let thumbnail_element : HTMLInputElement = video.querySelector('#thumbnail');
+    const title_element : HTMLInputElement = video.querySelector('#video-title');
+    const title_link : HTMLInputElement = video.querySelector('#video-title-link');
 
     if (!title_element || typeof title_element === 'undefined') {
       return;
     }
 
-    const title_text = title_element.textContent || title_element.innerText;
+    const title_text : string = title_element.textContent || title_element.innerText;
 
     if (typeof title_text === 'undefined' || !title_text.includes('|')) {
       return;
     }
 
     // Check title is from a highlights match
-    const match_teams_string = title_text.split('|')[1];
+    const match_teams_string : string = title_text.split('|')[1];
     if (!match_teams_string) {
       return;
     }
@@ -40,12 +40,12 @@ import { getTeamBadge } from './utils/getTeamBadge';
     }
 
     if (!thumbnail_element) {
-      var thumbnail_element = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
+      thumbnail_element = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
     }
 
     hideThumbnail(thumbnail_element);
 
-    const title_replace = spoilerTitle(title_text);
+    const title_replace : string = spoilerTitle(title_text);
     if (title_replace === '') {
       return;
     }
@@ -56,16 +56,16 @@ import { getTeamBadge } from './utils/getTeamBadge';
       title_link.title = title_replace;
     }
 
-    let teams = getTeams(title_text);
+    let teams : string[] = getTeams(title_text);
     if (teams.length === 0) {
       return;
     }
-    let [team_a, team_b] = teams;
+    let [team_a, team_b] = teams as [string, string];
     addTeamBadges(team_a, team_b, thumbnail_element);
   }
 
-  function getTeams(original_title) {
-    const match_teams_string = original_title.split('|')[1];
+  function getTeams(original_title: string): string[] {
+    const match_teams_string : string = original_title.split('|')[1];
     if (!match_teams_string) {
       return [];
     }
@@ -75,29 +75,29 @@ import { getTeamBadge } from './utils/getTeamBadge';
     }
     let [part1, part2] = match_teams_string.split('-');
 
-    let team_a = part1.trim().split(' ').slice(0, -1).join(' ');
-    let team_b = part2.trim().split(' ').slice(1).join(' ');
+    let team_a : string = part1.trim().split(' ').slice(0, -1).join(' ');
+    let team_b : string = part2.trim().split(' ').slice(1).join(' ');
 
     return [team_a, team_b];
   }
 
-  function spoilerTitle(original_title) {
-    const teams = getTeams(original_title);
+  function spoilerTitle(original_title: string): string {
+    const teams : string[] = getTeams(original_title);
     if (teams.length === 0) {
       return '';
     }
 
-    let [team_a, team_b] = teams;
+    let [team_a, team_b] = teams as [string, string];
     return team_a + ' vs ' + team_b;
   }
 
-  function addTeamBadges(team_a, team_b, thumbnail_element) {
-    if (thumbnail_element === 'undefined') {
+  function addTeamBadges(team_a:string, team_b:string, thumbnail_element: HTMLInputElement): void {
+    if (thumbnail_element === undefined) {
       return;
     }
 
-    const badge_a = getTeamBadge(team_a);
-    const badge_b = getTeamBadge(team_b);
+    const badge_a : string = getTeamBadge(team_a);
+    const badge_b : string = getTeamBadge(team_b);
 
     if (badge_a) {
       const img_a = document.createElement('img');
@@ -137,12 +137,12 @@ import { getTeamBadge } from './utils/getTeamBadge';
     thumbnail_element.appendChild(betweenBadges);
   }
 
-  function hideThumbnail(thumbnail_element) {
-    if (thumbnail_element === 'undefined') {
+  function hideThumbnail(thumbnail_element: HTMLInputElement): void {
+    if (thumbnail_element === undefined) {
       return;
     }
 
-    var thumbnail_image = thumbnail_element.querySelector('#thumbnail');
+    let thumbnail_image : HTMLInputElement = thumbnail_element.querySelector('#thumbnail');
     if (thumbnail_image) {
       thumbnail_image.style.opacity = '0';
       return;
@@ -161,14 +161,14 @@ import { getTeamBadge } from './utils/getTeamBadge';
     }
   }
 
-  function feedSpoilerBlock() {
+  function feedSpoilerBlock(): void {
     //const videos = document.querySelectorAll('#content');
     const videos = document.querySelectorAll('#dismissible');
     videos.forEach(spoilerBlockVideo);
   }
 
-  function replaceVideoTitle() {
-    const title_element = document.querySelector<any>('h1.style-scope.ytd-watch-metadata');
+  function replaceVideoTitle(): void {
+    const title_element : HTMLInputElement = document.querySelector<HTMLInputElement>('h1.style-scope.ytd-watch-metadata');
     if (title_element) {
       const title_text = title_element.textContent || title_element.innerText;
 
@@ -186,13 +186,13 @@ import { getTeamBadge } from './utils/getTeamBadge';
     }
   }
 
-  function replacePlayerTitle() {
-    const title_element = document.querySelector<any>(
+  function replacePlayerTitle(): void {
+    const title_element : HTMLInputElement = document.querySelector<HTMLInputElement>(
       'a.ytp-title-link.yt-uix-sessionlink.ytp-title-fullerscreen-link'
     );
 
     if (title_element) {
-      const title_text = title_element.textContent || title_element.innerText;
+      const title_text : string = title_element.textContent || title_element.innerText;
 
       if (typeof title_text === 'undefined' || !title_text.includes('|')) {
         return;
@@ -209,27 +209,27 @@ import { getTeamBadge } from './utils/getTeamBadge';
     }
   }
 
-  function spoilerBlockTabTitle() {
-    const current_url = window.location.href;
+  function spoilerBlockTabTitle(): void {
+    const current_url : string = window.location.href;
     if (!current_url.includes('watch?v=')) {
       return;
     }
 
-    let teams = getTeams(document.title);
+    let teams : string[] = getTeams(document.title);
     if (teams.length === 0) {
       return;
     }
-    let [team_a, team_b] = teams;
+    let [team_a, team_b] = teams as [string, string];
 
-    const non_spoiler_title = team_a + ' vs. ' + team_b;
+    const non_spoiler_title : string = team_a + ' vs. ' + team_b;
 
     if (document.title !== non_spoiler_title) {
       document.title = non_spoiler_title;
     }
   }
 
-  function spoilerBlockBody() {
-    const current_url = window.location.href;
+  function spoilerBlockBody(): void {
+    const current_url : string = window.location.href;
     if (current_url.includes('watch?v=')) {
       replaceVideoTitle();
       replacePlayerTitle();
@@ -242,13 +242,13 @@ import { getTeamBadge } from './utils/getTeamBadge';
     }
   }
 
-  const observer_tab_title = new MutationObserver(() => {
+  const observer_tab_title : MutationObserver = new MutationObserver(() => {
     spoilerBlockTabTitle();
   });
   observer_tab_title.observe(document.querySelector('title'), { childList: true });
   spoilerBlockTabTitle();
 
-  const body_observer = new MutationObserver((mutations) => {
+  const body_observer : MutationObserver = new MutationObserver((mutations) => {
     mutations.forEach(() => {
       spoilerBlockBody();
     });

@@ -1,8 +1,8 @@
-export function getTeamBadge(team) {
+export function getTeamBadge(team: string): string {
   return chrome.runtime.getURL(getTeamBadgeLocalPath(team));
 }
 
-function getTeamBadgeLocalPath(team) {
+function getTeamBadgeLocalPath(team: string): string {
   // Premier
   switch (team) {
     case 'Aston':
