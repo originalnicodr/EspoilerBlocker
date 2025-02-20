@@ -164,6 +164,231 @@ function getTeamBadgeLocalPath(team: string): string {
     case 'Venezia':
       return 'football-logos/logos/Italy - Serie A/Venezia FC.png';
   }
+  // Liga Portugal
+  switch(team) {
+    case "AVS Futebol SAD":
+    case "AVS":
+      return "football-logos/logos/Portugal - Liga Portugal/Avs Futebol.png";
+    case "Boavista":
+      return "football-logos/logos/Portugal - Liga Portugal/Boavista FC.png";
+    case "Casa Pia":
+      return "football-logos/logos/Portugal - Liga Portugal/Casa Pia AC.png";
+    case "Nacional":
+      return "football-logos/logos/Portugal - Liga Portugal/CD Nacional.png";
+    case "Santa Clara":
+      return "football-logos/logos/Portugal - Liga Portugal/CD Santa Clara.png";
+    case "Estrela da Amadora":
+    case "Estrela Amadora":
+      return "football-logos/logos/Portugal - Liga Portugal/CF Estrela Amadora.png";
+    case "Arouca":
+      return "football-logos/logos/Portugal - Liga Portugal/FC Arouca.png";
+    case "Famalicão":
+      return "football-logos/logos/Portugal - Liga Portugal/FC Famalicão.png";
+    case "Porto":
+      return "football-logos/logos/Portugal - Liga Portugal/FC Porto.png";
+    case "Estoril Praia":
+      return "football-logos/logos/Portugal - Liga Portugal/GD Estoril Praia.png";
+    case "Gil Vicente":
+    case "Vicente":
+      return "football-logos/logos/Portugal - Liga Portugal/Gil Vicente FC.png";
+    case "Moreirense":
+      return "football-logos/logos/Portugal - Liga Portugal/Moreirense FC.png";
+    case "Rio Ave":
+      return "football-logos/logos/Portugal - Liga Portugal/Rio Ave FC.png";
+    case "Braga":
+      return "football-logos/logos/Portugal - Liga Portugal/SC Braga.png";
+    case "Farense":
+      return "football-logos/logos/Portugal - Liga Portugal/SC Farense.png";
+    case "Benfica":
+      return "football-logos/logos/Portugal - Liga Portugal/SL Benfica.png";
+    case "Sporting CP":
+    case "Sporting":
+      return "football-logos/logos/Portugal - Liga Portugal/Sporting CP.png";
+    case "Vitória Guimarães":
+      return "football-logos/logos/Portugal - Liga Portugal/Vitória Guimarães SC.png";
+  }
+  // Ligue 1
+  switch (team) {
+    case "Auxerre":
+      return "football-logos/logos/France - Ligue 1/AJ Auxerre.png";
+    case "Angers":
+      return "football-logos/logos/France - Ligue 1/Angers SCO.png";
+    case "Monaco":
+    case "Mónaco":
+      return "football-logos/logos/France - Ligue 1/AS Monaco.png";
+    case "Saint-Étienne":
+    case "Saint Etienne":
+      return "football-logos/logos/France - Ligue 1/AS Saint-Étienne.png";
+    case "Nantes":
+      return "football-logos/logos/France - Ligue 1/FC Nantes.png";
+    case "Toulouse":
+      return "football-logos/logos/France - Ligue 1/FC Toulouse.png";
+    case "Le Havre":
+    case "Havre":
+      return "football-logos/logos/France - Ligue 1/Le Havre AC.png";
+    case "LOSC":
+      return "football-logos/logos/France - Ligue 1/LOSC Lille.png";
+    case "Montpellier":
+      return "football-logos/logos/France - Ligue 1/Montpellier HSC.png";
+    case "Niza":
+      return "football-logos/logos/France - Ligue 1/OGC Nice.png";
+    case "Olympique Lyon":
+    case "Lyon":
+      return "football-logos/logos/France - Ligue 1/Olympique Lyon.png";
+    case "Olympique Marseille":
+    case "Marseille":
+      return "football-logos/logos/France - Ligue 1/Olympique Marseille.png";
+    case "Paris Saint-Germain":
+    case "PSG":
+      return "football-logos/logos/France - Ligue 1/Paris Saint-Germain.png";
+    case "Lens":
+      return "football-logos/logos/France - Ligue 1/RC Lens.png";
+    case "Racing de Estrasburgo":
+      return "football-logos/logos/France - Ligue 1/RC Strasbourg Alsace.png";
+    case "Stade Brestois":
+      return "football-logos/logos/France - Ligue 1/Stade Brestois 29.png";
+    case "Stade Reims":
+    case "Reims":
+      return "football-logos/logos/France - Ligue 1/Stade Reims.png";
+    case "Stade Rennais":
+    case "Rennais":
+      return "football-logos/logos/France - Ligue 1/Stade Rennais FC.png";
+  }
+  // Bundesliga
+  switch (team) {
+    case "Heidenheim":
+      return "football-logos/logos/Germany - Bundesliga/1.FC Heidenheim 1846.png";
+    case "FC Union Berlin":
+    case "FC Union Berlin":
+      return "football-logos/logos/Germany - Bundesliga/1.FC Union Berlin.png";
+    case "FSV Mainz 05":
+    case "Mainz 05":
+    case "Mainz":
+      return "football-logos/logos/Germany - Bundesliga/1.FSV Mainz 05.png";
+    case "Bayer Leverkusen":
+    case "B. Leverkusen":
+      return "football-logos/logos/Germany - Bundesliga/Bayer 04 Leverkusen.png";
+    case "Bayern Munich":
+    case "B. Munich":
+      return "football-logos/logos/Germany - Bundesliga/Bayern Munich.png";
+    case "Borussia Dortmund":
+    case "B. Dortmund":
+    case "Dortmund":
+      return "football-logos/logos/Germany - Bundesliga/Borussia Dortmund.png";
+    case "Borussia Mönchengladbach":
+    case "Mönchengladbach":
+      return "football-logos/logos/Germany - Bundesliga/Borussia Mönchengladbach.png";
+    case "Eintracht Frankfurt":
+    case "Frankfurt":
+      return "football-logos/logos/Germany - Bundesliga/Eintracht Frankfurt.png";
+    case "Augsburg":
+      return "football-logos/logos/Germany - Bundesliga/FC Augsburg.png";
+    case "St. Pauli":
+      return "football-logos/logos/Germany - Bundesliga/FC St. Pauli.png";
+    case "Holstein Kiel":
+    case "KSV Holstein": 
+      return "football-logos/logos/Germany - Bundesliga/Holstein Kiel.png";
+    case "RB Leipzig":
+    case "Leipzig":
+      return "football-logos/logos/Germany - Bundesliga/RB Leipzig.png";
+    case "Freiburg":
+      return "football-logos/logos/Germany - Bundesliga/SC Freiburg.png";
+    case "Werder Bremen":
+      return "football-logos/logos/Germany - Bundesliga/SV Werder Bremen.png";
+    case "Hoffenheim":
+      return "football-logos/logos/Germany - Bundesliga/TSG 1899 Hoffenheim.png";
+    case "Stuttgart":
+      return "football-logos/logos/Germany - Bundesliga/VfB Stuttgart.png";
+    case "Bochum":
+      return "football-logos/logos/Germany - Bundesliga/VfL Bochum.png";
+    case "Wolfsburg":
+      return "football-logos/logos/Germany - Bundesliga/VfL Wolfsburg.png";
+  }
+  // Primera División de Argentina
+  switch (team) {
+    case "Aldosivi":
+      return "images/Argentina - Primera Division/aldosivi.png ";
+    case "Argentinos":
+      return "images/Argentina - Primera Division/argentinos.png ";
+    case "Atlético Tucumán":
+    case "Atl. Tucumán":
+    case "Atletico Tucuman":
+      return "images/Argentina - Primera Division/atleticotucuman.png ";
+    case "Banfield":
+      return "images/Argentina - Primera Division/banfield.png ";
+    case "Barracas Central":
+    case "Barracas":
+      return "images/Argentina - Primera Division/barracas.png ";
+    case "Belgrano":
+      return "images/Argentina - Primera Division/belgrano.png ";
+    case "Boca":
+      return "images/Argentina - Primera Division/boca.png ";
+    case "Central Córdoba":
+    case "Central Cordoba":
+      return "images/Argentina - Primera Division/centralcordoba.png ";
+    case "Defensa y Justicia":
+      return "images/Argentina - Primera Division/defensa.png ";
+    case "Estudiantes":
+    case "Estudiantes de La Plata":
+      return "images/Argentina - Primera Division/estudiantes.png ";
+    case "Gimnasia":
+    case "Gimnasia y Esgrima":
+    case "Gimnasia y Esgrima La Plata":
+      return "images/Argentina - Primera Division/gimnasia.png ";
+    case "Godoy Cruz":
+      return "images/Argentina - Primera Division/godoycruz.png ";
+    case "Huracan":
+    case "Huracán":
+      return "images/Argentina - Primera Division/huracan.png ";
+    case "Independiente":
+      return "images/Argentina - Primera Division/independiente.png ";
+    case "Independiente Rivadavia":
+    case "Ind. Rivadavia":
+    case "Independiente Riv.":
+    case "Ind. Riv.":
+      return "images/Argentina - Primera Division/independienteriv.png ";
+    case "Instituto":
+      return "images/Argentina - Primera Division/instituto.png ";
+    case "Lanús":
+      return "images/Argentina - Primera Division/lanus.png ";
+    case "Newell's Old Boys":
+    case "Newells Old Boys":
+    case "Newell's":
+    case "Newells":
+      return "images/Argentina - Primera Division/newells.png ";
+    case "Platense":
+      return "images/Argentina - Primera Division/platense.png ";
+    case "Racing":
+      return "images/Argentina - Primera Division/racing.png ";
+    case "Deportivo Riestra":
+    case "Riestra":
+      return "images/Argentina - Primera Division/riestra.png ";
+    case "River Plate":
+    case "River":
+      return "images/Argentina - Primera Division/river.png ";
+    case "Rosario Central":
+    case "Central":
+      return "images/Argentina - Primera Division/rosariocentral.png ";
+    case "San Lorenzo":
+      return "images/Argentina - Primera Division/sanlorenzo.png ";
+    case "San Martín":
+    case "San Martin":
+    case "San Martín S. J.":
+    case "San Martin S. J.":
+      return "images/Argentina - Primera Division/sanmartinsj.png ";
+    case "Sarmiento":
+      return "images/Argentina - Primera Division/sarmiento.png ";
+    case "Talleres":
+      return "images/Argentina - Primera Division/talleres.png ";
+    case "Tigre":
+      return "images/Argentina - Primera Division/tigre.png ";
+    case "Unión":
+    case "Union":
+      return "images/Argentina - Primera Division/union.png ";
+    case "Vélez":
+    case "Velez":
+      return "images/Argentina - Primera Division/velez.png";
+  }
 
   // Default teams logo
   return 'images/ball.png';
