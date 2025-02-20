@@ -51,6 +51,8 @@ import { getTeamBadge } from './utils/getTeamBadge';
 
     hideThumbnail(thumbnail_element);
 
+    const total_goals : number = getTotalGoals(title_text);
+
     const title_replace : string = spoilerTitle(title_text);
     if (title_replace === '') {
       return;
@@ -67,7 +69,7 @@ import { getTeamBadge } from './utils/getTeamBadge';
       return;
     }
     let [team_a, team_b] = teams as [string, string];
-    addTeamBadges(team_a, team_b, thumbnail_element);
+    addTeamBadges(team_a, team_b, total_goals, thumbnail_element);
   }
 
   function getTeams(original_title: string): string[] {
@@ -97,7 +99,21 @@ import { getTeamBadge } from './utils/getTeamBadge';
     return team_a + ' vs ' + team_b;
   }
 
-  function addTeamBadges(team_a:string, team_b:string, thumbnail_element: HTMLInputElement): void {
+  function getTotalGoals(original_title: string): number {
+    const match_teams_string : string = original_title.split('|')[1];
+    if (!match_teams_string) {
+      return 0;
+    }
+
+    if (!match_teams_string.includes('-')) {
+      return 0;
+    }
+
+    let [part1, part2] = match_teams_string.split('-');
+    return Number(part1.trim().split(' ').at(-1)) + Number(part2.trim().split(' ').at(0));
+  }
+
+  function addTeamBadges(team_a:string, team_b:string, total_goals:number, thumbnail_element: HTMLInputElement): void {
     if (thumbnail_element === undefined) {
       return;
     }
@@ -136,27 +152,41 @@ import { getTeamBadge } from './utils/getTeamBadge';
       thumbnail_element.appendChild(img_b);
     }
 
-    const betweenBadges = document.createElement('p');
-    betweenBadges.innerText = '-';
-    betweenBadges.style.position = 'absolute';
-    betweenBadges.style.top = '25%';
-    betweenBadges.style.left = '47%';
-    betweenBadges.style.fontSize = '50px';
-    betweenBadges.style.color = 'white';
-    betweenBadges.style.pointerEvents = 'none';
-    betweenBadges.style.transition = "opacity 0.3s";
-    thumbnail_element.appendChild(betweenBadges);
+    const between_badges = document.createElement('p');
+    between_badges.innerText = '-';
+    between_badges.style.position = 'absolute';
+    between_badges.style.top = '25%';
+    between_badges.style.left = '47%';
+    between_badges.style.fontSize = '50px';
+    between_badges.style.color = 'white';
+    between_badges.style.pointerEvents = 'none';
+    between_badges.style.transition = "opacity 0.3s";
+    thumbnail_element.appendChild(between_badges);
+
+    const total_goals_element = document.createElement('p');
+    total_goals_element.innerText = `(${total_goals})`;
+    total_goals_element.style.position = 'absolute';
+    total_goals_element.style.top = '5%';
+    total_goals_element.style.left = '41%';
+    total_goals_element.style.textAlign = "center";
+    total_goals_element.style.fontSize = '35px';
+    total_goals_element.style.color = 'white';
+    total_goals_element.style.pointerEvents = 'none';
+    total_goals_element.style.transition = "opacity 0.3s";
+    //thumbnail_element.appendChild(total_goals_element);
 
     thumbnail_element.addEventListener("mouseenter", () => {
       img_a.style.opacity = "0";
       img_b.style.opacity = "0";
-      betweenBadges.style.opacity = "0";
+      between_badges.style.opacity = "0";
+      total_goals_element.style.opacity = "0";
     });
 
     thumbnail_element.addEventListener("mouseleave", () => {
       img_a.style.opacity = "100%";
       img_b.style.opacity = "100%";
-      betweenBadges.style.opacity = "100%";
+      between_badges.style.opacity = "100%";
+      total_goals_element.style.opacity = "100%";
     });
   }
 
