@@ -1,3 +1,4 @@
+import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 import { BaseUpdater } from './BaseUpdater';
 
 export class TitleUpdater extends BaseUpdater {
@@ -15,7 +16,7 @@ export class TitleUpdater extends BaseUpdater {
 
     // TODO: We should check the channel before changing the title to ensure we're not editing other channel's videos
 
-    let teams = this.getTeamsFromTitle();
+    let teams = getTeamsByTitle(document.title);
     if (teams.length === 0) {
       return;
     }
@@ -30,19 +31,5 @@ export class TitleUpdater extends BaseUpdater {
 
   removeChanges() {
     super.removeChanges();
-  }
-
-  private getTeamsFromTitle() {
-    const match_teams_string = document.title.split('|')[1];
-    if (!match_teams_string || !match_teams_string.includes('-')) {
-      return [];
-    }
-
-    let [part1, part2] = match_teams_string.split('-');
-
-    let teamA = part1.trim().split(' ').slice(0, -1).join(' ');
-    let teamB = part2.trim().split(' ').slice(1).join(' ');
-
-    return [teamA, teamB];
   }
 }
