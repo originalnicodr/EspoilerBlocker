@@ -1,5 +1,27 @@
-export interface BaseUpdater {
-  update();
+import { EspnSpoilerBlocker } from '../EspnSpoilerBlocker';
 
-  removeChanges();
+export class BaseUpdater {
+  constructor(private node: Element) {
+    this.markElement();
+  }
+
+  public static isElementAlreadyBeingWatched(element: Element) {
+    return element.classList.contains(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
+  }
+
+  update(...arg: any[]) {
+    throw new Error('update method not implemented');
+  }
+
+  removeChanges() {
+    this.removeChanges();
+  }
+
+  markElement() {
+    this.node.classList.add(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
+  }
+
+  unmarkElement() {
+    this.node.classList.remove(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
+  }
 }

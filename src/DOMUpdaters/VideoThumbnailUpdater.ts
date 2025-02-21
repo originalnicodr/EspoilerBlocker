@@ -1,17 +1,25 @@
-import type { BaseUpdater } from './BaseUpdater';
+import { BaseUpdater } from './BaseUpdater';
 
-export class VideoThumbnailUpdater implements BaseUpdater {
-  constructor(private containerElement: Element) {}
-
-  update() {
-    console.log('UPDATING VIDEO:', {
-      originalTitle: this.containerElement.querySelector('#video-title')?.textContent?.trim(),
-      originalChannel: this.containerElement.querySelector('#channel-name')?.textContent?.trim(),
-    });
-
-    this.containerElement.querySelector('#video-title').innerHTML = 'XXXXXXX';
-    this.containerElement.querySelector('#channel-name').innerHTML = 'XXXXXXXx';
+export class VideoThumbnailUpdater extends BaseUpdater {
+  constructor(private container: Element) {
+    super(container);
   }
 
-  removeChanges() {}
+  update() {
+    // console.log('UPDATING VIDEO:', {
+    //   originalTitle: this.container.querySelector('#video-title')?.textContent?.trim(),
+    //   originalChannel: this.container.querySelector('#channel-name')?.textContent?.trim(),
+    // });
+
+    try {
+      this.container.querySelector('#video-title').innerHTML = 'XXXXXXX';
+      this.container.querySelector('#channel-name').innerHTML = 'XXXXXXXx';
+    } catch (error) {}
+  }
+
+  removeChanges() {
+    super.removeChanges();
+  }
 }
+
+
