@@ -1,5 +1,6 @@
+import { EspnSpoilerBlocker } from './EspnSpoilerBlocker';
 import { getTeamBadge } from './utils/getTeamBadge';
-
+/**
 (function () {
   function spoilerBlockVideo(video: HTMLInputElement): void {
     // Check if the video is from ESPN Fans before trying to spoil it [Homepage]
@@ -309,3 +310,9 @@ import { getTeamBadge } from './utils/getTeamBadge';
   body_observer.observe(document.body, { childList: true, subtree: true });
   spoilerBlockBody();
 })();
+ */
+
+
+// changes
+const blocker = new EspnSpoilerBlocker();
+blocker.start();
