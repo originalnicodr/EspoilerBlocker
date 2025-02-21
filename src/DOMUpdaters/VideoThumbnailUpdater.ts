@@ -11,7 +11,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     try {
       spoilerBlockVideo(this.container);
     } catch (error) {
-      console.warn('ERROR BLOCKING SPOILERS VIDEOS');
+      console.error('ERROR BLOCKING SPOILERS VIDEOS');
     }
   }
 
