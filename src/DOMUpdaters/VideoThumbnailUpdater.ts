@@ -21,7 +21,6 @@ export class VideoThumbnailUpdater extends BaseUpdater {
 }
 
 function spoilerBlockVideo(video: Element): void {
-  debugger;
   // Check if the video is from ESPN Fans before trying to spoil it [Homepage]
   let channel_element = video.querySelector<HTMLElement>('ytd-channel-name a');
   if (!channel_element) {

@@ -2,8 +2,6 @@ import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 import { BaseUpdater } from './BaseUpdater';
 
 export class TitleUpdater extends BaseUpdater {
-  private originalYoutubeTitle: string = undefined;
-
   constructor(private title: Element) {
     super(title);
   }

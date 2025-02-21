@@ -1,6 +1,7 @@
 import { BaseUpdater } from './DOMUpdaters/BaseUpdater';
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
 import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
+import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
@@ -8,14 +9,18 @@ export class EspnSpoilerBlocker {
   private observers: Array<MutationObserver> = [];
   private updaters: Array<BaseUpdater> = [];
 
-  /** check if we're watching videos on Youtube main page. If this is false, container not found. Will retry after next title change */
+  /** check if we're watching video thumbnails on Youtube main page. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnMainPage = undefined;
+  /** check if we're watching video thumbnails while playing a video . If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnVideoPage = undefined;
+  /** check if we're watching the video title while playing a video. If this is false, container not found. Will retry after next title change */
+  private watchingVideoTitle = undefined;
 
   /** Start the Chrome extension */
   public start() {
     this.reactToTitleChanges();
-    this.reactToVideoChanges();
+    this.reactToVideoThumbnailsChanges();
+    this.reactToVideoTitle();
   }
 
   /** Stop the Chrome extension */
@@ -30,7 +35,7 @@ export class EspnSpoilerBlocker {
     this.updaters.forEach((updater) => updater.removeChanges());
   }
 
-  private reactToVideoChanges() {
+  private reactToVideoThumbnailsChanges() {
     // these methods are async, but can be invoked like this to improve performance.
     this.reactToThumbnailsOnMainPage();
     this.reactToThumnailsOnVideoPage();
@@ -57,7 +62,7 @@ export class EspnSpoilerBlocker {
   }
 
   private get youtubeMediaSelectors(): string[] {
-    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer'];
+    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer'];
   }
 
   private isNodeAYoutubeVideo(node: Element) {
@@ -97,7 +102,7 @@ export class EspnSpoilerBlocker {
 
     let container: Element = undefined;
     try {
-      container = await this.getElementOrRetry('#contents.ytd-rich-grid-renderer', 400);
+      container = await this.getElementOrRetry('ytd-app', 400);
     } catch (error) {
       this.watchingThumbnailsOnMainPage = false;
       return;
@@ -166,9 +171,7 @@ export class EspnSpoilerBlocker {
 
   /** Method executed after a title was updated */
   private afterTitleUpdate() {
-    console.log('TITLE CHANGED!');
-
-    // Retry to observe the video thumbnails if the parent target was not found
+    // Retry to observe elements if container elements were not found. We'd probably want to do this on route changes, not on title changes.
     if (this.watchingThumbnailsOnMainPage === false) {
       this.reactToThumbnailsOnMainPage();
     }
@@ -176,5 +179,37 @@ export class EspnSpoilerBlocker {
     if (this.watchingThumbnailsOnMainPage === false) {
       this.reactToThumnailsOnVideoPage();
     }
+
+    if (this.watchingVideoTitle === false) {
+      this.reactToVideoTitle();
+    }
+  }
+
+  private async reactToVideoTitle() {
+    // do not watch video titles twice
+    if (this.watchingVideoTitle === true) return;
+
+    let element = undefined;
+    try {
+      element = await this.getElementOrRetry('h1.style-scope.ytd-watch-metadata', 400);
+    } catch (error) {
+      this.watchingVideoTitle = false;
+      return;
+    }
+
+    const updater = new VideoTitleUpdater(element);
+    this.updaters.push(updater);
+
+    const observer = new MutationObserver(() => {
+      updater.update();
+    });
+    updater.update();
+
+    this.observers.push(observer);
+    observer.observe(element, {
+      subtree: true,
+      characterData: true,
+      childList: true,
+    });
   }
 }
