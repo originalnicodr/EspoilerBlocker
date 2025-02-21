@@ -7,7 +7,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     super(container);
   }
 
-  update() {
+  public update() {
     try {
       spoilerBlockVideo(this.container);
     } catch (error) {
@@ -15,7 +15,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     }
   }
 
-  removeChanges() {
+  public removeChanges() {
     super.removeChanges();
   }
 }

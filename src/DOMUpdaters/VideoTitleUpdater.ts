@@ -1,20 +1,21 @@
 import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 import { BaseUpdater } from './BaseUpdater';
 
-export class TitleUpdater extends BaseUpdater {
+export class VideoTitleUpdater extends BaseUpdater {
   constructor(private title: Element) {
     super(title);
   }
 
   public update() {
     const current_url: string = window.location.href;
+
     if (!current_url.includes('watch?v=')) {
       return;
     }
 
     // TODO: We should check the channel before changing the title to ensure we're not editing other channel's videos
-
-    let teams = getTeamsByTitle(document.title);
+    const title = this.title.querySelector<HTMLElement>('yt-formatted-string');
+    let teams = getTeamsByTitle(title.textContent);
     if (teams.length === 0) {
       return;
     }
@@ -22,8 +23,8 @@ export class TitleUpdater extends BaseUpdater {
 
     const non_spoiler_title = `${teamA} vs ${teamB}`;
 
-    if (document.title !== non_spoiler_title) {
-      document.title = non_spoiler_title;
+    if (title.textContent !== non_spoiler_title) {
+      title.textContent = non_spoiler_title;
     }
   }
 

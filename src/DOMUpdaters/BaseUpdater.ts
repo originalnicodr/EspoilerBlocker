@@ -9,19 +9,19 @@ export class BaseUpdater {
     return element.classList.contains(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
   }
 
-  update(...arg: any[]) {
+  public update(...arg: any[]) {
     throw new Error('update method not implemented');
   }
 
-  removeChanges() {
+  public removeChanges() {
     this.removeChanges();
   }
 
-  markElement() {
+  public markElement() {
     this.node.classList.add(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
   }
 
-  unmarkElement() {
+  public unmarkElement() {
     this.node.classList.remove(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
   }
 }
