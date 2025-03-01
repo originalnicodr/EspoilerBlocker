@@ -1,4 +1,5 @@
 import { BaseUpdater } from './DOMUpdaters/BaseUpdater';
+import { InnerVideoTitleUpdater } from './DOMUpdaters/innerVideoTitleUpdater';
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
 import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
 import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
@@ -73,11 +74,10 @@ export class EspnSpoilerBlocker {
   private async getElementOrRetry(elementSelector: string, retryMs: number, limit = 20): Promise<Element> {
     return new Promise((resolve, reject) => {
       const checkElement = () => {
-        limit--;
         const element = document.querySelector(elementSelector);
         if (element) {
           resolve(element);
-        } else if (limit - 1 > 0) {
+        } else if (--limit > 0) {
           setTimeout(() => checkElement(), retryMs);
         } else {
           reject(new Error('Element not found after max retries'));
@@ -107,6 +107,8 @@ export class EspnSpoilerBlocker {
       this.watchingThumbnailsOnMainPage = false;
       return;
     }
+
+    this.watchingThumbnailsOnMainPage = true;
 
     // create a VideoThumnailUpdater for each video in the dom
     container
@@ -145,6 +147,8 @@ export class EspnSpoilerBlocker {
       return;
     }
 
+    this.watchingThumbnailsOnVideoPage = true;
+
     // create a VideoThumnailUpdater for each video in the dom
     container
       .querySelectorAll(this.youtubeMediaSelectors.join(','))
@@ -176,7 +180,7 @@ export class EspnSpoilerBlocker {
       this.reactToThumbnailsOnMainPage();
     }
 
-    if (this.watchingThumbnailsOnMainPage === false) {
+    if (this.watchingThumbnailsOnVideoPage === false) {
       this.reactToThumnailsOnVideoPage();
     }
 
@@ -189,24 +193,43 @@ export class EspnSpoilerBlocker {
     // do not watch video titles twice
     if (this.watchingVideoTitle === true) return;
 
-    let element = undefined;
+    let visibleVideoTitle = undefined;
+    let innerHTMLvideoTitle = undefined;
     try {
-      element = await this.getElementOrRetry('h1.style-scope.ytd-watch-metadata', 400);
+      // these two elements are on the same page. Fire the two promises at the same time
+
+      const promises = [
+        this.getElementOrRetry('h1.style-scope.ytd-watch-metadata', 400),
+        this.getElementOrRetry('a.ytp-title-fullerscreen-link', 400),
+      ];
+      try {
+        const results = await Promise.all(promises);
+        visibleVideoTitle = results[0];
+        innerHTMLvideoTitle = results[1];
+      } catch (error) {
+        return;
+      }
     } catch (error) {
       this.watchingVideoTitle = false;
       return;
     }
 
-    const updater = new VideoTitleUpdater(element);
-    this.updaters.push(updater);
+    this.watchingVideoTitle = true;
+
+    // create both updaters
+    const titleUpdater = new VideoTitleUpdater(visibleVideoTitle);
+    const innerTitleUpdater = new InnerVideoTitleUpdater(innerHTMLvideoTitle);
+    this.updaters.push(titleUpdater, innerTitleUpdater);
 
     const observer = new MutationObserver(() => {
-      updater.update();
+      titleUpdater.update();
+      innerTitleUpdater.update();
     });
-    updater.update();
+    titleUpdater.update();
+    innerTitleUpdater.update();
 
     this.observers.push(observer);
-    observer.observe(element, {
+    observer.observe(visibleVideoTitle, {
       subtree: true,
       characterData: true,
       childList: true,
