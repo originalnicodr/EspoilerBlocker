@@ -11,11 +11,11 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
 
     const title = this.title.textContent;
 
-    let teams = getTeamsByTitle(title);
+    const teams = getTeamsByTitle(title);
     if (teams.length === 0) {
       return;
     }
-    let [teamA, teamB] = teams;
+    const [teamA, teamB] = teams;
 
     const non_spoiler_title = `${teamA} vs ${teamB}`;
 

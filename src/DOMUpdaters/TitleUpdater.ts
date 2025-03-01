@@ -14,11 +14,11 @@ export class TitleUpdater extends BaseUpdater {
 
     // TODO: We should check the channel before changing the title to ensure we're not editing other channel's videos
 
-    let teams = getTeamsByTitle(document.title);
+    const teams = getTeamsByTitle(document.title);
     if (teams.length === 0) {
       return;
     }
-    let [teamA, teamB] = teams;
+    const [teamA, teamB] = teams;
 
     const non_spoiler_title = `${teamA} vs ${teamB}`;
 

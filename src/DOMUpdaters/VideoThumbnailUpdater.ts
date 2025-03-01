@@ -11,7 +11,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     try {
       spoilerBlockVideo(this.container);
     } catch (error) {
-      console.error('ERROR BLOCKING SPOILERS VIDEOS');
+      console.error('Error spoiling video:', { container: this.container, error });
     }
   }
 
@@ -28,7 +28,7 @@ function spoilerBlockVideo(video: Element): void {
   }
 
   if (channel_element) {
-    let channelName: string = channel_element ? channel_element.innerText.trim() : '';
+    const channelName: string = channel_element ? channel_element.innerText.trim() : '';
     if (channelName !== 'ESPN Fans') {
       return;
     }
@@ -82,11 +82,11 @@ function spoilerBlockVideo(video: Element): void {
     title_link.title = title_replace;
   }
 
-  let teams: string[] = getTeamsByTitle(title_text);
+  const teams: string[] = getTeamsByTitle(title_text);
   if (teams.length === 0) {
     return;
   }
-  let [team_a, team_b] = teams as [string, string];
+  const [team_a, team_b] = teams as [string, string];
   addTeamBadges(team_a, team_b, total_goals, thumbnail_element);
 }
 
@@ -124,7 +124,7 @@ function getTotalGoals(original_title: string): number {
     return 0;
   }
 
-  let [part1, part2] = match_teams_string.split('-');
+  const [part1, part2] = match_teams_string.split('-');
   return Number(part1.trim().split(' ').at(-1)) + Number(part2.trim().split(' ').at(0));
 }
 
@@ -134,7 +134,7 @@ function spoilerTitle(original_title: string): string {
     return '';
   }
 
-  let [team_a, team_b] = teams as [string, string];
+  const [team_a, team_b] = teams as [string, string];
   return team_a + ' vs ' + team_b;
 }
 

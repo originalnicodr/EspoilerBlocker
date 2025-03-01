@@ -14,8 +14,9 @@ export default [
   {
     plugins: { prettier: prettierPlugin },
     rules: {
-      'prettier/prettier': 'warn', // Runs Prettier inside ESLint
+      'prettier/prettier': 'warn', // Runs Prettier inside ESLint as warnings
       '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
 ];
