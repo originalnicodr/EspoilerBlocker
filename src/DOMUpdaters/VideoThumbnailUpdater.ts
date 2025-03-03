@@ -5,11 +5,16 @@ import { BaseUpdater } from './BaseUpdater';
 export class VideoThumbnailUpdater extends BaseUpdater {
   constructor(private container: Element) {
     super(container);
+
+    console.log(container);
   }
 
   public update() {
     try {
-      spoilerBlockVideo(this.container);
+      if (this.shouldBlockSpoilers()) {
+        this.duplicateElement();
+        spoilerBlockVideo(this.elementToEdit);
+      }
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
     }
@@ -17,6 +22,43 @@ export class VideoThumbnailUpdater extends BaseUpdater {
 
   public removeChanges() {
     super.removeChanges();
+  }
+
+  private shouldBlockSpoilers(): boolean {
+    // Conditions.
+    // check either channel name OR if we're watching ESPN FANS PAGE.
+    let channelCondition = false;
+    if (window.location.href.toLowerCase().includes('espnfans')) {
+      channelCondition = true;
+    } else {
+      let channelElement = this.container.querySelector<HTMLElement>('ytd-channel-name a');
+
+      if (!channelElement) {
+        channelElement = this.container.querySelector(
+          'ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text',
+        );
+      }
+
+      if (channelElement?.innerText.trim() === 'ESPN Fans') {
+        channelCondition = true;
+      }
+    }
+
+    return channelCondition && this.videoTitleContainsSpoilers();
+
+    // if that is OK, we should check if the title contains spoiler
+  }
+
+  videoTitleContainsSpoilers(): boolean {
+    const titleElement: HTMLInputElement = this.container.querySelector('#video-title');
+
+    if (!titleElement) {
+      return false;
+    }
+
+    const title = titleElement.textContent || titleElement.innerText;
+    // TODO: check how are we getting this info
+    return true;
   }
 }
 

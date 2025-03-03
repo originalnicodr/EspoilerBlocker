@@ -6,6 +6,7 @@ import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
+  public static ADDED_CLASS_TO_MARK_AS_ADDED = 'ESPN_SPOILER_BLOCKER_MARK_AS_ADDED';
 
   private observers: Array<MutationObserver> = [];
   private updaters: Array<BaseUpdater> = [];
@@ -66,6 +67,10 @@ export class EspnSpoilerBlocker {
     return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer'];
   }
 
+  private isElementAddedByUs(node: Element) {
+    return node.classList.contains(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_ADDED);
+  }
+
   private isNodeAYoutubeVideo(node: Element) {
     return this.youtubeMediaSelectors.some((value) => node.matches(value));
   }
@@ -120,7 +125,7 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof Element && this.isNodeAYoutubeVideo(node)) {
+          if (node instanceof Element && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
           }
         });
