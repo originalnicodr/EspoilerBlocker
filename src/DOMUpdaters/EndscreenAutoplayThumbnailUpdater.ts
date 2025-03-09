@@ -5,7 +5,7 @@ import { getTotalGoals } from '../utils/getTotalGoals';
 import { spoilerTitle } from '../utils/spoilerTitle';
 import { BaseUpdater } from './BaseUpdater';
 
-export class EndscreenThumbnailUpdater extends BaseUpdater {
+export class EndscreenAutoplayThumbnailUpdater extends BaseUpdater {
   constructor(private container: Element) {
     super(container);
   }
@@ -24,7 +24,7 @@ export class EndscreenThumbnailUpdater extends BaseUpdater {
 }
 
 function spoilerBlockVideo(video: Element): void {
-  let channel_element = video.querySelector<HTMLElement>('ytp-videowall-still-info-author');
+  let channel_element = video.querySelector<HTMLElement>('ytp-autonav-endscreen-upnext-author');
 
   if (channel_element) {
     const channelName: string = channel_element ? channel_element.innerText.trim() : '';
@@ -33,8 +33,8 @@ function spoilerBlockVideo(video: Element): void {
     }
   }
 
-  let thumbnail_element: HTMLInputElement = video.querySelector('.ytp-videowall-still-image');
-  const title_element: HTMLInputElement = video.querySelector('.ytp-videowall-still-info-title');
+  let thumbnail_element: HTMLInputElement = video.querySelector('.ytp-autonav-endscreen-upnext-thumbnail');
+  const title_element: HTMLInputElement = video.querySelector('.ytp-autonav-endscreen-upnext-title');
 
   if (!title_element || typeof title_element === 'undefined') {
     return;

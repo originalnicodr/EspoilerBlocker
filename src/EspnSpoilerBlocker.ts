@@ -1,4 +1,5 @@
 import { BaseUpdater } from './DOMUpdaters/BaseUpdater';
+import { EndscreenAutoplayThumbnailUpdater } from './DOMUpdaters/EndscreenAutoplayThumbnailUpdater';
 import { EndscreenThumbnailUpdater } from './DOMUpdaters/EndscreenThumbnailUpdater';
 import { InnerVideoTitleUpdater } from './DOMUpdaters/innerVideoTitleUpdater';
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
@@ -17,6 +18,8 @@ export class EspnSpoilerBlocker {
   private watchingThumbnailsOnVideoPage = undefined;
   /** check if we're watching video thumbnails at the end of a video. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnEndscreenPage = undefined;
+  /** check if we're watching the suggested autoplay video thumbnail at the end of a video. If this is false, such video wasn't found. Will retry after next title change */
+  private watchingThumbnailOnEndscreenAutoplayPage = undefined;
   /** check if we're watching the video title while playing a video. If this is false, container not found. Will retry after next title change */
   private watchingVideoTitle = undefined;
 
@@ -44,6 +47,7 @@ export class EspnSpoilerBlocker {
     this.reactToThumbnailsOnMainPage();
     this.reactToThumnailsOnVideoPage();
     this.reactToThumbnailsOnEndscreen();
+    this.reactToThumbnailsOnEndscreenAutoplay();
   }
 
   private reactToTitleChanges() {
@@ -103,6 +107,13 @@ export class EspnSpoilerBlocker {
   private createNewEndscreenVideoUpdater(node: Element) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new EndscreenThumbnailUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+  }
+
+  private createNewEndscreenAutoplayVideoUpdater(node: Element) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+    const updater = new EndscreenAutoplayThumbnailUpdater(node);
     this.updaters.push(updater);
     updater.update();
   }
@@ -223,6 +234,40 @@ export class EspnSpoilerBlocker {
     });
   }
 
+  private async reactToThumbnailsOnEndscreenAutoplay() {
+    // do not observe element twice
+    if (this.watchingThumbnailOnEndscreenAutoplayPage) return;
+
+    let autoplay_suggestion = undefined;
+    try {
+      autoplay_suggestion = await this.getElementOrRetry('.ytp-autonav-endscreen-upnext-container', 400);
+    } catch (error) {
+      this.watchingThumbnailOnEndscreenAutoplayPage = false;
+      return;
+    }
+
+    this.watchingThumbnailOnEndscreenAutoplayPage = true;
+
+    // autoplay_suggestion starts empty and gets its info when the video is about to end.
+    // When it gets new child nodes it means that the info is now there and we can spawn an EndscreenAutoplayThumbnailUpdater.
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          const potential_parent: HTMLElement = node instanceof Element && node.closest('.ytp-autonav-endscreen-upnext-container');
+          if (potential_parent) {
+            this.createNewEndscreenAutoplayVideoUpdater(potential_parent);
+          }
+        });
+      });
+    });
+
+    this.observers.push(observer);
+    observer.observe(autoplay_suggestion, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
   /** Method executed after a title was updated */
   private afterTitleUpdate() {
     // Retry to observe elements if container elements were not found. We'd probably want to do this on route changes, not on title changes.
@@ -232,6 +277,14 @@ export class EspnSpoilerBlocker {
 
     if (this.watchingThumbnailsOnVideoPage === false) {
       this.reactToThumnailsOnVideoPage();
+    }
+
+    if (this.watchingThumbnailsOnEndscreenPage === false) {
+      this.reactToThumbnailsOnEndscreen();
+    }
+
+    if (this.watchingThumbnailOnEndscreenAutoplayPage === false) {
+      this.reactToThumbnailsOnEndscreenAutoplay();
     }
 
     if (this.watchingVideoTitle === false) {
