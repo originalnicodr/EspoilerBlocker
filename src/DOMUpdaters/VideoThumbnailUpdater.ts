@@ -70,7 +70,16 @@ function spoilerBlockVideo(video: Element): void {
   hideThumbnail(thumbnail_element);
 
   const total_goals: number = getTotalGoals(title_text);
-  const match_date: Date = getMatchDate(title_link);
+
+  let aria_text: string;
+  if (title_link) {
+    aria_text = title_link.getAttribute('aria-label');
+  }
+  else {
+    // The aria text with the date info can be found in the title itself instead of the title link
+    aria_text = title_element.getAttribute('aria-label');
+  }
+  const match_date: Date = getMatchDate(aria_text);
 
   const title_replace: string = spoilerTitle(title_text);
   if (title_replace === '') {
@@ -130,8 +139,7 @@ function getTotalGoals(original_title: string): number {
 }
 
 // TODO: Try to parse this in English in case the user's YouTube language is not Spanish
-function getMatchDate(title_link: HTMLInputElement): Date {
-  const aria_text: string = title_link.getAttribute('aria-label');
+function getMatchDate(aria_text: string): Date {
   // aria_text have the following format "{video_title} {views} visualizaciones hace {d} día {m} minutos y {s} segundos"
   let parts: string[] = aria_text.split('hace');
   let time_passed: string = parts[parts.length - 1].trim();
