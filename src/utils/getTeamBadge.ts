@@ -7,6 +7,7 @@ function getTeamBadgeLocalPath(team: string): string {
   switch (team) {
     case 'Aston':
     case 'Aston Villa':
+    case 'A. Villa':
     case 'Villa':
       return 'football-logos/logos/England - Premier League/Aston Villa.png';
     case 'Bournemouth':
