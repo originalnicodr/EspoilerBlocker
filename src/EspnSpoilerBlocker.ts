@@ -1,4 +1,5 @@
 import { BaseUpdater } from './DOMUpdaters/BaseUpdater';
+import { EndscreenThumbnailUpdater } from './DOMUpdaters/EndscreenThumbnailUpdater';
 import { InnerVideoTitleUpdater } from './DOMUpdaters/innerVideoTitleUpdater';
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
 import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
@@ -12,8 +13,10 @@ export class EspnSpoilerBlocker {
 
   /** check if we're watching video thumbnails on Youtube main page. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnMainPage = undefined;
-  /** check if we're watching video thumbnails while playing a video . If this is false, container not found. Will retry after next title change */
+  /** check if we're watching video thumbnails while playing a video. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnVideoPage = undefined;
+  /** check if we're watching video thumbnails at the end of a video. If this is false, container not found. Will retry after next title change */
+  private watchingThumbnailsOnEndscreenPage = undefined;
   /** check if we're watching the video title while playing a video. If this is false, container not found. Will retry after next title change */
   private watchingVideoTitle = undefined;
 
@@ -40,6 +43,7 @@ export class EspnSpoilerBlocker {
     // these methods are async, but can be invoked like this to improve performance.
     this.reactToThumbnailsOnMainPage();
     this.reactToThumnailsOnVideoPage();
+    this.reactToThumbnailsOnEndscreen();
   }
 
   private reactToTitleChanges() {
@@ -92,6 +96,13 @@ export class EspnSpoilerBlocker {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
 
     const updater = new VideoThumbnailUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+  }
+
+  private createNewEndscreenVideoUpdater(node: Element) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+    const updater = new EndscreenThumbnailUpdater(node);
     this.updaters.push(updater);
     updater.update();
   }
@@ -161,6 +172,45 @@ export class EspnSpoilerBlocker {
         mutation.addedNodes.forEach((node) => {
           if (node instanceof Element && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
+          }
+        });
+      });
+    });
+
+    this.observers.push(observer);
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  private async reactToThumbnailsOnEndscreen() {
+    // do not observe element twice
+    if (this.watchingThumbnailsOnEndscreenPage) return;
+
+    let container = undefined;
+    try {
+      // Might need to increase this to cover ads
+      container = await this.getElementOrRetry('.ytp-endscreen-content', 400);
+    } catch (error) {
+      this.watchingThumbnailsOnEndscreenPage = false;
+      return;
+    }
+
+    this.watchingThumbnailsOnEndscreenPage = true;
+
+    // create a EndscreenVideoUpdater for each video in the dom
+    container
+      .querySelectorAll(this.youtubeMediaSelectors.join(','))
+      .forEach((video: Element) => this.createNewEndscreenVideoUpdater(video));
+
+    // observe new added elements and do the same
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        // Get any newly added video elements
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof Element && node.matches('.ytp-videowall-still')) {
+            this.createNewEndscreenVideoUpdater(node);
           }
         });
       });
