@@ -38,6 +38,7 @@ function getTeamBadgeLocalPath(team: string): string {
     case 'Man. City':
       return 'football-logos/logos/England - Premier League/Manchester City.png';
     case 'Manchester United':
+    case 'M. United':
     case 'Manchester Utd':
     case 'Man. Utd':
     case 'M. Utd.':

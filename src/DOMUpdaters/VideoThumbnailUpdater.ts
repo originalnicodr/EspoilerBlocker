@@ -70,6 +70,7 @@ function spoilerBlockVideo(video: Element): void {
   hideThumbnail(thumbnail_element);
 
   const total_goals: number = getTotalGoals(title_text);
+  const match_date: Date = getMatchDate(title_link);
 
   const title_replace: string = spoilerTitle(title_text);
   if (title_replace === '') {
@@ -87,7 +88,7 @@ function spoilerBlockVideo(video: Element): void {
     return;
   }
   const [team_a, team_b] = teams as [string, string];
-  addTeamBadges(team_a, team_b, total_goals, thumbnail_element);
+  addThumbnailElements(team_a, team_b, match_date, total_goals, thumbnail_element);
 }
 
 function hideThumbnail(thumbnail_element: HTMLInputElement): void {
@@ -128,6 +129,40 @@ function getTotalGoals(original_title: string): number {
   return Number(part1.trim().split(' ').at(-1)) + Number(part2.trim().split(' ').at(0));
 }
 
+// TODO: Try to parse this in English in case the user's YouTube language is not Spanish
+function getMatchDate(title_link: HTMLInputElement): Date {
+  const aria_text: string = title_link.getAttribute('aria-label');
+  // aria_text have the following format "{video_title} {views} visualizaciones hace {d} día {m} minutos y {s} segundos"
+  let parts: string[] = aria_text.split('hace');
+  let time_passed: string = parts[parts.length - 1].trim();
+  let years: number = 0, months: number = 0, days: number = 0, hours: number = 0, minutes: number = 0, seconds: number = 0;
+  const spanish_duration_regex: RegExp = /(\d+)\s*(año|mes|día|hora|minuto|segundo)s?/g;
+
+  let match: RegExpExecArray;
+  while ((match = spanish_duration_regex.exec(time_passed)) !== null) {
+    const value: number = parseInt(match[1]);
+    const unit: string = match[2];
+
+    if (unit === 'año') years = value;
+    if (unit === 'mes') months = value;
+    if (unit === 'día') days = value;
+    if (unit === 'hora') hours = value;
+    if (unit === 'minuto') minutes = value;
+    if (unit === 'segundo') seconds = value;
+  }
+
+  const match_date: Date = new Date();
+  match_date.setFullYear(match_date.getFullYear() - years);
+  match_date.setMonth(match_date.getMonth() - months);
+  match_date.setDate(match_date.getDate() - days);
+  match_date.setHours(match_date.getHours() - hours);
+  match_date.setMinutes(match_date.getMinutes() - minutes); 
+  match_date.setSeconds(match_date.getSeconds() - seconds);
+  // Gets video publication time, because of matches which highlights are uploaded after 00:00 it makes sense to offset it by a couple of hours
+  match_date.setHours(match_date.getHours() - 2);  
+  return match_date;
+}
+
 function spoilerTitle(original_title: string): string {
   const teams: string[] = getTeamsByTitle(original_title);
   if (teams.length === 0) {
@@ -138,7 +173,7 @@ function spoilerTitle(original_title: string): string {
   return team_a + ' vs ' + team_b;
 }
 
-function addTeamBadges(team_a: string, team_b: string, total_goals: number, thumbnail_element: HTMLInputElement): void {
+function addThumbnailElements(team_a: string, team_b: string, match_date: Date, total_goals: number, thumbnail_element: HTMLInputElement): void {
   if (thumbnail_element === undefined) {
     return;
   }
@@ -188,10 +223,26 @@ function addTeamBadges(team_a: string, team_b: string, total_goals: number, thum
   between_badges.style.transition = 'opacity 0.3s';
   thumbnail_element.appendChild(between_badges);
 
+  const day = match_date.getDate();
+  // Months are 0-indexed (0 = January, 1 = February, etc.)
+  const month = match_date.getMonth() + 1;
+
+  const match_date_element = document.createElement('p');
+  match_date_element.innerText = `${day}/${month}`;
+  match_date_element.style.position = 'absolute';
+  match_date_element.style.top = '5%';
+  match_date_element.style.left = '41%';
+  match_date_element.style.textAlign = 'center';
+  match_date_element.style.fontSize = '35px';
+  match_date_element.style.color = 'white';
+  match_date_element.style.pointerEvents = 'none';
+  match_date_element.style.transition = 'opacity 0.3s';
+  thumbnail_element.appendChild(match_date_element);
+
   const total_goals_element = document.createElement('p');
   total_goals_element.innerText = `(${total_goals})`;
   total_goals_element.style.position = 'absolute';
-  total_goals_element.style.top = '5%';
+  total_goals_element.style.top = '45%';
   total_goals_element.style.left = '41%';
   total_goals_element.style.textAlign = 'center';
   total_goals_element.style.fontSize = '35px';
@@ -204,6 +255,7 @@ function addTeamBadges(team_a: string, team_b: string, total_goals: number, thum
     img_a.style.opacity = '0';
     img_b.style.opacity = '0';
     between_badges.style.opacity = '0';
+    match_date_element.style.opacity = '0';
     total_goals_element.style.opacity = '0';
   });
 
@@ -211,6 +263,7 @@ function addTeamBadges(team_a: string, team_b: string, total_goals: number, thum
     img_a.style.opacity = '100%';
     img_b.style.opacity = '100%';
     between_badges.style.opacity = '100%';
+    match_date_element.style.opacity = '100%';
     total_goals_element.style.opacity = '100%';
   });
 }
