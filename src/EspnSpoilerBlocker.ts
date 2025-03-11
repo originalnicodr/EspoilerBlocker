@@ -14,6 +14,8 @@ export class EspnSpoilerBlocker {
   private watchingThumbnailsOnMainPage = undefined;
   /** check if we're watching video thumbnails while playing a video . If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnVideoPage = undefined;
+  /** check if we're watching video thumbnails on Youtube search page. If this is false, container not found. Will retry after next title change */
+  private watchingThumbnailsOnSearchPage = undefined;
   /** check if we're watching the video title while playing a video. If this is false, container not found. Will retry after next title change */
   private watchingVideoTitle = undefined;
 
@@ -40,10 +42,15 @@ export class EspnSpoilerBlocker {
     // these methods are async, but can be invoked like this to improve performance.
     this.reactToThumbnailsOnMainPage();
     this.reactToThumnailsOnVideoPage();
+    this.reactToThumnailsOnSearchPage();
   }
 
   private reactToTitleChanges() {
     const title = document.querySelector('title');
+
+    if (!title) {
+      return;
+    }
 
     const titleUpdater = new TitleUpdater(title);
 
@@ -63,7 +70,7 @@ export class EspnSpoilerBlocker {
   }
 
   private get youtubeMediaSelectors(): string[] {
-    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer'];
+    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer'];
   }
 
   private isNodeAYoutubeVideo(node: Element) {
@@ -152,6 +159,44 @@ export class EspnSpoilerBlocker {
     // create a VideoThumnailUpdater for each video in the dom
     container
       .querySelectorAll(this.youtubeMediaSelectors.join(','))
+      .forEach((video) => this.createNewVideoUpdater(video));
+
+    // observe new added elements and do the same
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        // Get any newly added video elements
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof Element && this.isNodeAYoutubeVideo(node)) {
+            this.createNewVideoUpdater(node);
+          }
+        });
+      });
+    });
+
+    this.observers.push(observer);
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  private async reactToThumnailsOnSearchPage() {
+    // do not observe element twice
+    if (this.watchingThumbnailsOnSearchPage) return;
+
+    let container = undefined;
+    try {
+      container = await this.getElementOrRetry('.style-scope ytd-two-column-search-results-renderer', 400);
+    } catch (error) {
+      this.watchingThumbnailsOnSearchPage = false;
+      return;
+    }
+
+    this.watchingThumbnailsOnSearchPage = true;
+
+    // create a VideoThumnailUpdater for each video in the dom
+    container
+      .querySelector(this.youtubeMediaSelectors.join(','))
       .forEach((video) => this.createNewVideoUpdater(video));
 
     // observe new added elements and do the same
