@@ -229,6 +229,10 @@ export class EspnSpoilerBlocker {
       this.reactToThumnailsOnVideoPage();
     }
 
+    if (this.watchingThumbnailsOnSearchPage === false) {
+      this.reactToThumnailsOnSearchPage();
+    }
+
     if (this.watchingVideoTitle === false) {
       this.reactToVideoTitle();
     }
