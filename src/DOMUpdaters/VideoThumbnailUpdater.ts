@@ -1,3 +1,4 @@
+import { HighlightType, getHighlightType } from '../utils/getHighlightType';
 import { getTeamBadge } from '../utils/getTeamBadge';
 import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 import { BaseUpdater } from './BaseUpdater';
@@ -54,6 +55,16 @@ function spoilerBlockVideo(video: Element): void {
     return;
   }
 
+  const total_goals: number = getTotalGoals(title_text);
+  const highlight_type: HighlightType = getHighlightType(total_goals);
+
+  // Both of these are disabled for now but will be used once we have a way to save some settings
+  if (highlight_type == HighlightType.Basketball && false) {
+    return;
+  } else if (highlight_type == HighlightType.Football && false) {
+    return;
+  }
+
   // Check title is from a highlights match
   const match_teams_string: string = title_text.split('|')[1];
   if (!match_teams_string) {
@@ -68,8 +79,6 @@ function spoilerBlockVideo(video: Element): void {
   }
 
   hideThumbnail(thumbnail_element);
-
-  const total_goals: number = getTotalGoals(title_text);
 
   let aria_text: string;
   if (title_link) {
