@@ -164,7 +164,7 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof Element && this.isNodeAYoutubeVideo(node)) {
+          if (node instanceof Element && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
           }
         });

@@ -22,6 +22,10 @@ export class BaseUpdater {
   }
 
   public duplicateElement() {
+    if (this.elementToEdit) {
+      this.elementToEdit.remove();
+    }
+
     // duplicate the element and edit this one
     this.elementToEdit = this.node.cloneNode(true) as Element;
     this.node.insertAdjacentElement('afterend', this.elementToEdit);
