@@ -5,8 +5,6 @@ import { BaseUpdater } from './BaseUpdater';
 export class VideoThumbnailUpdater extends BaseUpdater {
   constructor(private container: Element) {
     super(container);
-
-    console.log(container);
   }
 
   public update() {
@@ -45,8 +43,6 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     }
 
     return channelCondition && this.videoTitleContainsSpoilers();
-
-    // if that is OK, we should check if the title contains spoiler
   }
 
   videoTitleContainsSpoilers(): boolean {
@@ -57,8 +53,12 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     }
 
     const title = titleElement.textContent || titleElement.innerText;
-    // TODO: check how are we getting this info
-    return true;
+
+    // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups
+    const regex =
+      /^(?<texto>.+) \| (?<equipo1>.+) (?<goles1>\d+)( \((?<penales1>\d+)\)-\((?<penales2>\d+)\))? ?-? ?(?<goles2>\d+) (?<equipo2>.+) \| RESUMEN$/;
+
+    return regex.test(title);
   }
 }
 
