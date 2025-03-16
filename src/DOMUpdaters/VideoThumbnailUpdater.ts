@@ -54,7 +54,8 @@ export class VideoThumbnailUpdater extends BaseUpdater {
 
     const title = titleElement.textContent || titleElement.innerText;
 
-    // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups
+    // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups.
+    // probably we would want to move it to utils
     const regex =
       /^(?<texto>.+) \| (?<equipo1>.+) (?<goles1>\d+)( \((?<penales1>\d+)\)-\((?<penales2>\d+)\))? ?-? ?(?<goles2>\d+) (?<equipo2>.+) \| RESUMEN$/;
 
