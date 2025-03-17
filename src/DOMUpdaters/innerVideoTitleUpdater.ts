@@ -1,30 +1,60 @@
-import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 import { BaseUpdater } from './BaseUpdater';
 
 export class InnerVideoTitleUpdater extends BaseUpdater {
-  constructor(private title: HTMLAnchorElement) {
-    super(title);
+  constructor(container: HTMLAnchorElement) {
+    super(container);
   }
 
-  public update() {
-    // TODO: We should check the channel before changing the title to ensure we're not editing other channel's videos
+  public async update() {
+    //this.debugPrintMembers();
 
-    const title = this.title.textContent;
-
-    const teams = getTeamsByTitle(title);
-    if (teams.length === 0) {
+    this.retrieveUpdaterData();
+    const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
+    if (!should_block_spoiler) {
       return;
     }
-    const [teamA, teamB] = teams;
 
-    const non_spoiler_title = `${teamA} vs ${teamB}`;
-
-    if (this.title.textContent !== non_spoiler_title) {
-      this.title.innerHTML = non_spoiler_title;
+    if (!this.spoiler_blocked_title_text)
+    {
+      this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
     }
+
+    if (this.getTitleText() !== this.spoiler_blocked_title_text)
+    {
+      this.title.textContent = this.spoiler_blocked_title_text;
+    }
+    
+    this.is_being_spoiler_blocked = true;
   }
 
   public removeChanges() {
     super.removeChanges();
+  }
+
+  protected getIsESPNVideo(): boolean {
+    // If we can properly block the spoiler from the title then it means we should do so
+    return this.canBlockTitleSpoiler(this.getTitleText());
+  }
+
+  // Dummy implementations
+  protected getChannel(): string {
+    // TODO: We should check the channel before changing the title to ensure we're not editing other channel's videos
+    return '';
+  }
+
+  protected getIfAlreadyWatched(): boolean {
+    return false;
+  }
+
+  protected getAriaText(): string {
+    return '';
+  }
+
+  protected getTitle(): HTMLElement {
+    return this.container;
+  }
+
+  protected getThumbnail(): HTMLElement {
+    return null;
   }
 }
