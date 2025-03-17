@@ -14,16 +14,14 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
       return;
     }
 
-    if (!this.spoiler_blocked_title_text)
-    {
+    if (!this.spoiler_blocked_title_text) {
       this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
     }
 
-    if (this.getTitleText() !== this.spoiler_blocked_title_text)
-    {
+    if (this.getTitleText() !== this.spoiler_blocked_title_text) {
       this.title.textContent = this.spoiler_blocked_title_text;
     }
-    
+
     this.is_being_spoiler_blocked = true;
   }
 

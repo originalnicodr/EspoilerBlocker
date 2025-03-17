@@ -118,15 +118,11 @@ export class EspnSpoilerBlocker {
     this.watchingThumbnailsOnMainPage = true;
 
     // create a VideoThumnailUpdater for each video in the dom
-    container
-      .querySelectorAll(this.youtubeMediaSelectors.join(','))
-      .forEach((video) =>
-      {
-        if (video instanceof HTMLElement )
-        {
-          this.createNewVideoUpdater(video)
-        }
-      });
+    container.querySelectorAll(this.youtubeMediaSelectors.join(',')).forEach((video) => {
+      if (video instanceof HTMLElement) {
+        this.createNewVideoUpdater(video);
+      }
+    });
 
     // observe new added elements and do the same
     const observer = new MutationObserver((mutations) => {
@@ -201,9 +197,7 @@ export class EspnSpoilerBlocker {
     this.watchingThumbnailsOnSearchPage = true;
 
     // create a VideoThumnailUpdater for each video in the dom
-    container
-      .querySelector(this.youtubeMediaSelectors.join(','))
-      .forEach((video) => this.createNewVideoUpdater(video));
+    container.querySelector(this.youtubeMediaSelectors.join(',')).forEach((video) => this.createNewVideoUpdater(video));
 
     // observe new added elements and do the same
     const observer = new MutationObserver((mutations) => {

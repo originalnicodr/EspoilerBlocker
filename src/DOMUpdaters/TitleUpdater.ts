@@ -19,14 +19,12 @@ export class TitleUpdater extends BaseUpdater {
       return;
     }
 
-    if (!this.spoiler_blocked_title_text)
-    {
+    if (!this.spoiler_blocked_title_text) {
       this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
     }
 
-    if (document.title !== this.spoiler_blocked_title_text)
-    {
-      document.title = this.spoiler_blocked_title_text
+    if (document.title !== this.spoiler_blocked_title_text) {
+      document.title = this.spoiler_blocked_title_text;
     }
 
     this.is_being_spoiler_blocked = true;
@@ -38,7 +36,7 @@ export class TitleUpdater extends BaseUpdater {
 
   protected getTitleText(): string {
     // Remove " - YouTube" at the end of the title if it exists so we only pass the og video title to blockTitleSpoiler
-    const suffix = " - YouTube";
+    const suffix = ' - YouTube';
     return document.title.endsWith(suffix) ? document.title.slice(0, -suffix.length) : document.title;
   }
 

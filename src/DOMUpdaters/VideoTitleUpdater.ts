@@ -11,7 +11,7 @@ export class VideoTitleUpdater extends BaseUpdater {
     const current_url: string = window.location.href;
     if (!current_url.includes('watch?v=')) {
       return;
-    }    
+    }
 
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
@@ -19,13 +19,11 @@ export class VideoTitleUpdater extends BaseUpdater {
       return;
     }
 
-    if (!this.spoiler_blocked_title_text)
-    {
+    if (!this.spoiler_blocked_title_text) {
       this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
     }
 
-    if (this.getTitleText() !== this.spoiler_blocked_title_text)
-    {
+    if (this.getTitleText() !== this.spoiler_blocked_title_text) {
       this.title.textContent = this.spoiler_blocked_title_text;
     }
 

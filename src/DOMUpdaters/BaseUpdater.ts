@@ -44,18 +44,18 @@ export class BaseUpdater {
   }
 
   protected debugPrintMembers() {
-    console.log("-----------------------");
-    console.log("container: ", this.container);
-    console.log("title: ", this.title);
-    console.log("thumbnail: ", this.thumbnail);
-    console.log("aria_text: ", this.aria_text);
-    console.log("is_espn_video: ", this.is_espn_video);
-    console.log("already_watched: ", this.already_watched);
-    console.log("total_score: ", this.total_score);
-    console.log("highlight_type: ", this.highlight_type);
-    console.log("team_a: ", this.team_a);
-    console.log("team_b: ", this.team_b);
-    console.log("match_date: ", this.match_date);
+    console.log('-----------------------');
+    console.log('container: ', this.container);
+    console.log('title: ', this.title);
+    console.log('thumbnail: ', this.thumbnail);
+    console.log('aria_text: ', this.aria_text);
+    console.log('is_espn_video: ', this.is_espn_video);
+    console.log('already_watched: ', this.already_watched);
+    console.log('total_score: ', this.total_score);
+    console.log('highlight_type: ', this.highlight_type);
+    console.log('team_a: ', this.team_a);
+    console.log('team_b: ', this.team_b);
+    console.log('match_date: ', this.match_date);
   }
 
   protected getIsESPNVideo(): boolean {
@@ -85,10 +85,14 @@ export class BaseUpdater {
   private retrieveUpdaterMetadata() {
     const title_text: string = this.getTitleText();
 
-    if (typeof title_text === 'undefined' || !title_text.includes('|') || !title_text.includes('-') || !this.canBlockTitleSpoiler(title_text)) {
+    if (
+      typeof title_text === 'undefined' ||
+      !title_text.includes('|') ||
+      !title_text.includes('-') ||
+      !this.canBlockTitleSpoiler(title_text)
+    ) {
       this.highlight_type = VideoHighlightType.None;
-    }
-    else {
+    } else {
       this.total_score = getTotalGoals(title_text);
       this.highlight_type = getHighlightType(this.total_score);
 
@@ -98,7 +102,7 @@ export class BaseUpdater {
       }
       [this.team_a, this.team_b] = teams as [string, string];
     }
-    
+
     if (this.aria_text) {
       this.match_date = getMatchDate(this.aria_text);
     }
@@ -118,12 +122,11 @@ export class BaseUpdater {
       return false;
     }
 
-    if (settings.block_spoilers_expiration_days)
-    {
+    if (settings.block_spoilers_expiration_days) {
       const now = new Date();
       const expiration_date = new Date();
       expiration_date.setDate(now.getDate() - settings.block_spoilers_expiration_days);
-      if (expiration_date > this.match_date){
+      if (expiration_date > this.match_date) {
         return false;
       }
     }
@@ -135,10 +138,10 @@ export class BaseUpdater {
     return new Promise((resolve) => {
       chrome.storage.sync.get(null, function (data) {
         resolve({
-          block_spoilers_basketball: data.hasOwnProperty("basketball") ? data.basketball : false,
-          block_spoilers_football: data.hasOwnProperty("football") ? data.football : true,
-          block_spoilers_expiration_days: data.hasOwnProperty("expirationDays") ? data.expirationDays : '',
-          display_total_score: data.hasOwnProperty("displayScores") ? data.displayScores : false
+          block_spoilers_basketball: data.hasOwnProperty('basketball') ? data.basketball : false,
+          block_spoilers_football: data.hasOwnProperty('football') ? data.football : true,
+          block_spoilers_expiration_days: data.hasOwnProperty('expirationDays') ? data.expirationDays : '',
+          display_total_score: data.hasOwnProperty('displayScores') ? data.displayScores : false,
         });
       });
     });
@@ -149,7 +152,7 @@ export class BaseUpdater {
     if (teams.length === 0) {
       return '';
     }
-  
+
     const [team_a, team_b] = teams as [string, string];
     return team_a + ' vs ' + team_b;
   }
@@ -191,24 +194,22 @@ export class BaseUpdater {
   // TODO
   // Maybe just append restoreSpoilers() and update() calls? Maybe doing so would make spoilers visible a microsecond and we wouldn't want that
   protected handleMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
-    switch(message.action)
-    {
-      case "enableSpoilerBlockers":
+    switch (message.action) {
+      case 'enableSpoilerBlockers':
         this.update();
         break;
-      case "removeSpoilerBlockers":
-        if (this.is_being_spoiler_blocked)
-        {
+      case 'removeSpoilerBlockers':
+        if (this.is_being_spoiler_blocked) {
           this.restoreSpoilers();
         }
         break;
-      case "updatedBasketballSetting":
+      case 'updatedBasketballSetting':
         break;
-      case "updatedFootballSetting":
+      case 'updatedFootballSetting':
         break;
-      case "updatedExpirationDaysSetting":
+      case 'updatedExpirationDaysSetting':
         break;
-      case "updatedScoresSetting":
+      case 'updatedScoresSetting':
         break;
     }
   }
@@ -235,9 +236,14 @@ function getTotalGoals(original_title: string): number {
 // TODO: Try to parse this in English in case the user's YouTube language is not Spanish
 function getMatchDate(aria_text: string): Date {
   // aria_text have the following format "{video_title} {views} visualizaciones hace {d} día {m} minutos y {s} segundos"
-  let parts: string[] = aria_text.split('hace');
-  let time_passed: string = parts[parts.length - 1].trim();
-  let years: number = 0, months: number = 0, days: number = 0, hours: number = 0, minutes: number = 0, seconds: number = 0;
+  const parts: string[] = aria_text.split('hace');
+  const time_passed: string = parts[parts.length - 1].trim();
+  let years: number = 0,
+    months: number = 0,
+    days: number = 0,
+    hours: number = 0,
+    minutes: number = 0,
+    seconds: number = 0;
   const spanish_duration_regex: RegExp = /(\d+)\s*(año|mes|día|hora|minuto|segundo)s?/g;
 
   let match: RegExpExecArray;
@@ -258,10 +264,10 @@ function getMatchDate(aria_text: string): Date {
   match_date.setMonth(match_date.getMonth() - months);
   match_date.setDate(match_date.getDate() - days);
   match_date.setHours(match_date.getHours() - hours);
-  match_date.setMinutes(match_date.getMinutes() - minutes); 
+  match_date.setMinutes(match_date.getMinutes() - minutes);
   match_date.setSeconds(match_date.getSeconds() - seconds);
 
   // Gets video publication time, because of matches which highlights are uploaded after 00:00 it makes sense to offset it by a couple of hours
-  match_date.setHours(match_date.getHours() - 2);  
+  match_date.setHours(match_date.getHours() - 2);
   return match_date;
 }

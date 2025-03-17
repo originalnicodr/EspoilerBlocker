@@ -15,7 +15,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     if (!should_block_spoiler) {
       return;
     }
-  
+
     try {
       await this.spoilerBlockVideo();
     } catch (error) {
@@ -34,7 +34,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     this.hideThumbnail();
     await this.addThumbnailElements();
   }
-  
+
   protected getIsESPNVideo(): boolean {
     return this.getChannel() === 'ESPN Fans';
   }
@@ -42,7 +42,9 @@ export class VideoThumbnailUpdater extends BaseUpdater {
   protected getChannel(): string {
     let channel_element = this.container.querySelector<HTMLElement>('ytd-channel-name a');
     if (!channel_element) {
-      channel_element = this.container.querySelector('ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text');
+      channel_element = this.container.querySelector(
+        'ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text',
+      );
     }
 
     if (channel_element) {
@@ -50,11 +52,13 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     }
 
     // Fallback, if we can't detect the channel then we say its ESPN Fans and wait for other checks to block it
-    return "ESPN Fans";
+    return 'ESPN Fans';
   }
 
   protected getIfAlreadyWatched(): boolean {
-    const progress_bar = this.container.querySelector<HTMLDivElement>('ytd-thumbnail-overlay-resume-playback-renderer #progress');
+    const progress_bar = this.container.querySelector<HTMLDivElement>(
+      'ytd-thumbnail-overlay-resume-playback-renderer #progress',
+    );
     if (progress_bar) {
       return progress_bar.style.width === '100%';
     }
@@ -104,19 +108,19 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     if (this.thumbnail === undefined) {
       return;
     }
-  
+
     let thumbnail_image: HTMLElement = this.thumbnail.querySelector('#thumbnail');
     if (thumbnail_image) {
       thumbnail_image.style.opacity = '0';
       return;
     }
-  
+
     thumbnail_image = this.thumbnail.querySelector('#image');
     if (thumbnail_image) {
       thumbnail_image.style.opacity = '0';
       return;
     }
-  
+
     thumbnail_image = this.thumbnail.querySelector('yt-image');
     if (thumbnail_image) {
       thumbnail_image.style.opacity = '0';
@@ -162,7 +166,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
       img_b.style.transition = 'opacity 0.3s';
       this.thumbnail.appendChild(img_b);
     }
-  
+
     const between_badges = document.createElement('p');
     between_badges.innerText = '-';
     between_badges.style.position = 'absolute';
@@ -173,11 +177,11 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     between_badges.style.pointerEvents = 'none';
     between_badges.style.transition = 'opacity 0.3s';
     this.thumbnail.appendChild(between_badges);
-  
+
     const day = this.match_date.getDate();
     // Months are 0-indexed (0 = January, 1 = February, etc.)
     const month = this.match_date.getMonth() + 1;
-  
+
     const match_date_element = document.createElement('p');
     match_date_element.innerText = `${day}/${month}`;
     match_date_element.style.position = 'absolute';
@@ -189,10 +193,10 @@ export class VideoThumbnailUpdater extends BaseUpdater {
     match_date_element.style.pointerEvents = 'none';
     match_date_element.style.transition = 'opacity 0.3s';
     this.thumbnail.appendChild(match_date_element);
-  
-    let display_scores_checkbox: boolean = (await this.loadSettings()).display_total_score;
+
+    const display_scores_checkbox: boolean = (await this.loadSettings()).display_total_score;
     let total_goals_element: HTMLElement;
-  
+
     if (display_scores_checkbox) {
       total_goals_element = document.createElement('p');
       total_goals_element.innerText = `(${this.total_score})`;
@@ -212,8 +216,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
       img_b.style.opacity = '0';
       between_badges.style.opacity = '0';
       match_date_element.style.opacity = '0';
-      if (total_goals_element)
-      {
+      if (total_goals_element) {
         total_goals_element.style.opacity = '0';
       }
     });
@@ -223,8 +226,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
       img_b.style.opacity = '100%';
       between_badges.style.opacity = '100%';
       match_date_element.style.opacity = '100%';
-      if (total_goals_element)
-      {
+      if (total_goals_element) {
         total_goals_element.style.opacity = '100%';
       }
     });
