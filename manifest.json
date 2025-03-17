@@ -20,5 +20,15 @@
       "resources": ["football-logos/**", "images/**"],
       "matches": ["*://www.youtube.com/*"]
     }
-  ]
+  ],
+  "action": {
+    "default_icon": {
+      "16": "images/logo/icon16.png",
+      "24": "images/logo/icon48.png",
+      "32": "images/logo/icon128.png"
+    },
+    "default_title": "Configuración",
+    "default_popup": "html/menu.html"
+  },
+  "permissions": ["storage"]
 }
