@@ -6,6 +6,6 @@ export function spoilerTitle(original_title: string): string {
     return '';
   }
 
-  const [team_a, team_b] = teams as [string, string];
+  const [team_a, team_b] = teams;
   return team_a + ' vs ' + team_b;
 }
