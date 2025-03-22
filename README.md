@@ -25,6 +25,10 @@ npm run build
 - Ir a la página de extensiones de tu navegador y activar el modo desarrollador
 - (En Chrome) clickear en el botón "Cargar extensión sin paquete" y seleccionar la carpeta del repositorio.
 
+## Creditos
+
+- Logos de equipos europeos de [luukhopman/football-logos](https://github.com/luukhopman/football-logos)
+- Banderas de países de [lipis/flag-icons](https://github.com/lipis/flag-icons)
 
 ## Disclaimer
 
