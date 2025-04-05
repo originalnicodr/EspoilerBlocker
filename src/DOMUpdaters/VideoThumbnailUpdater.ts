@@ -1,128 +1,124 @@
-import { addThumbnailElements } from '../utils/addThumbnailElements';
-import { getMatchDate } from '../utils/getMatchDate';
-import { getTeamsByTitle } from '../utils/getTeamsByTitle';
-import { getTotalGoals } from '../utils/getTotalGoals';
-import { spoilerTitle } from '../utils/spoilerTitle';
-import { BaseUpdater } from './BaseUpdater';
+import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
-export class VideoThumbnailUpdater extends BaseUpdater {
-  constructor(private container: Element) {
+export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
+  protected title_link: HTMLElement;
+  constructor(container: HTMLElement) {
     super(container);
   }
 
-  public update() {
+  public async update() {
+    //this.debugPrintMembers();
+
+    this.retrieveUpdaterData();
+    const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
+    if (!should_block_spoiler) {
+      return;
+    }
+
     try {
-      spoilerBlockVideo(this.container);
+      await this.spoilerBlockVideo();
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   public removeChanges() {
     super.removeChanges();
   }
-}
 
-function spoilerBlockVideo(video: Element): void {
-  // Check if the video is from ESPN Fans before trying to spoil it [Homepage]
-  let channel_element = video.querySelector<HTMLElement>('ytd-channel-name a');
-  if (!channel_element) {
-    channel_element = video.querySelector('ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text');
+  private async spoilerBlockVideo(): Promise<void> {
+    this.blockSpoilerText();
+    this.hideThumbnail();
+    await this.addThumbnailElements();
   }
 
-  if (channel_element) {
-    const channelName: string = channel_element ? channel_element.innerText.trim() : '';
-    if (channelName !== 'ESPN Fans') {
-      return;
+  protected getIsESPNVideo(): boolean {
+    return this.getChannel() === 'ESPN Fans';
+  }
+
+  protected getChannel(): string {
+    let channel_element = this.container.querySelector<HTMLElement>('ytd-channel-name a');
+    if (!channel_element) {
+      channel_element = this.container.querySelector(
+        'ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text',
+      );
+    }
+
+    if (channel_element) {
+      return channel_element.innerText.trim();
+    }
+
+    // Fallback, if we can't detect the channel then we say its ESPN Fans and wait for other checks to block it
+    return 'ESPN Fans';
+  }
+
+  // Since videos in the search page seem to lazyload their progress bar, the updater wont be able to find it
+  protected getIfAlreadyWatched(): boolean {
+    const progress_bar = this.container.querySelector<HTMLDivElement>('#progress');
+    return progress_bar?.style.width === '100%' || false;
+  }
+
+  protected getAriaText(): string {
+    this.title_link = this.container.querySelector('#video-title-link');
+
+    if (this.title_link) {
+      return this.title_link.getAttribute('aria-label');
+    }
+    return this.title.getAttribute('aria-label');
+  }
+
+  protected getTitle(): HTMLElement {
+    return this.container.querySelector('#video-title');
+  }
+
+  protected getThumbnail(): HTMLElement {
+    let thumbnail_element: HTMLInputElement = this.container.querySelector('#thumbnail');
+    if (!thumbnail_element) {
+      thumbnail_element = this.container.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
+    }
+
+    return thumbnail_element;
+  }
+
+  private blockSpoilerText() {
+    if (this.title) {
+      if (!this.spoiler_blocked_title_text) {
+        this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
+      }
+
+      this.title.textContent = this.spoiler_blocked_title_text;
+      this.title.innerText = this.spoiler_blocked_title_text;
+
+      this.title_link = this.container.querySelector('#video-title-link');
+      if (this.title_link) {
+        this.title_link.title = this.spoiler_blocked_title_text;
+      }
     }
   }
 
-  // Don't block spoilers from already watched videos
-  const progress_bar = video.querySelector<HTMLDivElement>('ytd-thumbnail-overlay-resume-playback-renderer #progress');
-  if (progress_bar && progress_bar.style.width === '100%') {
-    return;
-  }
+  private hideThumbnail(): void {
+    if (this.thumbnail === undefined) {
+      return;
+    }
 
-  let thumbnail_element: HTMLInputElement = video.querySelector('#thumbnail');
-  const title_element: HTMLInputElement = video.querySelector('#video-title');
-  const title_link: HTMLInputElement = video.querySelector('#video-title-link');
+    let thumbnail_image: HTMLElement = this.thumbnail.querySelector('#thumbnail');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '0';
+      return;
+    }
 
-  if (!title_element || typeof title_element === 'undefined') {
-    return;
-  }
+    thumbnail_image = this.thumbnail.querySelector('#image');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '0';
+      return;
+    }
 
-  const title_text: string = title_element.textContent || title_element.innerText;
-
-  if (typeof title_text === 'undefined' || !title_text.includes('|')) {
-    return;
-  }
-
-  // Check title is from a highlights match
-  const match_teams_string: string = title_text.split('|')[1];
-  if (!match_teams_string) {
-    return;
-  }
-  if (!match_teams_string.includes('-')) {
-    return;
-  }
-
-  if (!thumbnail_element) {
-    thumbnail_element = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
-  }
-
-  hideThumbnail(thumbnail_element);
-
-  const total_goals: number = getTotalGoals(title_text);
-
-  let aria_text: string;
-  if (title_link) {
-    aria_text = title_link.getAttribute('aria-label');
-  }
-  else {
-    // The aria text with the date info can be found in the title itself instead of the title link
-    aria_text = title_element.getAttribute('aria-label');
-  }
-  const match_date: Date = getMatchDate(aria_text);
-
-  const title_replace: string = spoilerTitle(title_text);
-  if (title_replace === '') {
-    return;
-  }
-
-  title_element.textContent = title_replace;
-  title_element.innerText = title_replace;
-  if (title_link) {
-    title_link.title = title_replace;
-  }
-
-  const teams: string[] = getTeamsByTitle(title_text);
-  if (teams.length === 0) {
-    return;
-  }
-  const [team_a, team_b] = teams as [string, string];
-  addThumbnailElements(team_a, team_b, match_date, total_goals, thumbnail_element);
-}
-
-function hideThumbnail(thumbnail_element: HTMLInputElement): void {
-  if (thumbnail_element === undefined) {
-    return;
-  }
-
-  let thumbnail_image: HTMLInputElement = thumbnail_element.querySelector('#thumbnail');
-  if (thumbnail_image) {
-    thumbnail_image.style.opacity = '0';
-    return;
-  }
-
-  thumbnail_image = thumbnail_element.querySelector('#image');
-  if (thumbnail_image) {
-    thumbnail_image.style.opacity = '0';
-    return;
-  }
-
-  thumbnail_image = thumbnail_element.querySelector('yt-image');
-  if (thumbnail_image) {
-    thumbnail_image.style.opacity = '0';
-    return;
+    thumbnail_image = this.thumbnail.querySelector('yt-image');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '0';
+      return;
+    }
   }
 }

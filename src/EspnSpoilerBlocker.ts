@@ -16,6 +16,8 @@ export class EspnSpoilerBlocker {
   private watchingThumbnailsOnMainPage = undefined;
   /** check if we're watching video thumbnails while playing a video. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnVideoPage = undefined;
+  /** check if we're watching video thumbnails on Youtube search page. If this is false, container not found. Will retry after next title change */
+  private watchingThumbnailsOnSearchPage = undefined;
   /** check if we're watching video thumbnails at the end of a video. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnEndscreenPage = undefined;
   /** check if we're watching the suggested autoplay video thumbnail at the end of a video. If this is false, such video wasn't found. Will retry after next title change */
@@ -46,12 +48,17 @@ export class EspnSpoilerBlocker {
     // these methods are async, but can be invoked like this to improve performance.
     this.reactToThumbnailsOnMainPage();
     this.reactToThumnailsOnVideoPage();
+    this.reactToThumnailsOnSearchPage();
     this.reactToThumbnailsOnEndscreen();
     this.reactToThumbnailsOnEndscreenAutoplay();
   }
 
   private reactToTitleChanges() {
     const title = document.querySelector('title');
+
+    if (!title) {
+      return;
+    }
 
     const titleUpdater = new TitleUpdater(title);
 
@@ -71,7 +78,7 @@ export class EspnSpoilerBlocker {
   }
 
   private get youtubeMediaSelectors(): string[] {
-    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer'];
+    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer'];
   }
 
   private isNodeAYoutubeVideo(node: Element) {
@@ -96,7 +103,7 @@ export class EspnSpoilerBlocker {
   }
 
   /** Creates a new video updater for the youtube thumnail element */
-  private createNewVideoUpdater(node: Element) {
+  private createNewVideoUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
 
     const updater = new VideoThumbnailUpdater(node);
@@ -104,14 +111,14 @@ export class EspnSpoilerBlocker {
     updater.update();
   }
 
-  private createNewEndscreenVideoUpdater(node: Element) {
+  private createNewEndscreenVideoUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new EndscreenThumbnailUpdater(node);
     this.updaters.push(updater);
     updater.update();
   }
 
-  private createNewEndscreenAutoplayVideoUpdater(node: Element) {
+  private createNewEndscreenAutoplayVideoUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new EndscreenAutoplayThumbnailUpdater(node);
     this.updaters.push(updater);
@@ -133,16 +140,18 @@ export class EspnSpoilerBlocker {
     this.watchingThumbnailsOnMainPage = true;
 
     // create a VideoThumnailUpdater for each video in the dom
-    container
-      .querySelectorAll(this.youtubeMediaSelectors.join(','))
-      .forEach((video) => this.createNewVideoUpdater(video));
+    container.querySelectorAll(this.youtubeMediaSelectors.join(',')).forEach((video) => {
+      if (video instanceof HTMLElement) {
+        this.createNewVideoUpdater(video);
+      }
+    });
 
     // observe new added elements and do the same
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof Element && this.isNodeAYoutubeVideo(node)) {
+          if (node instanceof HTMLElement && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
           }
         });
@@ -181,7 +190,43 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof Element && this.isNodeAYoutubeVideo(node)) {
+          if (node instanceof HTMLElement && this.isNodeAYoutubeVideo(node)) {
+            this.createNewVideoUpdater(node);
+          }
+        });
+      });
+    });
+
+    this.observers.push(observer);
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  private async reactToThumnailsOnSearchPage() {
+    // do not observe element twice
+    if (this.watchingThumbnailsOnSearchPage) return;
+
+    let container = undefined;
+    try {
+      container = await this.getElementOrRetry('.style-scope ytd-two-column-search-results-renderer', 400);
+    } catch (error) {
+      this.watchingThumbnailsOnSearchPage = false;
+      return;
+    }
+
+    this.watchingThumbnailsOnSearchPage = true;
+
+    // create a VideoThumnailUpdater for each video in the dom
+    container.querySelector(this.youtubeMediaSelectors.join(',')).forEach((video) => this.createNewVideoUpdater(video));
+
+    // observe new added elements and do the same
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        // Get any newly added video elements
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
           }
         });
@@ -213,14 +258,14 @@ export class EspnSpoilerBlocker {
     // create a EndscreenVideoUpdater for each video in the dom
     container
       .querySelectorAll(this.youtubeMediaSelectors.join(','))
-      .forEach((video: Element) => this.createNewEndscreenVideoUpdater(video));
+      .forEach((video: HTMLElement) => this.createNewEndscreenVideoUpdater(video));
 
     // observe new added elements and do the same
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof Element && node.matches('.ytp-videowall-still')) {
+          if (node instanceof HTMLElement && node.matches('.ytp-videowall-still')) {
             this.createNewEndscreenVideoUpdater(node);
           }
         });
@@ -279,6 +324,10 @@ export class EspnSpoilerBlocker {
       this.reactToThumnailsOnVideoPage();
     }
 
+    if (this.watchingThumbnailsOnSearchPage === false) {
+      this.reactToThumnailsOnSearchPage();
+    }
+
     if (this.watchingThumbnailsOnEndscreenPage === false) {
       this.reactToThumbnailsOnEndscreen();
     }
@@ -324,15 +373,25 @@ export class EspnSpoilerBlocker {
     const innerTitleUpdater = new InnerVideoTitleUpdater(innerHTMLvideoTitle);
     this.updaters.push(titleUpdater, innerTitleUpdater);
 
-    const observer = new MutationObserver(() => {
+    const titleObserver = new MutationObserver(() => {
       titleUpdater.update();
-      innerTitleUpdater.update();
     });
     titleUpdater.update();
+
+    this.observers.push(titleObserver);
+    titleObserver.observe(visibleVideoTitle, {
+      subtree: true,
+      characterData: true,
+      childList: true,
+    });
+
+    const innerTitleObserver = new MutationObserver(() => {
+      innerTitleUpdater.update();
+    });
     innerTitleUpdater.update();
 
-    this.observers.push(observer);
-    observer.observe(visibleVideoTitle, {
+    this.observers.push(innerTitleObserver);
+    innerTitleObserver.observe(innerHTMLvideoTitle, {
       subtree: true,
       characterData: true,
       childList: true,

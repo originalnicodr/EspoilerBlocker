@@ -1,83 +1,81 @@
-import { addThumbnailElements } from '../utils/addThumbnailElements';
-import { getMatchDate } from '../utils/getMatchDate'
-import { getTeamsByTitle } from '../utils/getTeamsByTitle';
-import { getTotalGoals } from '../utils/getTotalGoals';
-import { spoilerTitle } from '../utils/spoilerTitle';
-import { BaseUpdater } from './BaseUpdater';
+import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
-export class EndscreenAutoplayThumbnailUpdater extends BaseUpdater {
-  constructor(private container: Element) {
+export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater {
+  constructor(container: HTMLElement) {
     super(container);
   }
 
-  public update() {
+  public async update() {
+    //this.debugPrintMembers();
+
+    this.retrieveUpdaterData();
+    const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
+    if (!should_block_spoiler) {
+      return;
+    }
+
     try {
-      spoilerBlockVideo(this.container);
+      await this.spoilerBlockVideo();
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   public removeChanges() {
     super.removeChanges();
   }
-}
 
-function spoilerBlockVideo(video: Element): void {
-  let channel_element = video.querySelector<HTMLElement>('ytp-autonav-endscreen-upnext-author');
+  protected getIsESPNVideo(): boolean {
+    return this.getChannel() === 'ESPN Fans';
+  }
+  
+  protected getChannel(): string {
+    const channels_name_element = this.container.querySelector<HTMLElement>('.ytp-autonav-endscreen-upnext-author');
+    return channels_name_element ? channels_name_element.innerText.trim() : '';
+  }
 
-  if (channel_element) {
-    const channelName: string = channel_element ? channel_element.innerText.trim() : '';
-    if (channelName.includes('ESPN Fans')) {
-      return;
+  // YouTube won't recommend videos the user already watched
+  protected getIfAlreadyWatched(): boolean {
+    return false;
+  }
+
+  protected getAriaText(): string {
+    return this.container.getAttribute('aria-label');
+  }
+
+  protected getTitle(): HTMLElement {
+    return this.container.querySelector('.ytp-autonav-endscreen-upnext-title');
+  }
+
+  protected getThumbnail(): HTMLElement {
+    return this.container.querySelector('.ytp-autonav-endscreen-upnext-thumbnail');
+  }
+
+  private async spoilerBlockVideo(): Promise<void> {
+    this.blockSpoilerText();
+    this.hideThumbnail(this.thumbnail);
+    await this.addThumbnailElements();
+  }
+
+  private blockSpoilerText() {
+    if (this.title) {
+      if (!this.spoiler_blocked_title_text) {
+        this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
+      }
+
+      this.title.textContent = this.spoiler_blocked_title_text;
+      this.title.innerText = this.spoiler_blocked_title_text;
     }
   }
 
-  let thumbnail_element: HTMLInputElement = video.querySelector('.ytp-autonav-endscreen-upnext-thumbnail');
-  const title_element: HTMLInputElement = video.querySelector('.ytp-autonav-endscreen-upnext-title');
-
-  if (!title_element || typeof title_element === 'undefined') {
-    return;
+  private hideThumbnail(thumbnail_element: HTMLElement): void {
+    if (thumbnail_element === undefined) {
+      return;
+    }
+  
+    thumbnail_element.style.backgroundImage = "";
   }
 
-  const title_text: string = title_element.textContent || title_element.innerText;
-
-  if (typeof title_text === 'undefined' || !title_text.includes('|')) {
-    return;
-  }
-
-  // Check title is from a highlights match
-  const match_teams_string: string = title_text.split('|')[1];
-  if (!match_teams_string) {
-    return;
-  }
-  if (!match_teams_string.includes('-')) {
-    return;
-  }
-
-  hideThumbnail(thumbnail_element);
-
-  const title_replace: string = spoilerTitle(title_text);
-  if (title_replace === '') {
-    return;
-  }
-  title_element.textContent = title_replace;
-  title_element.innerText = title_replace;
-
-  const teams: string[] = getTeamsByTitle(title_text);
-  if (teams.length === 0) {
-    return;
-  }
-  const [team_a, team_b] = teams as [string, string];
-  const match_date: Date = getMatchDate(video.getAttribute('aria-label'));
-  const total_goals: number = getTotalGoals(title_text);
-  addThumbnailElements(team_a, team_b, match_date, total_goals, thumbnail_element);
-}
-
-function hideThumbnail(thumbnail_element: HTMLInputElement): void {
-  if (thumbnail_element === undefined) {
-    return;
-  }
-
-  thumbnail_element.style.backgroundImage = "";
 }
