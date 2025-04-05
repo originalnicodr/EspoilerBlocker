@@ -1,6 +1,6 @@
-import { BaseVideoThumnailUpdater } from './BaseVideoThumnailUpdater';
+import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
-export class VideoThumbnailUpdater extends BaseVideoThumnailUpdater {
+export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   protected title_link: HTMLElement;
   constructor(container: HTMLElement) {
     super(container);

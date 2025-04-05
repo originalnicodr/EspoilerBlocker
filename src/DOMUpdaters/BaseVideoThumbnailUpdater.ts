@@ -1,7 +1,7 @@
 import { getTeamBadge } from '../utils/getTeamBadge';
 import { BaseUpdater } from './BaseUpdater';
 
-export class BaseVideoThumnailUpdater extends BaseUpdater {
+export class BaseVideoThumbnailUpdater extends BaseUpdater {
   protected thumbnail: HTMLElement;
 
   constructor(container: HTMLElement) {
