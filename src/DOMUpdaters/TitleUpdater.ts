@@ -63,8 +63,4 @@ export class TitleUpdater extends BaseUpdater {
   protected getTitle(): HTMLElement {
     return null;
   }
-
-  protected getThumbnail(): HTMLElement {
-    return null;
-  }
 }

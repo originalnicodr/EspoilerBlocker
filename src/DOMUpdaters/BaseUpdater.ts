@@ -6,7 +6,6 @@ import { Settings } from '../utils/settings';
 export class BaseUpdater {
   protected container: HTMLElement;
   protected title: HTMLElement;
-  protected thumbnail: HTMLElement | null;
   protected aria_text: string;
 
   protected spoiler_blocked_title_text: string = '';
@@ -33,7 +32,6 @@ export class BaseUpdater {
 
   protected retrieveUpdaterData() {
     this.title = this.getTitle();
-    this.thumbnail = this.getThumbnail();
     this.aria_text = this.getAriaText();
 
     this.already_watched = this.getIfAlreadyWatched();
@@ -47,7 +45,6 @@ export class BaseUpdater {
     console.log('-----------------------');
     console.log('container: ', this.container);
     console.log('title: ', this.title);
-    console.log('thumbnail: ', this.thumbnail);
     console.log('aria_text: ', this.aria_text);
     console.log('is_espn_video: ', this.is_espn_video);
     console.log('already_watched: ', this.already_watched);
@@ -76,10 +73,6 @@ export class BaseUpdater {
 
   protected getTitle(): HTMLElement {
     throw new Error('getTitle method not implemented');
-  }
-
-  protected getThumbnail(): HTMLElement {
-    throw new Error('getThumbnail method not implemented');
   }
 
   private retrieveUpdaterMetadata() {

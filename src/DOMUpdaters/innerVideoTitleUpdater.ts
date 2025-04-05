@@ -34,6 +34,10 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
     return this.canBlockTitleSpoiler(this.getTitleText());
   }
 
+  protected getTitle(): HTMLElement {
+    return this.container;
+  }
+
   // Dummy implementations
   protected getChannel(): string {
     // TODO: We should check the channel before changing the title to ensure we're not editing other channel's videos
@@ -46,13 +50,5 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
 
   protected getAriaText(): string {
     return '';
-  }
-
-  protected getTitle(): HTMLElement {
-    return this.container;
-  }
-
-  protected getThumbnail(): HTMLElement {
-    return null;
   }
 }
