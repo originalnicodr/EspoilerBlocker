@@ -54,7 +54,7 @@ export class VideoThumbnailUpdater extends BaseVideoThumnailUpdater {
     return 'ESPN Fans';
   }
 
-  // Since videos in the searchpage lazyload their progress bar, it wont be able to find it
+  // Since videos in the search page seem to lazyload their progress bar, the updater wont be able to find it
   protected getIfAlreadyWatched(): boolean {
     const progress_bar = this.container.querySelector<HTMLDivElement>('#progress');
     return progress_bar?.style.width === '100%' || false;

@@ -56,7 +56,4 @@ export class VideoTitleUpdater extends BaseUpdater {
     return this.container.querySelector<HTMLElement>('yt-formatted-string');
   }
 
-  protected getThumbnail(): HTMLElement {
-    return null;
-  }
 }

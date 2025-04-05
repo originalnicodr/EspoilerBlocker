@@ -131,10 +131,10 @@ export class BaseUpdater {
     return new Promise((resolve) => {
       chrome.storage.sync.get(null, function (data) {
         resolve({
-          block_spoilers_basketball: data.hasOwnProperty('basketball') ? data.basketball : false,
-          block_spoilers_football: data.hasOwnProperty('football') ? data.football : true,
+          block_spoilers_basketball: Boolean(data.basketball),
+          block_spoilers_football: Boolean(data.football),
           block_spoilers_expiration_days: data.hasOwnProperty('expirationDays') ? data.expirationDays : '',
-          display_total_score: data.hasOwnProperty('displayScores') ? data.displayScores : false,
+          display_total_score: Boolean(data.displayScores),
         });
       });
     });
