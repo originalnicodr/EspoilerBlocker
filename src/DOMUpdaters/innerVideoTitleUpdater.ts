@@ -30,20 +30,19 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
   }
 
   protected getIsESPNVideo(): boolean {
-    // If we can properly block the spoiler from the title then it means we should do so
-    return this.canBlockTitleSpoiler(this.getTitleText());
+    return this.getChannel() === 'ESPN Fans';
   }
 
   protected getTitle(): HTMLElement {
     return this.container;
   }
 
-  // Dummy implementations
   protected getChannel(): string {
-    // TODO: We should check the channel before changing the title to ensure we're not editing other channel's videos
-    return '';
+    const channels_name_element: HTMLElement = document.querySelector('yt-formatted-string.style-scope.ytd-channel-name.complex-string');
+    return channels_name_element.innerText;
   }
 
+  // Dummy implementations, can't get this info from the video being watched
   protected getIfAlreadyWatched(): boolean {
     return false;
   }
