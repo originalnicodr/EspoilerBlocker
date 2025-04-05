@@ -4,6 +4,7 @@ module.exports = {
   mode: 'production',
   entry: {
     main: './src/main.ts',
+    menu: './src/popup menu/menu.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
