@@ -1,6 +1,6 @@
 import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
-export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater {
+export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   constructor(container: HTMLElement) {
     super(container);
   }
@@ -9,6 +9,12 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
     //this.debugPrintMembers();
 
     this.retrieveUpdaterData();
+
+    const current_url: string = window.location.href;
+    if (!current_url.includes('watch?v=')) {
+      return;
+    }
+
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
     if (!should_block_spoiler) {
       return;
@@ -27,13 +33,26 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
     super.removeChanges();
   }
 
-  protected getIsESPNVideo(): boolean {
-    return this.getChannel() === 'ESPN Fans';
+  protected getTitle(): HTMLElement {
+    return this.container;
   }
-  
+
+  protected getTitleText(): string {
+    return this.title.getAttribute('data-tooltip-text');
+  }
+
+  protected getThumbnail(): HTMLElement {
+    // The thumbnail is outside of the element that holds this title
+    return document.querySelector(".ytp-tooltip-bg");
+  }
+
+  protected getIsESPNVideo(): boolean {
+    // If we can properly block the spoiler from the title then it means we should do so
+    return this.canBlockTitleSpoiler(this.getTitleText());
+  }
+
   protected getChannel(): string {
-    const channels_name_element = this.container.querySelector<HTMLElement>('.ytp-autonav-endscreen-upnext-author');
-    return channels_name_element ? channels_name_element.innerText.trim() : '';
+    return '';
   }
 
   // YouTube won't recommend videos the user already watched
@@ -42,15 +61,7 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
   }
 
   protected getAriaText(): string {
-    return this.container.getAttribute('aria-label');
-  }
-
-  protected getTitle(): HTMLElement {
-    return this.container.querySelector('.ytp-autonav-endscreen-upnext-title');
-  }
-
-  protected getThumbnail(): HTMLElement {
-    return this.container.querySelector('.ytp-autonav-endscreen-upnext-thumbnail');
+    return '';
   }
 
   private async spoilerBlockVideo(): Promise<void> {
@@ -65,16 +76,11 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
         this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
       }
 
-      this.title.textContent = this.spoiler_blocked_title_text;
-      this.title.innerText = this.spoiler_blocked_title_text;
+      this.title.setAttribute('data-tooltip-text', this.spoiler_blocked_title_text);
     }
   }
 
   private hideThumbnail(): void {
-    if (this.thumbnail === undefined) {
-      return;
-    }
-  
-    this.thumbnail.style.backgroundImage = "";
+    this.container.removeAttribute('data-preview');
   }
 }

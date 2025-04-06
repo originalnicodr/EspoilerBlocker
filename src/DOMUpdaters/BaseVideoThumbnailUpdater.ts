@@ -64,21 +64,24 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     between_badges.style.transition = 'opacity 0.3s';
     this.thumbnail.appendChild(between_badges);
 
-    const day = this.match_date.getDate();
-    // Months are 0-indexed (0 = January, 1 = February, etc.)
-    const month = this.match_date.getMonth() + 1;
-
-    const match_date_element = document.createElement('p');
-    match_date_element.innerText = `${day}/${month}`;
-    match_date_element.style.position = 'absolute';
-    match_date_element.style.top = '5%';
-    match_date_element.style.left = '41%';
-    match_date_element.style.textAlign = 'center';
-    match_date_element.style.fontSize = '35px';
-    match_date_element.style.color = 'white';
-    match_date_element.style.pointerEvents = 'none';
-    match_date_element.style.transition = 'opacity 0.3s';
-    this.thumbnail.appendChild(match_date_element);
+    let match_date_element: HTMLElement | undefined = undefined;
+    if (this.match_date) {
+      const day = this.match_date.getDate();
+      // Months are 0-indexed (0 = January, 1 = February, etc.)
+      const month = this.match_date.getMonth() + 1;
+  
+      match_date_element = document.createElement('p');
+      match_date_element.innerText = `${day}/${month}`;
+      match_date_element.style.position = 'absolute';
+      match_date_element.style.top = '5%';
+      match_date_element.style.left = '41%';
+      match_date_element.style.textAlign = 'center';
+      match_date_element.style.fontSize = '35px';
+      match_date_element.style.color = 'white';
+      match_date_element.style.pointerEvents = 'none';
+      match_date_element.style.transition = 'opacity 0.3s';
+      this.thumbnail.appendChild(match_date_element);
+    }
 
     const display_scores_checkbox: boolean = (await this.loadSettings()).display_total_score;
     let total_goals_element: HTMLElement;
@@ -101,7 +104,9 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
       img_a.style.opacity = '0';
       img_b.style.opacity = '0';
       between_badges.style.opacity = '0';
-      match_date_element.style.opacity = '0';
+      if (match_date_element) {
+        match_date_element.style.opacity = '0';
+      }
       if (total_goals_element) {
         total_goals_element.style.opacity = '0';
       }

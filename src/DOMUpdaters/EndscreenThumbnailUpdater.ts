@@ -55,7 +55,7 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   private async spoilerBlockVideo(): Promise<void> {
     this.blockSpoilerText();
-    this.hideThumbnail(this.thumbnail);
+    this.hideThumbnail();
     await this.addThumbnailElements();
   }
 
@@ -70,11 +70,11 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
     }
   }
 
-  private hideThumbnail(thumbnail_element: HTMLElement): void {
-    if (thumbnail_element === undefined) {
+  private hideThumbnail(): void {
+    if (this.thumbnail === undefined) {
       return;
     }
   
-    thumbnail_element.style.backgroundImage = "";
+    this.thumbnail.style.backgroundImage = "";
   }
 }
