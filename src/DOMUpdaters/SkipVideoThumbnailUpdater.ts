@@ -83,4 +83,15 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   private hideThumbnail(): void {
     this.container.removeAttribute('data-preview');
   }
+
+  // Redefine BaseVideoThumbnailUpdater.addThumbnailHoverActions since they need to be different here
+  protected addThumbnailHoverActions(wrapper: HTMLElement){
+    this.container.addEventListener('mouseenter', () => {
+      wrapper.style.opacity = '100%';
+    });
+
+    this.container.addEventListener('mouseleave', () => {
+      wrapper.style.opacity = '0';
+    });
+  }
 }
