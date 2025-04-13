@@ -2,8 +2,8 @@ import { standarizeTeamsName } from "./standarizeTeamsName";
 
 export function getTeamsByTitle(title: string): string[] {
   // Remove penalty parts of the title (like "(1)" and "(4)") using a regular expression
-  const cleaned_title = title.replace(/\s?\(\d+\)/g, '').trim();
-  const match_teams_string: string = cleaned_title.split('|')[1];
+  const non_penalties_scores_title = title.replace(/\s?\(\d+\)/g, '').trim();
+  const match_teams_string: string = non_penalties_scores_title.split('|')[1];
   if (!match_teams_string || !match_teams_string.includes('-')) {
     return [];
   }
