@@ -14,6 +14,24 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     console.log('thumbnail: ', this.thumbnail);
   }
 
+  protected async spoilerBlockVideo(): Promise<void> {
+    this.blockSpoilerText();
+    this.hideThumbnail();
+    await this.addThumbnailElements();
+  }
+
+  protected blockSpoilerText() {
+    throw new Error('blockSpoilerText method not implemented');
+  }
+
+  protected hideThumbnail(): void {
+    if (this.thumbnail === undefined) {
+      return;
+    }
+  
+    this.thumbnail.style.backgroundImage = "";
+  }
+
   protected async addThumbnailElements(): Promise<void> {
     if (!this.thumbnail) return;
 
@@ -114,7 +132,6 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
       wrapper.appendChild(total_goals_element);
     }
 
-    this.thumbnail.style.position = 'relative';
     this.thumbnail.appendChild(wrapper);
 
     this.addThumbnailHoverActions(wrapper);

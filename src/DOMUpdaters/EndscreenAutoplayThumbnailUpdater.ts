@@ -8,6 +8,11 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
   public async update() {
     //this.debugPrintMembers();
 
+    const current_url: string = window.location.href;
+    if (!current_url.includes('watch?v=')) {
+      return;
+    }
+
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
     if (!should_block_spoiler) {
@@ -53,13 +58,7 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
     return this.container.querySelector('.ytp-autonav-endscreen-upnext-thumbnail');
   }
 
-  private async spoilerBlockVideo(): Promise<void> {
-    this.blockSpoilerText();
-    this.hideThumbnail();
-    await this.addThumbnailElements();
-  }
-
-  private blockSpoilerText() {
+  protected blockSpoilerText() {
     if (this.title) {
       if (!this.spoiler_blocked_title_text) {
         this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
@@ -70,11 +69,4 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
     }
   }
 
-  private hideThumbnail(): void {
-    if (this.thumbnail === undefined) {
-      return;
-    }
-  
-    this.thumbnail.style.backgroundImage = "";
-  }
 }

@@ -8,13 +8,12 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   public async update() {
     //this.debugPrintMembers();
 
-    this.retrieveUpdaterData();
-
     const current_url: string = window.location.href;
     if (!current_url.includes('watch?v=')) {
       return;
     }
 
+    this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
     if (!should_block_spoiler) {
       return;
@@ -64,13 +63,7 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     return '';
   }
 
-  private async spoilerBlockVideo(): Promise<void> {
-    this.blockSpoilerText();
-    this.hideThumbnail();
-    await this.addThumbnailElements();
-  }
-
-  private blockSpoilerText() {
+  protected blockSpoilerText() {
     if (this.title) {
       if (!this.spoiler_blocked_title_text) {
         this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
@@ -80,12 +73,15 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     }
   }
 
-  private hideThumbnail(): void {
+  protected hideThumbnail(): void {
     this.container.removeAttribute('data-preview');
   }
 
   // Redefine BaseVideoThumbnailUpdater.addThumbnailHoverActions since they need to be different here
   protected addThumbnailHoverActions(wrapper: HTMLElement){
+    // Hide it by default
+    wrapper.style.opacity = '0'; 
+
     this.container.addEventListener('mouseenter', () => {
       wrapper.style.opacity = '100%';
     });
