@@ -14,7 +14,8 @@ const backgroundDivStyle: Style = {
   filter: 'blur(10px)',
   zIndex: '0',
   borderRadius: '0.5rem',
-  animation: 'spin 4s linear infinite',
+  animation: 'espn-blocker-thumbnail-spin-style 4s linear infinite',
+  pointerEvents: 'none',
 };
 
 // borders between the animated background and the main thumbnail content
@@ -39,6 +40,7 @@ export const thumbnailRender = (containerElement: HTMLElement, title: HTMLElemen
   title.innerText = `${teams.at(0)} vs ${teams.at(1)}`;
 
   addTeamsBadges(child, teams);
+  addRibbon(containerElement);
 };
 
 function addBaseThumnailStyles(containerElement: HTMLElement) {
@@ -61,7 +63,7 @@ function addBaseThumnailStyles(containerElement: HTMLElement) {
     const styleTag = document.createElement('style');
     styleTag.id = 'espn-blocker-thumbnail-spin-style';
     styleTag.innerHTML = `
-    @keyframes spin {
+    @keyframes espn-blocker-thumbnail-spin-style {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
@@ -78,7 +80,7 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
     display: 'flex',
     position: 'absolute',
     height: '80%',
-    top: '10%',
+    top: '17%',
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -100,11 +102,34 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
   betweenBadges.innerText = 'vs';
   Object.assign(betweenBadges.style, {
     top: '45%',
-    fontSize: '40px',
+    fontSize: '18px',
     position: 'relative',
     width: '100%',
     textAlign: 'center',
     pointerEvents: 'none',
   } as Style);
   container.appendChild(betweenBadges);
+}
+
+function addRibbon(container: HTMLElement) {
+  // Create the ribbon element
+  const ribbon = document.createElement('div');
+  ribbon.innerText = 'SPOILER BLOCKED';
+  Object.assign(ribbon.style, {
+    position: 'absolute',
+    top: '19px',
+    left: '-58px',
+    transform: 'rotate(-45deg)',
+    backgroundColor: '#ff0000',
+    color: 'white',
+    padding: '6px 48px',
+    fontSize: 'clamp(0.4em, 2vw, 0.9em)', // scales based on container width
+    fontWeight: 'bold',
+    zIndex: '20',
+    pointerEvents: 'none',
+    whiteSpace: 'nowrap',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+  } as Style);
+
+  container.appendChild(ribbon);
 }
