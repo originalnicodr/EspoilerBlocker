@@ -3,6 +3,9 @@ import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 
 type Style = Partial<CSSStyleDeclaration>;
 
+const backgroundGradient = 'conic-gradient(from 0deg, #ff0000, black, #0066ff, #ff0000)';
+const backgroundHoverGradient = 'conic-gradient(from 0deg, #fd4444, #fd4444, #fd4444,#8745fa,#ca47f5,#fd4444)';
+
 const backgroundDivStyle: Style = {
   content: "''",
   position: 'absolute',
@@ -10,7 +13,7 @@ const backgroundDivStyle: Style = {
   left: '-50%',
   width: '200%',
   height: '200%',
-  background: 'conic-gradient(from 0deg, #ff0000, #ffffff, #0066ff, #ff0000)',
+  background: backgroundGradient,
   filter: 'blur(10px)',
   zIndex: '0',
   borderRadius: '0.5rem',
@@ -41,6 +44,7 @@ export const thumbnailRender = (containerElement: HTMLElement, title: HTMLElemen
 
   addTeamsBadges(child, teams);
   addRibbon(containerElement);
+  addHoverEffect(containerElement);
 };
 
 function addBaseThumnailStyles(containerElement: HTMLElement) {
@@ -132,4 +136,34 @@ function addRibbon(container: HTMLElement) {
   } as Style);
 
   container.appendChild(ribbon);
+}
+
+function addHoverEffect(containerElement: HTMLElement) {
+  const background = containerElement.querySelector('.background') as HTMLElement;
+  const badges = containerElement.querySelectorAll('img');
+
+  containerElement.addEventListener('mouseenter', () => {
+    if (background) {
+      background.style.animationDuration = '8s'; // Slow down the spin
+      background.style.filter = 'blur(14px)';
+      background.style.background = backgroundHoverGradient;
+    }
+
+    badges.forEach((img) => {
+      img.style.transform = 'scale(1.1)';
+      img.style.transition = 'transform 0.3s ease';
+    });
+  });
+
+  containerElement.addEventListener('mouseleave', () => {
+    if (background) {
+      background.style.animationDuration = '4s'; // Reset spin speed
+      background.style.filter = 'blur(10px)';
+      background.style.background = backgroundGradient;
+    }
+
+    badges.forEach((img) => {
+      img.style.transform = 'scale(1)';
+    });
+  });
 }
