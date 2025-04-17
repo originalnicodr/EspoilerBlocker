@@ -85,7 +85,7 @@ function spoilerBlockVideo(video: Element): void {
   }
 
   let thumbnail_element: HTMLInputElement = video.querySelector('#thumbnail');
-  const title_element: HTMLInputElement = video.querySelector('#video-title');
+  const title_element: HTMLAnchorElement = video.querySelector('#video-title');
   const title_link: HTMLInputElement = video.querySelector('#video-title-link');
 
   if (!title_element || typeof title_element === 'undefined') {
@@ -111,34 +111,11 @@ function spoilerBlockVideo(video: Element): void {
     thumbnail_element = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
   }
 
-  hideCoolThumbnail(thumbnail_element);
-  //   hideThumbnail(thumbnail_element);
-
-  //   const total_goals: number = getTotalGoals(title_text);
-
-  //   const title_replace: string = spoilerTitle(title_text);
-  //   if (title_replace === '') {
-  //     return;
-  //   }
-
-  //   title_element.textContent = title_replace;
-  //   title_element.innerText = title_replace;
-  //   if (title_link) {
-  //     title_link.title = title_replace;
-  //   }
-
-  //   const teams: string[] = getTeamsByTitle(title_text);
-  //   if (teams.length === 0) {
-  //     return;
-  //   }
-  //   const [team_a, team_b] = teams as [string, string];
-  //   addTeamBadges(team_a, team_b, total_goals, thumbnail_element);
+  hideCoolThumbnail(thumbnail_element, title_element);
 }
 
-function hideCoolThumbnail(containerElement: HTMLElement) {
-  const overlay = document.createElement('div');
-
-  thumbnailRender(containerElement);
+function hideCoolThumbnail(containerElement: HTMLElement, title_element: HTMLAnchorElement) {
+  thumbnailRender(containerElement, title_element);
 }
 
 function hideThumbnail(thumbnail_element: HTMLInputElement): void {
