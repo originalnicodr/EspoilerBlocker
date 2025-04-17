@@ -116,24 +116,34 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
 }
 
 function addRibbon(container: HTMLElement) {
-  // Create the ribbon element
-  const ribbon = document.createElement('div');
-  ribbon.innerText = 'SPOILER BLOCKED';
-  Object.assign(ribbon.style, {
+  const baseStyle: Style = {
     position: 'absolute',
-    top: '19px',
-    left: '-58px',
+    top: '25px',
+    left: '-51px',
     transform: 'rotate(-45deg)',
     backgroundColor: '#ff0000',
     color: 'white',
     padding: '6px 48px',
     fontSize: 'clamp(0.4em, 2vw, 0.9em)', // scales based on container width
     fontWeight: 'bold',
-    zIndex: '20',
     pointerEvents: 'none',
     whiteSpace: 'nowrap',
     boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
-  } as Style);
+  };
+
+  // Create the ribbon element
+  const ribbon = document.createElement('div');
+  ribbon.innerText = 'SPOILER BLOCKED';
+  Object.assign(ribbon.style, baseStyle);
+
+  if (container.getBoundingClientRect().width < 220) {
+    console.log('aca es todo chiquito');
+    // in case the element is small, move the ribbon a bit
+    ribbon.style.top = '14px';
+    ribbon.style.left = '-47px';
+    ribbon.style.transform = 'rotate(330deg)';
+    ribbon.style.fontSize = '8px';
+  }
 
   container.appendChild(ribbon);
 }
