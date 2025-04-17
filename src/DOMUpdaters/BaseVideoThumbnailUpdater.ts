@@ -14,112 +14,140 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     console.log('thumbnail: ', this.thumbnail);
   }
 
-  protected async addThumbnailElements(): Promise<void> {
+  protected async spoilerBlockVideo(): Promise<void> {
+    this.blockSpoilerText();
+    this.hideThumbnail();
+    await this.addThumbnailElements();
+  }
+
+  protected blockSpoilerText() {
+    throw new Error('blockSpoilerText method not implemented');
+  }
+
+  protected hideThumbnail(): void {
     if (this.thumbnail === undefined) {
       return;
     }
+  
+    this.thumbnail.style.backgroundImage = "";
+  }
 
+  protected async addThumbnailElements(): Promise<void> {
+    if (!this.thumbnail) return;
+
+    // Parent container for all overlay elements
+    const wrapper = document.createElement('div');
+    wrapper.className = 'thumbnail-overlay-wrapper';
+    wrapper.style.position = 'absolute';
+    wrapper.style.top = '0';
+    wrapper.style.left = '0';
+    wrapper.style.width = '100%';
+    wrapper.style.height = '100%';
+    wrapper.style.pointerEvents = 'none';
+  
     const badge_a: string = getTeamBadge(this.team_a);
     const badge_b: string = getTeamBadge(this.team_b);
 
-    let img_a, img_b;
-
     if (badge_a) {
-      img_a = document.createElement('img');
+      const img_a: HTMLImageElement = document.createElement('img');
       img_a.alt = this.team_a + ' Badge';
       img_a.src = badge_a;
-      img_a.width = this.thumbnail.clientWidth * 0.2;
-      img_a.style.height = 'auto';
-      img_a.style.position = 'absolute';
-      img_a.style.top = '35%';
-      img_a.style.left = '20%';
-      img_a.style.transform = 'translate(-50%, -50%)';
-      img_a.style.pointerEvents = 'none';
-      img_a.style.transition = 'opacity 0.3s';
-      this.thumbnail.appendChild(img_a);
+      img_a.width = Math.max(this.thumbnail.clientWidth * 0.2, 50);
+      Object.assign(img_a.style, {
+        height: 'auto',
+        position: 'absolute',
+        top: '35%',
+        left: '20%',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+        transition: 'opacity 0.3s',
+      });
+      wrapper.appendChild(img_a);
     }
 
     if (badge_b) {
-      img_b = document.createElement('img');
+      const img_b: HTMLImageElement = document.createElement('img');
       img_b.alt = this.team_b + ' Badge';
       img_b.src = badge_b;
-      img_b.width = this.thumbnail.clientWidth * 0.2;
-      img_b.style.position = 'absolute';
-      img_b.style.top = '35%';
-      img_b.style.left = '80%';
-      img_b.style.transform = 'translate(-50%, -50%)';
-      img_b.style.pointerEvents = 'none';
-      img_b.style.transition = 'opacity 0.3s';
-      this.thumbnail.appendChild(img_b);
+      img_b.width = Math.max(this.thumbnail.clientWidth * 0.2, 50);
+      Object.assign(img_b.style, {
+        height: 'auto',
+        position: 'absolute',
+        top: '35%',
+        left: '80%',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+        transition: 'opacity 0.3s',
+      });
+      wrapper.appendChild(img_b);
     }
 
     const between_badges = document.createElement('p');
     between_badges.innerText = '-';
-    between_badges.style.position = 'absolute';
-    between_badges.style.top = '25%';
-    between_badges.style.left = '47%';
-    between_badges.style.fontSize = '50px';
-    between_badges.style.color = 'white';
-    between_badges.style.pointerEvents = 'none';
-    between_badges.style.transition = 'opacity 0.3s';
-    this.thumbnail.appendChild(between_badges);
-
-    const day = this.match_date.getDate();
-    // Months are 0-indexed (0 = January, 1 = February, etc.)
-    const month = this.match_date.getMonth() + 1;
-
-    const match_date_element = document.createElement('p');
-    match_date_element.innerText = `${day}/${month}`;
-    match_date_element.style.position = 'absolute';
-    match_date_element.style.top = '5%';
-    match_date_element.style.left = '41%';
-    match_date_element.style.textAlign = 'center';
-    match_date_element.style.fontSize = '35px';
-    match_date_element.style.color = 'white';
-    match_date_element.style.pointerEvents = 'none';
-    match_date_element.style.transition = 'opacity 0.3s';
-    this.thumbnail.appendChild(match_date_element);
-
-    const display_scores_checkbox: boolean = (await this.loadSettings()).display_total_score;
-    let total_goals_element: HTMLElement;
-
-    if (display_scores_checkbox) {
-      total_goals_element = document.createElement('p');
-      total_goals_element.innerText = `(${this.total_score})`;
-      total_goals_element.style.position = 'absolute';
-      total_goals_element.style.top = '45%';
-      total_goals_element.style.left = '41%';
-      total_goals_element.style.textAlign = 'center';
-      total_goals_element.style.fontSize = '35px';
-      total_goals_element.style.color = 'white';
-      total_goals_element.style.pointerEvents = 'none';
-      total_goals_element.style.transition = 'opacity 0.3s';
-      this.thumbnail.appendChild(total_goals_element);
+    Object.assign(between_badges.style, {
+      position: 'absolute',
+      top: '25%',
+      left: '47%',
+      fontSize: '50px',
+      color: 'white',
+      pointerEvents: 'none',
+      transition: 'opacity 0.3s',
+    });
+    wrapper.appendChild(between_badges);
+  
+    if (this.match_date) {
+      const day = this.match_date.getDate();
+      // Months are 0-indexed (0 = January, 1 = February, etc.)
+      const month = this.match_date.getMonth() + 1;
+      const match_date_element: HTMLElement = document.createElement('p');
+      match_date_element.innerText = `${day}/${month}`;
+      Object.assign(match_date_element.style, {
+        position: 'absolute',
+        top: '5%',
+        left: '41%',
+        textAlign: 'center',
+        fontSize: '35px',
+        color: 'white',
+        pointerEvents: 'none',
+        transition: 'opacity 0.3s',
+      });
+      wrapper.appendChild(match_date_element);
     }
 
+    const display_scores_checkbox: boolean = (await this.loadSettings()).display_total_score;
+
+    if (display_scores_checkbox) {
+      const total_goals_element: HTMLElement = document.createElement('p');
+      total_goals_element.innerText = `(${this.total_score})`;
+      Object.assign(total_goals_element.style, {
+        position: 'absolute',
+        top: '45%',
+        left: '41%',
+        textAlign: 'center',
+        fontSize: '35px',
+        color: 'white',
+        pointerEvents: 'none',
+        transition: 'opacity 0.3s',
+      });
+      wrapper.appendChild(total_goals_element);
+    }
+
+    this.thumbnail.appendChild(wrapper);
+
+    this.addThumbnailHoverActions(wrapper);
+  }
+
+  protected addThumbnailHoverActions(wrapper: HTMLElement){
     this.thumbnail.addEventListener('mouseenter', () => {
-      img_a.style.opacity = '0';
-      img_b.style.opacity = '0';
-      between_badges.style.opacity = '0';
-      match_date_element.style.opacity = '0';
-      if (total_goals_element) {
-        total_goals_element.style.opacity = '0';
-      }
+      wrapper.style.opacity = '0';
     });
 
     this.thumbnail.addEventListener('mouseleave', () => {
-      img_a.style.opacity = '100%';
-      img_b.style.opacity = '100%';
-      between_badges.style.opacity = '100%';
-      match_date_element.style.opacity = '100%';
-      if (total_goals_element) {
-        total_goals_element.style.opacity = '100%';
-      }
+      wrapper.style.opacity = '100%';
     });
   }
 
   protected getThumbnail(): HTMLElement {
     throw new Error('getThumbnail method not implemented');
   }
-
 }

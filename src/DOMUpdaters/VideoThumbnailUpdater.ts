@@ -2,6 +2,7 @@ import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
 export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   protected title_link: HTMLElement;
+
   constructor(container: HTMLElement) {
     super(container);
   }
@@ -26,12 +27,6 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   public removeChanges() {
     super.removeChanges();
-  }
-
-  private async spoilerBlockVideo(): Promise<void> {
-    this.blockSpoilerText();
-    this.hideThumbnail();
-    await this.addThumbnailElements();
   }
 
   protected getIsESPNVideo(): boolean {
@@ -82,7 +77,7 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     return thumbnail_element;
   }
 
-  private blockSpoilerText() {
+  protected blockSpoilerText() {
     if (this.title) {
       if (!this.spoiler_blocked_title_text) {
         this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
@@ -98,7 +93,7 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     }
   }
 
-  private hideThumbnail(): void {
+  protected hideThumbnail(): void {
     if (this.thumbnail === undefined) {
       return;
     }
