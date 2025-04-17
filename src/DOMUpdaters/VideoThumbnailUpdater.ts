@@ -1,3 +1,4 @@
+import { thumbnailRender } from '../renders/thumbnail.render';
 import { getTeamBadge } from '../utils/getTeamBadge';
 import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 import { BaseUpdater } from './BaseUpdater';
@@ -110,27 +111,34 @@ function spoilerBlockVideo(video: Element): void {
     thumbnail_element = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
   }
 
-  hideThumbnail(thumbnail_element);
+  hideCoolThumbnail(thumbnail_element);
+  //   hideThumbnail(thumbnail_element);
 
-  const total_goals: number = getTotalGoals(title_text);
+  //   const total_goals: number = getTotalGoals(title_text);
 
-  const title_replace: string = spoilerTitle(title_text);
-  if (title_replace === '') {
-    return;
-  }
+  //   const title_replace: string = spoilerTitle(title_text);
+  //   if (title_replace === '') {
+  //     return;
+  //   }
 
-  title_element.textContent = title_replace;
-  title_element.innerText = title_replace;
-  if (title_link) {
-    title_link.title = title_replace;
-  }
+  //   title_element.textContent = title_replace;
+  //   title_element.innerText = title_replace;
+  //   if (title_link) {
+  //     title_link.title = title_replace;
+  //   }
 
-  const teams: string[] = getTeamsByTitle(title_text);
-  if (teams.length === 0) {
-    return;
-  }
-  const [team_a, team_b] = teams as [string, string];
-  addTeamBadges(team_a, team_b, total_goals, thumbnail_element);
+  //   const teams: string[] = getTeamsByTitle(title_text);
+  //   if (teams.length === 0) {
+  //     return;
+  //   }
+  //   const [team_a, team_b] = teams as [string, string];
+  //   addTeamBadges(team_a, team_b, total_goals, thumbnail_element);
+}
+
+function hideCoolThumbnail(containerElement: HTMLElement) {
+  const overlay = document.createElement('div');
+
+  thumbnailRender(containerElement);
 }
 
 function hideThumbnail(thumbnail_element: HTMLInputElement): void {
