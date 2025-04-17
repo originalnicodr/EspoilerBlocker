@@ -84,7 +84,7 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
     display: 'flex',
     position: 'absolute',
     height: '80%',
-    top: '17%',
+    top: '13%',
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -116,7 +116,15 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
 }
 
 function addRibbon(container: HTMLElement) {
-  const baseStyle: Style = {
+  if (container.getBoundingClientRect().width < 300) {
+    // do not add the ribbon on small thumbnails
+    return;
+  }
+
+  // Create the ribbon element
+  const ribbon = document.createElement('div');
+  ribbon.innerText = 'SPOILER BLOCKED';
+  Object.assign(ribbon.style, {
     position: 'absolute',
     top: '25px',
     left: '-51px',
@@ -129,21 +137,7 @@ function addRibbon(container: HTMLElement) {
     pointerEvents: 'none',
     whiteSpace: 'nowrap',
     boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
-  };
-
-  // Create the ribbon element
-  const ribbon = document.createElement('div');
-  ribbon.innerText = 'SPOILER BLOCKED';
-  Object.assign(ribbon.style, baseStyle);
-
-  if (container.getBoundingClientRect().width < 220) {
-    console.log('aca es todo chiquito');
-    // in case the element is small, move the ribbon a bit
-    ribbon.style.top = '14px';
-    ribbon.style.left = '-47px';
-    ribbon.style.transform = 'rotate(330deg)';
-    ribbon.style.fontSize = '8px';
-  }
+  });
 
   container.appendChild(ribbon);
 }
