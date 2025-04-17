@@ -36,7 +36,7 @@ export class VideoThumbnailUpdater extends BaseUpdater {
         );
       }
 
-      if (channelElement?.innerText.trim() === 'ESPN Fans') {
+      if ((channelElement?.innerText || channelElement.textContent).trim() === 'ESPN Fans') {
         channelCondition = true;
       }
     }
@@ -51,31 +51,18 @@ export class VideoThumbnailUpdater extends BaseUpdater {
       return false;
     }
 
-    const title = titleElement.textContent || titleElement.innerText;
+    const title = (titleElement.textContent || titleElement.innerText || '').trim();
 
     // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups.
     // probably we would want to move it to utils
     const regex =
-      /^(?<summary>.+) \| (?<team1>.+) (?<goalsTeam1>\d+)( \((?<penaltyTeam1>\d+)\)-\((?<penaltyTeam2>\d+)\))? ?-? ?(?<goalsTeam2>\d+) (?<team2>.+) \| RESUMEN$/;
+      /(?<summary>.+) \| (?<team1>.+) (?<goalsTeam1>\d+)( \((?<penaltyTeam1>\d+)\)-\((?<penaltyTeam2>\d+)\))? ?-? ?(?<goalsTeam2>\d+) (?<team2>.+) \| RESUMEN$/;
 
     return regex.test(title);
   }
 }
 
 function spoilerBlockVideo(video: Element): void {
-  // Check if the video is from ESPN Fans before trying to spoil it [Homepage]
-  let channel_element = video.querySelector<HTMLElement>('ytd-channel-name a');
-  if (!channel_element) {
-    channel_element = video.querySelector('ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text');
-  }
-
-  if (channel_element) {
-    const channelName: string = channel_element ? channel_element.innerText.trim() : '';
-    if (channelName !== 'ESPN Fans') {
-      return;
-    }
-  }
-
   // Don't block spoilers from already watched videos
   const progress_bar = video.querySelector<HTMLDivElement>('ytd-thumbnail-overlay-resume-playback-renderer #progress');
   if (progress_bar && progress_bar.style.width === '100%') {
