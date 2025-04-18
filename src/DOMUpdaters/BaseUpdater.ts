@@ -175,27 +175,27 @@ export class BaseUpdater {
     }
 
     // duplicate the element and edit this one
-    this.elementToEdit = this.node.cloneNode(true) as Element;
-    this.node.insertAdjacentElement('afterend', this.elementToEdit);
+    this.elementToEdit = this.container.cloneNode(true) as Element;
+    this.container.insertAdjacentElement('afterend', this.elementToEdit);
     this.elementToEdit.classList.add(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_ADDED);
 
     // hide original element
-    const style = (this.node as HTMLDivElement).style;
+    const style = (this.container as HTMLDivElement).style;
     style.display = 'none';
   }
 
   public markElement() {
-    this.node.classList.add(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
+    this.container.classList.add(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
 
-    const style = (this.node as HTMLDivElement).style;
+    const style = (this.container as HTMLDivElement).style;
 
     this.originalStyles = { display: style.display };
   }
 
   public unmarkElement() {
-    this.node.classList.remove(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
+    this.container.classList.remove(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_WATCHED);
 
-    const style = (this.node as HTMLDivElement).style;
+    const style = (this.container as HTMLDivElement).style;
     Object.entries(this.originalStyles).forEach(([key, value]) => {
       style[key] = value;
     });

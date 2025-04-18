@@ -34,15 +34,11 @@ const childElementStyle: Style = {
   backgroundColor: '#1F1F1F',
 };
 
-export const thumbnailRender = (containerElement: HTMLElement, title: HTMLElement) => {
+export const thumbnailRender = (containerElement: HTMLElement, team_a: string, team_b: string) => {
   // create basic structure
   const child = addBaseThumnailStyles(containerElement);
 
-  // update title
-  const teams = getTeamsByTitle(title.textContent || title.innerText);
-  title.innerText = `${teams.at(0)} vs ${teams.at(1)}`;
-
-  addTeamsBadges(child, teams);
+  addTeamsBadges(child, [team_a, team_b]);
   addRibbon(containerElement);
   addHoverEffect(containerElement);
 };
