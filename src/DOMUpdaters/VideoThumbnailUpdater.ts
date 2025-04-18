@@ -1,99 +1,119 @@
-import { thumbnailRender } from '../renders/thumbnail.render';
-import { BaseUpdater } from './BaseUpdater';
+import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
-export class VideoThumbnailUpdater extends BaseUpdater {
-  constructor(private container: Element) {
+export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
+  protected title_link: HTMLElement;
+
+  constructor(container: HTMLElement) {
     super(container);
   }
 
-  public update() {
+  public async update() {
+    //this.debugPrintMembers();
+
+    this.retrieveUpdaterData();
+    const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
+    if (!should_block_spoiler) {
+      return;
+    }
+
     try {
-      if (this.shouldBlockSpoilers()) {
-        this.duplicateElement();
-        spoilerBlockVideo(this.elementToEdit);
-      }
+      await this.spoilerBlockVideo();
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   public removeChanges() {
     super.removeChanges();
   }
 
-  private shouldBlockSpoilers(): boolean {
-    // Conditions.
-    // check either channel name OR if we're watching ESPN FANS PAGE.
-    let channelCondition = false;
-    if (window.location.href.toLowerCase().includes('espnfans')) {
-      channelCondition = true;
-    } else {
-      let channelElement = this.container.querySelector<HTMLElement>('ytd-channel-name a');
+  protected getIsESPNVideo(): boolean {
+    return this.getChannel() === 'ESPN Fans';
+  }
 
-      if (!channelElement) {
-        channelElement = this.container.querySelector(
-          'ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text',
-        );
-      }
-
-      if ((channelElement?.innerText || channelElement.textContent).trim() === 'ESPN Fans') {
-        channelCondition = true;
-      }
+  protected getChannel(): string {
+    let channel_element = this.container.querySelector<HTMLElement>('ytd-channel-name a');
+    if (!channel_element) {
+      channel_element = this.container.querySelector(
+        'ytd-compact-video-renderer ytd-channel-name yt-formatted-string#text',
+      );
     }
 
-    return channelCondition && this.videoTitleContainsSpoilers();
-  }
-
-  videoTitleContainsSpoilers(): boolean {
-    const titleElement: HTMLInputElement = this.container.querySelector('#video-title');
-
-    if (!titleElement) {
-      return false;
+    if (channel_element) {
+      return channel_element.innerText.trim();
     }
 
-    const title = (titleElement.textContent || titleElement.innerText || '').trim();
-
-    // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups.
-    // probably we would want to move it to utils
-    const regex =
-      /(?<summary>.+) \| (?<team1>.+) (?<goalsTeam1>\d+)( \((?<penaltyTeam1>\d+)\)-\((?<penaltyTeam2>\d+)\))? ?-? ?(?<goalsTeam2>\d+) (?<team2>.+) \| RESUMEN$/;
-
-    return regex.test(title);
-  }
-}
-
-function spoilerBlockVideo(video: Element): void {
-  // Don't block spoilers from already watched videos
-  const progress_bar = video.querySelector<HTMLDivElement>('ytd-thumbnail-overlay-resume-playback-renderer #progress');
-  if (progress_bar && progress_bar.style.width === '100%') {
-    return;
+    // Fallback, if we can't detect the channel then we say its ESPN Fans and wait for other checks to block it
+    return 'ESPN Fans';
   }
 
-  let thumbnail_element: HTMLElement = video.querySelector('#thumbnail');
-  const title_element: HTMLAnchorElement = video.querySelector('#video-title');
-
-  if (!title_element || typeof title_element === 'undefined') {
-    return;
+  // Since videos in the search page seem to lazyload their progress bar, the updater wont be able to find it
+  protected getIfAlreadyWatched(): boolean {
+    const progress_bar = this.container.querySelector<HTMLDivElement>('#progress');
+    return progress_bar?.style.width === '100%' || false;
   }
 
-  const title_text: string = title_element.textContent || title_element.innerText;
+  protected getAriaText(): string {
+    this.title_link = this.container.querySelector('#video-title-link');
 
-  if (typeof title_text === 'undefined' || !title_text.includes('|')) {
-    return;
+    if (this.title_link) {
+      return this.title_link.getAttribute('aria-label');
+    }
+    return this.title.getAttribute('aria-label');
   }
 
-  // Check title is from a highlights match
-  const match_teams_string: string = title_text.split('|')[1];
-  if (!match_teams_string) {
-    return;
-  }
-  if (!match_teams_string.includes('-')) {
-    return;
+  protected getTitle(): HTMLElement {
+    return this.container.querySelector('#video-title');
   }
 
-  if (!thumbnail_element) {
-    thumbnail_element = video.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
+  protected getThumbnail(): HTMLElement {
+    let thumbnail_element: HTMLInputElement = this.container.querySelector('#thumbnail');
+    if (!thumbnail_element) {
+      thumbnail_element = this.container.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
+    }
+
+    return thumbnail_element;
   }
 
-  thumbnailRender(thumbnail_element, title_element);
+  protected blockSpoilerText() {
+    if (this.title) {
+      if (!this.spoiler_blocked_title_text) {
+        this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
+      }
+
+      this.title.textContent = this.spoiler_blocked_title_text;
+      this.title.innerText = this.spoiler_blocked_title_text;
+
+      this.title_link = this.container.querySelector('#video-title-link');
+      if (this.title_link) {
+        this.title_link.title = this.spoiler_blocked_title_text;
+      }
+    }
+  }
+
+  protected hideThumbnail(): void {
+    if (this.thumbnail === undefined) {
+      return;
+    }
+
+    let thumbnail_image: HTMLElement = this.thumbnail.querySelector('#thumbnail');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '0';
+      return;
+    }
+
+    thumbnail_image = this.thumbnail.querySelector('#image');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '0';
+      return;
+    }
+
+    thumbnail_image = this.thumbnail.querySelector('yt-image');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '0';
+      return;
+    }
+  }
 }

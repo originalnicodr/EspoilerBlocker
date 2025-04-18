@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extension Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      width: 300px;
+    }
+    .settings-section {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin: 5px 0;
+    }
+    button {
+      margin-top: 10px;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Configuración</h2>
+
+  <div class="settings-section">
+    <h3>Bloquear spoilers para:</h3>
+    <label><input type="checkbox" id="checkbox-football" checked> Partidos de futbol</label>
+    <label><input type="checkbox" id="checkbox-basketball"> Partidos de basket</label>
+  </div>
+
+  <div class="settings-section">
+    <h3>Tiempo de expiración del bloquer de spoilers</h3>
+    <input type="number" id="expiration-days" placeholder="Días" />
+  </div>
+
+  <div class="settings-section">
+    <button id="remove-spoiler-blockers">Remover bloqueo de spoilers</button>
+    <label><input type="checkbox" id="display-scores-checkbox"> Mostrar puntos totales</label>
+  </div>
+
+  <script src="../dist/menu.js"></script>
+</body>
+</html>
