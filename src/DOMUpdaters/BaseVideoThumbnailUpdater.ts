@@ -1,5 +1,5 @@
 import { thumbnailRender } from '../renders/thumbnail.render';
-import { getTeamBadge } from '../utils/getTeamBadge';
+import { Settings } from '../utils/settings';
 import { BaseUpdater } from './BaseUpdater';
 
 export class BaseVideoThumbnailUpdater extends BaseUpdater {
@@ -35,7 +35,15 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
 
   protected async addThumbnailElements(): Promise<void> {
     if (!this.thumbnail) return;
-    thumbnailRender(this.thumbnail, this.team_a, this.team_b);
+    const settings: Settings = await this.loadSettings();
+
+    thumbnailRender(
+      this.thumbnail,
+      this.team_a,
+      this.team_b,
+      this.match_date,
+      settings.display_total_score ? this.total_score : null,
+    );
   }
 
   protected addThumbnailHoverActions(wrapper: HTMLElement){

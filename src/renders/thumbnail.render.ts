@@ -32,13 +32,21 @@ const childElementStyle: Style = {
   left: `${childElementBordersInPixels}px`,
   borderRadius: 'inherit',
   backgroundColor: '#1F1F1F',
+  pointerEvents: 'none',
 };
 
-export const thumbnailRender = (containerElement: HTMLElement, team_a: string, team_b: string) => {
+export const thumbnailRender = (
+  containerElement: HTMLElement,
+  team_a: string,
+  team_b: string,
+  match_date: Date,
+  total_score: undefined | number,
+) => {
   // create basic structure
   const child = addBaseThumnailStyles(containerElement);
 
   addTeamsBadges(child, [team_a, team_b]);
+  addInBetweenBadges(child, match_date, total_score);
   addRibbon(containerElement);
   addHoverEffect(containerElement);
 };
@@ -85,6 +93,7 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
     alignItems: 'center',
     justifyContent: 'space-around',
     pointerEvents: 'none',
+    filter: 'drop-shadow(rgb(10, 10, 10) 0px 6px 10px)',
   } as Style);
 
   container.appendChild(imageContainer);
@@ -97,18 +106,77 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
     Object.assign(image.style, { width: '30%', pointerEvents: 'none' } as Style);
     imageContainer.appendChild(image);
   }
+}
 
-  const betweenBadges = document.createElement('p');
-  betweenBadges.innerText = 'vs';
-  Object.assign(betweenBadges.style, {
-    top: '45%',
-    fontSize: '18px',
-    position: 'relative',
+function addInBetweenBadges(container: HTMLDivElement, match_date: Date | null, total_score: number | null) {
+  const wrapper = document.createElement('div');
+  // Some containers start with 0 width, so we need to set a minimum font size
+  const base_font_size = container.offsetWidth == 0 ? 20 : container.offsetWidth / 10;
+  Object.assign(wrapper.style, {
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+    pointerEvents: 'none',
+    fontSize: `${base_font_size}px`,
+  });
+
+  const vs_element = document.createElement('p');
+  vs_element.innerText = 'vs';
+  Object.assign(vs_element.style, {
+    position: 'absolute',
+    top: '50%',
+    left: '0',
     width: '100%',
     textAlign: 'center',
+    fontSize: '1em',
+    color: 'white',
+    transform: 'translateY(-50%)',
+    margin: '0',
     pointerEvents: 'none',
-  } as Style);
-  container.appendChild(betweenBadges);
+  });
+  wrapper.appendChild(vs_element);
+
+  if (match_date) {
+    const day = match_date.getDate();
+    const month = match_date.getMonth() + 1;
+    const date_element = document.createElement('p');
+    date_element.innerText = `${day}/${month}`;
+    Object.assign(date_element.style, {
+      position: 'absolute',
+      bottom: '42.5%',
+      left: '0',
+      transform: 'translateY(-100%)',
+      width: '100%',
+      textAlign: 'center',
+      fontSize: '1.25em',
+      color: 'white',
+      margin: '0',
+      pointerEvents: 'none',
+    });
+    wrapper.appendChild(date_element);
+  }
+
+  if (total_score) {
+    const score_element = document.createElement('p');
+    score_element.innerText = `(${total_score})`;
+    Object.assign(score_element.style, {
+      position: 'absolute',
+      top: '55%',
+      left: '0',
+      transform: 'translateY(100%)',
+      width: '100%',
+      textAlign: 'center',
+      fontSize: '0.75em',
+      color: 'white',
+      margin: '0',
+      pointerEvents: 'none',
+    });
+    wrapper.appendChild(score_element);
+  }
+
+  container.appendChild(wrapper);
 }
 
 function addRibbon(container: HTMLElement) {
