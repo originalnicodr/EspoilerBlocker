@@ -237,6 +237,15 @@ export class BaseUpdater {
   protected restoreSpoilers() {
     // TODO
   }
+
+  protected videoTitleContainsSpoilers(): boolean {
+    // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups.
+    // probably we would want to move it to utils
+    const regex =
+      /(?<summary>.+) \| (?<team1>.+) (?<goalsTeam1>\d+)( \((?<penaltyTeam1>\d+)\)-\((?<penaltyTeam2>\d+)\))? ?-? ?(?<goalsTeam2>\d+) (?<team2>.+) \| RESUMEN$/;
+
+    return regex.test(this.getTitleText());
+  }
 }
 
 function getTotalGoals(original_title: string): number {

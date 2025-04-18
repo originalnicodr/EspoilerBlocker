@@ -41,8 +41,8 @@ export class TitleUpdater extends BaseUpdater {
   }
 
   protected getIsESPNVideo(): boolean {
-    // If we can properly block the spoiler from the title then it means we should do so
-    return this.canBlockTitleSpoiler(this.getTitleText());
+    // If the title contains spoilers then we should block them, so we consider it an ESPN video
+    return this.videoTitleContainsSpoilers();
   }
 
   // Dummy implementations, can't get this info from the video being watched
