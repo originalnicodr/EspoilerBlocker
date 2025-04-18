@@ -39,7 +39,10 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
 
   protected getChannel(): string {
     const channels_name_element: HTMLElement = document.querySelector('yt-formatted-string.style-scope.ytd-channel-name.complex-string');
-    return channels_name_element.innerText;
+    if (channels_name_element) {
+      return channels_name_element ? channels_name_element.innerText.trim() : '';
+    }
+    return 'ESPN Fans';
   }
 
   // Dummy implementations, can't get this info from the video being watched

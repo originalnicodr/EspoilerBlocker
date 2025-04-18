@@ -38,7 +38,10 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   protected getChannel(): string {
     const channels_name_element = this.container.querySelector<HTMLElement>('.ytp-videowall-still-info-author');
-    return channels_name_element ? channels_name_element.innerText.trim() : '';
+    if (channels_name_element) {
+      return channels_name_element ? channels_name_element.innerText.trim() : '';
+    }
+    return 'ESPN Fans';
   }
 
   // YouTube won't recommend videos the user already watched

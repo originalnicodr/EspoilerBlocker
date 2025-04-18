@@ -21,6 +21,12 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     try {
       await this.spoilerBlockVideo();
+
+      // Make sure the container is positioned relative to the animated background.
+      // Other the rotating background rectangle would be rendered in its entirety.
+      this.thumbnail.style.position = 'relative';
+      this.thumbnail.style.overflow = 'hidden';
+      this.thumbnail.style.borderRadius = '0.5rem'
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
     }
