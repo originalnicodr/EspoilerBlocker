@@ -100,9 +100,83 @@ export class BaseUpdater {
     }
 
     if (this.aria_text) {
-      this.match_date = getMatchDate(this.aria_text);
+      //this.match_date = this.getMatchDate(this.aria_text);
+      // Since YouTube seemed to have removed the complete aria-text that included the exact date the video went live,
+      // we are nullifying this value for now, at least until we have a new way of getting a date
+      this.match_date = null;
     }
   }
+
+  private getMatchDate(aria_text: string): Date | null {
+    const relative_time = this.extractRelativeTimeText(aria_text);
+    if (!relative_time) return null;
+    return this.parseRelativeTimeString(relative_time);
+  }
+  
+  private extractRelativeTimeText(aria_text: string): string | null {
+    if (aria_text.includes('hace ')) {
+      // Spanish: extract everything after "hace"
+      return aria_text.split('hace ').pop()?.trim() || null;
+    } else if (aria_text.includes(' ago')) {
+      // English: extract everything before "ago"
+      const parts = aria_text.split(' ago');
+      return parts[0]?.trim() || null;
+    } else {
+      // Attempt to get date data from the visual HTMLElement
+      const metadata_list: NodeListOf<HTMLElement> = this.container.querySelectorAll(
+        ".inline-metadata-item.style-scope.ytd-video-meta-block"
+      );
+      if (metadata_list.length > 1) {
+        return metadata_list[1].innerText.trim();
+      }
+      return null;
+    }
+  }
+  
+  private parseRelativeTimeString(relative_time: string): Date {
+    let years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0;
+  
+    const unit_setters = { years, months, days, hours, minutes, seconds };
+  
+    const time_units_map: { [unit: string]: keyof typeof unit_setters } = {
+      // Spanish
+      'año': 'years', 'años': 'years',
+      'mes': 'months', 'meses': 'months',
+      'día': 'days', 'días': 'days',
+      'hora': 'hours', 'horas': 'hours',
+      'minuto': 'minutes', 'minutos': 'minutes',
+      'segundo': 'seconds', 'segundos': 'seconds',
+      // English
+      'year': 'years', 'years': 'years',
+      'month': 'months', 'months': 'months',
+      'day': 'days', 'days': 'days',
+      'hour': 'hours', 'hours': 'hours',
+      'minute': 'minutes', 'minutes': 'minutes',
+      'second': 'seconds', 'seconds': 'seconds',
+    };
+  
+    const all_units = Object.keys(time_units_map).join('|');
+    const duration_regex = new RegExp(`(\\d+)\\s*(${all_units})`, 'gi');
+  
+    let match: RegExpExecArray;
+    while ((match = duration_regex.exec(relative_time)) !== null) {
+      const value = parseInt(match[1]);
+      const unit_key = time_units_map[match[2].toLowerCase()];
+      if (unit_key) {
+        unit_setters[unit_key] += value;
+      }
+    }
+  
+    const match_date = new Date();
+    match_date.setFullYear(match_date.getFullYear() - unit_setters.years);
+    match_date.setMonth(match_date.getMonth() - unit_setters.months);
+    match_date.setDate(match_date.getDate() - unit_setters.days);
+    match_date.setHours(match_date.getHours() - unit_setters.hours - 2); // Offset for upload delay
+    match_date.setMinutes(match_date.getMinutes() - unit_setters.minutes);
+    match_date.setSeconds(match_date.getSeconds() - unit_setters.seconds);
+  
+    return match_date;
+  }  
 
   protected async shouldBlockSpoiler(): Promise<boolean> {
     if (!this.is_espn_video || this.highlight_type === VideoHighlightType.None || this.already_watched) {
@@ -262,41 +336,3 @@ function getTotalGoals(original_title: string): number {
   return Number(part1.trim().split(' ').at(-1)) + Number(part2.trim().split(' ').at(0));
 }
 
-// TODO: Try to parse this in English in case the user's YouTube language is not Spanish
-function getMatchDate(aria_text: string): Date {
-  // aria_text have the following format "{video_title} {views} visualizaciones hace {d} día {m} minutos y {s} segundos"
-  const parts: string[] = aria_text.split('hace');
-  const time_passed: string = parts[parts.length - 1].trim();
-  let years: number = 0,
-    months: number = 0,
-    days: number = 0,
-    hours: number = 0,
-    minutes: number = 0,
-    seconds: number = 0;
-  const spanish_duration_regex: RegExp = /(\d+)\s*(año|mes|día|hora|minuto|segundo)s?/g;
-
-  let match: RegExpExecArray;
-  while ((match = spanish_duration_regex.exec(time_passed)) !== null) {
-    const value: number = parseInt(match[1]);
-    const unit: string = match[2];
-
-    if (unit === 'año') years = value;
-    if (unit === 'mes') months = value;
-    if (unit === 'día') days = value;
-    if (unit === 'hora') hours = value;
-    if (unit === 'minuto') minutes = value;
-    if (unit === 'segundo') seconds = value;
-  }
-
-  const match_date: Date = new Date();
-  match_date.setFullYear(match_date.getFullYear() - years);
-  match_date.setMonth(match_date.getMonth() - months);
-  match_date.setDate(match_date.getDate() - days);
-  match_date.setHours(match_date.getHours() - hours);
-  match_date.setMinutes(match_date.getMinutes() - minutes);
-  match_date.setSeconds(match_date.getSeconds() - seconds);
-
-  // Gets video publication time, because of matches which highlights are uploaded after 00:00 it makes sense to offset it by a couple of hours
-  match_date.setHours(match_date.getHours() - 2);
-  return match_date;
-}
