@@ -40,12 +40,12 @@ export class EspnSpoilerBlocker {
   public stop() {
     // probable this is the method to discard the DOM changes we made.
     this.cleanup();
-    this.updaters.forEach((updater) => updater.removeChanges());
+    this.updaters.forEach((updater) => updater.restoreSpoilers());
   }
 
   private cleanup() {
     this.observers.forEach((observer) => observer.disconnect());
-    this.updaters.forEach((updater) => updater.removeChanges());
+    this.updaters.forEach((updater) => updater.restoreSpoilers());
   }
 
   private reactToVideoThumbnailsChanges() {

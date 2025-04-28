@@ -20,18 +20,13 @@ export class VideoTitleUpdater extends BaseUpdater {
     }
 
     if (!this.spoiler_blocked_title_text) {
+      this.backupOriginal();
       this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
     }
 
     if (this.getTitleText() !== this.spoiler_blocked_title_text) {
       this.title.textContent = this.spoiler_blocked_title_text;
     }
-
-    this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getIsESPNVideo(): boolean {
@@ -59,4 +54,11 @@ export class VideoTitleUpdater extends BaseUpdater {
     return this.container.querySelector<HTMLElement>('yt-formatted-string');
   }
 
+  public backupOriginal() {
+    this.originalState.titleTextContent = this.title.textContent;
+  }
+
+  public restoreSpoilers() {
+    this.title.textContent = this.originalState.titleTextContent;
+  }
 }

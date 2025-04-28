@@ -24,14 +24,9 @@ export class TitleUpdater extends BaseUpdater {
     }
 
     if (document.title !== this.spoiler_blocked_title_text) {
+      this.backupOriginal();
       document.title = this.spoiler_blocked_title_text;
     }
-
-    this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getTitleText(): string {
@@ -63,5 +58,13 @@ export class TitleUpdater extends BaseUpdater {
   // We are not using the title because it is an HTMLElement, and this updater only focuses on the document title
   protected getTitle(): HTMLElement {
     return null;
+  }
+
+  public backupOriginal() {
+    this.originalState.titleTextContent = document.title;
+  }
+
+  public restoreSpoilers() {
+    document.title = this.originalState.titleTextContent;
   }
 }

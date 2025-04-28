@@ -4,8 +4,11 @@ import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 import { Settings } from '../utils/settings';
 
 export class BaseUpdater {
-  protected elementToEdit: Element;
-  private originalStyles = {};
+  protected originalState: {
+    titleTextContent?: string;
+    containerDisplayStyle?: string;
+  } = {};
+  protected originalStyles = {};
 
   protected container: HTMLElement;
   protected title: HTMLElement;
@@ -23,7 +26,7 @@ export class BaseUpdater {
   protected team_b: string;
   protected match_date: Date;
 
-  protected is_being_spoiler_blocked: boolean = false;
+  protected is_being_spoiler_blocked: boolean = true;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -56,6 +59,7 @@ export class BaseUpdater {
     console.log('team_a: ', this.team_a);
     console.log('team_b: ', this.team_b);
     console.log('match_date: ', this.match_date);
+    console.log('is_being_spoiler_blocked: ', this.is_being_spoiler_blocked);
   }
 
   protected getIsESPNVideo(): boolean {
@@ -180,15 +184,18 @@ export class BaseUpdater {
 
   protected async shouldBlockSpoiler(): Promise<boolean> {
     if (!this.is_espn_video || this.highlight_type === VideoHighlightType.None || this.already_watched) {
+      this.is_being_spoiler_blocked = false;
       return false;
     }
 
     const settings: Settings = await this.loadSettings();
     if (this.highlight_type === VideoHighlightType.Basketball && !settings.block_spoilers_basketball) {
+      this.is_being_spoiler_blocked = false;
       return false;
     }
 
     if (this.highlight_type === VideoHighlightType.Football && !settings.block_spoilers_football) {
+      this.is_being_spoiler_blocked = false;
       return false;
     }
 
@@ -197,6 +204,7 @@ export class BaseUpdater {
       const expiration_date = new Date();
       expiration_date.setDate(now.getDate() - settings.block_spoilers_expiration_days);
       if (expiration_date > this.match_date) {
+        //this.is_being_spoiler_blocked = false;
         return false;
       }
     }
@@ -211,7 +219,7 @@ export class BaseUpdater {
           block_spoilers_basketball: Boolean(data.basketball),
           block_spoilers_football: Boolean(data.football),
           block_spoilers_expiration_days: data.hasOwnProperty('expirationDays') ? data.expirationDays : '',
-          display_total_score: Boolean(data.displayScores),
+          display_total_score: Boolean(data.value),
         });
       });
     });
@@ -239,23 +247,11 @@ export class BaseUpdater {
     throw new Error('update method not implemented');
   }
 
-  public removeChanges() {
-    this.removeChanges();
-  }
+  public backupOriginal() {
+    if (!this.container) return;
 
-  public duplicateElement() {
-    if (this.elementToEdit) {
-      this.elementToEdit.remove();
-    }
-
-    // duplicate the element and edit this one
-    this.elementToEdit = this.container.cloneNode(true) as Element;
-    this.container.insertAdjacentElement('afterend', this.elementToEdit);
-    this.elementToEdit.classList.add(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_ADDED);
-
-    // hide original element
-    const style = (this.container as HTMLDivElement).style;
-    style.display = 'none';
+    this.originalState.titleTextContent = this.title?.textContent || '';
+    this.originalState.containerDisplayStyle = (this.container as HTMLElement).style.display;
   }
 
   public markElement() {
@@ -290,16 +286,42 @@ export class BaseUpdater {
   protected handleMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
     switch (message.action) {
       case 'enableSpoilerBlockers':
+        this.is_being_spoiler_blocked = true;
         this.update();
         break;
       case 'removeSpoilerBlockers':
-        if (this.is_being_spoiler_blocked) {
-          this.restoreSpoilers();
-        }
+        this.is_being_spoiler_blocked = false;
+        this.restoreSpoilers();
         break;
       case 'updatedBasketballSetting':
+        // WIP
+        /*
+        if (this.highlight_type === VideoHighlightType.Basketball) {
+          if (message.value && !this.is_being_spoiler_blocked) {
+            this.is_being_spoiler_blocked = true;
+            this.update();
+          } else if (!message.value && this.is_being_spoiler_blocked) {
+            this.is_being_spoiler_blocked = false;
+            this.restoreSpoilers();
+          }
+        }
+        */
         break;
       case 'updatedFootballSetting':
+        // WIP
+        /*
+        if (this.highlight_type === VideoHighlightType.Football) {
+          if (message.value && !this.is_being_spoiler_blocked) {
+            console.log('Adding spoiler blockers');
+            this.is_being_spoiler_blocked = true;
+            this.update();
+          } else if (!message.value && this.is_being_spoiler_blocked) {
+            console.log('Removing spoiler blockers');
+            this.is_being_spoiler_blocked = false;
+            this.restoreSpoilers();
+          }
+        }
+        */
         break;
       case 'updatedExpirationDaysSetting':
         break;
@@ -308,8 +330,15 @@ export class BaseUpdater {
     }
   }
 
-  protected restoreSpoilers() {
-    // TODO
+  public restoreSpoilers() {
+    if (this.title && this.originalState.titleTextContent !== undefined) {
+      this.title.textContent = this.originalState.titleTextContent;
+      this.title.innerText = this.originalState.titleTextContent;
+    }
+  
+    if (this.originalState.containerDisplayStyle !== undefined) {
+      (this.container as HTMLElement).style.display = this.originalState.containerDisplayStyle;
+    }
   }
 
   protected videoTitleContainsSpoilers(): boolean {

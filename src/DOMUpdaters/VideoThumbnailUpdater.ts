@@ -16,23 +16,22 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       return;
     }
 
+    this.backupOriginal();
     try {
       await this.spoilerBlockVideo();
+      
+      // Render the new thumbnail above the original one to avoid the automatic thumbnail
+      // player from spoiling the match.
+      this.added_thumbnail_element.style.zIndex = '2';
 
       // Make sure the container is positioned relative to the animated background.
-      // Other the rotating background rectangle would be rendered in its entirety.
+      // Otherwise the rotating background rectangle would be rendered in its entirety.
       this.thumbnail.style.position = 'relative';
       this.thumbnail.style.overflow = 'hidden';
       this.thumbnail.style.borderRadius = '0.5rem'
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
     }
-
-    this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getIsESPNVideo(): boolean {
@@ -67,7 +66,12 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     if (this.title_link) {
       return this.title_link.getAttribute('aria-label');
     }
-    return this.title.getAttribute('aria-label');
+
+    if (this.title) {
+      return this.title.getAttribute('aria-label');
+    }
+
+    return '';
   }
 
   protected getTitle(): HTMLElement {
@@ -120,6 +124,38 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     if (thumbnail_image) {
       thumbnail_image.style.opacity = '0';
       return;
+    }
+  }
+
+  public restoreSpoilers() {
+    super.restoreSpoilers();
+
+    let thumbnail_image: HTMLElement = this.thumbnail.querySelector('#thumbnail');
+
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '100%';
+      thumbnail_image.style.background = 'none';
+    }
+
+    thumbnail_image = this.thumbnail.querySelector('#image');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '100%';
+    }
+
+    thumbnail_image = this.thumbnail.querySelector('yt-image');
+    if (thumbnail_image) {
+      thumbnail_image.style.opacity = '100%';
+    }
+
+    // Restore title
+    if (this.title) {
+      this.title.textContent = this.originalState.titleTextContent;
+      this.title.innerText = this.originalState.titleTextContent;
+    }
+
+    this.title_link = this.container.querySelector('#video-title-link');
+    if (this.title_link) {
+      this.title_link.title = this.originalState.titleTextContent;
     }
   }
 }

@@ -1,7 +1,8 @@
 class ExtensionMenu {
   private basketball_checkbox: HTMLInputElement;
   private football_checkbox: HTMLInputElement;
-  private expiration_days_input: HTMLInputElement;
+  // We disabled the expiration days input for now, but we can enable it later if needed
+  private expiration_days_input: HTMLInputElement | null;
   private remove_spoiler_blockers_button: HTMLButtonElement;
   private display_scores_checkbox: HTMLInputElement;
 
@@ -22,7 +23,9 @@ class ExtensionMenu {
     chrome.storage.sync.get(null, (data) => {
       this.basketball_checkbox.checked = data.hasOwnProperty('basketball') ? data.basketball : false;
       this.football_checkbox.checked = data.hasOwnProperty('football') ? data.football : true;
-      this.expiration_days_input.value = data.hasOwnProperty('expirationDays') ? data.expirationDays : '';
+      if (this.expiration_days_input) {
+        this.expiration_days_input.value = data.hasOwnProperty('expirationDays') ? data.expirationDays : '';
+      }
       this.display_scores_checkbox.checked = data.hasOwnProperty('displayScores') ? data.displayScores : false;
     });
   }
@@ -31,7 +34,7 @@ class ExtensionMenu {
     const settings = {
       basketball: this.basketball_checkbox.checked,
       football: this.football_checkbox.checked,
-      expirationDays: this.expiration_days_input.value || '',
+      //expirationDays: this.expiration_days_input.value || '',
       displayScores: this.display_scores_checkbox.checked,
     };
 
@@ -50,13 +53,6 @@ class ExtensionMenu {
     });
   }
 
-  private updateScores(): void {
-    this.sendMessageToAllTabs({
-      action: 'updatedScoresSetting',
-      displayScores: this.display_scores_checkbox.checked,
-    });
-  }
-
   private toggleSpoilerBlockers(): void {
     this.spoiler_blockers_enabled = !this.spoiler_blockers_enabled;
     this.remove_spoiler_blockers_button.textContent = this.spoiler_blockers_enabled
@@ -72,22 +68,23 @@ class ExtensionMenu {
   private setupEventListeners(): void {
     this.basketball_checkbox.addEventListener('change', () => {
       this.saveSettings();
-      this.sendMessageToAllTabs({ action: 'updatedBasketballSetting' });
+      this.sendMessageToAllTabs({ action: 'updatedBasketballSetting', value: this.basketball_checkbox.checked });
     });
 
     this.football_checkbox.addEventListener('change', () => {
       this.saveSettings();
-      this.sendMessageToAllTabs({ action: 'updatedFootballSetting' });
+      this.sendMessageToAllTabs({ action: 'updatedFootballSetting', value: this.football_checkbox.checked });
     });
 
-    this.expiration_days_input.addEventListener('input', () => {
-      this.saveSettings();
-      this.sendMessageToAllTabs({ action: 'updatedExpirationDaysSetting' });
-    });
-
+    if (this.expiration_days_input) {
+      this.expiration_days_input.addEventListener('input', () => {
+        this.saveSettings();
+        this.sendMessageToAllTabs({ action: 'updatedExpirationDaysSetting' });
+      });
+    }
     this.display_scores_checkbox.addEventListener('change', () => {
       this.saveSettings();
-      this.updateScores();
+      this.sendMessageToAllTabs({ action: 'updatedScoresSetting', value: this.display_scores_checkbox.checked });
     });
 
     this.remove_spoiler_blockers_button.addEventListener('click', () => {

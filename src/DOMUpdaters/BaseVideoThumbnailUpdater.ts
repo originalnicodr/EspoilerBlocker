@@ -3,7 +3,14 @@ import { Settings } from '../utils/settings';
 import { BaseUpdater } from './BaseUpdater';
 
 export class BaseVideoThumbnailUpdater extends BaseUpdater {
+  protected originalState: {
+    thumbnailDisplayStyle?: string;
+    titleTextContent?: string;
+    containerDisplayStyle?: string;
+  } = {};
+
   protected thumbnail: HTMLElement;
+  protected added_thumbnail_element: HTMLElement | null = null;
 
   constructor(container: HTMLElement) {
     super(container);
@@ -37,7 +44,7 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     if (!this.thumbnail) return;
     const settings: Settings = await this.loadSettings();
 
-    thumbnailRender(
+    this.added_thumbnail_element = thumbnailRender(
       this.thumbnail,
       this.team_a,
       this.team_b,
@@ -46,14 +53,21 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     );
   }
 
-  protected addThumbnailHoverActions(wrapper: HTMLElement){
-    this.thumbnail.addEventListener('mouseenter', () => {
-      wrapper.style.opacity = '0';
-    });
+  public backupOriginal() {
+    if (!this.container) return;
+    super.backupOriginal();
+    this.originalState.thumbnailDisplayStyle = (this.thumbnail as HTMLElement).style.display;
+  }
 
-    this.thumbnail.addEventListener('mouseleave', () => {
-      wrapper.style.opacity = '100%';
-    });
+  public restoreSpoilers() {
+    super.restoreSpoilers();
+
+    if (this.originalState.thumbnailDisplayStyle !== undefined) {
+      (this.thumbnail as HTMLElement).style.display = this.originalState.thumbnailDisplayStyle;
+    }
+
+    this.added_thumbnail_element?.remove();
+    this.added_thumbnail_element = null;
   }
 
   protected getThumbnail(): HTMLElement {

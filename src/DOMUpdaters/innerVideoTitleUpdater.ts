@@ -19,14 +19,9 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
     }
 
     if (this.getTitleText() !== this.spoiler_blocked_title_text) {
+      this.backupOriginal();
       this.title.textContent = this.spoiler_blocked_title_text;
     }
-
-    this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getIsESPNVideo(): boolean {

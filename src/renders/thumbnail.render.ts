@@ -1,5 +1,4 @@
 import { getTeamBadge } from '../utils/getTeamBadge';
-import { getTeamsByTitle } from '../utils/getTeamsByTitle';
 
 type Style = Partial<CSSStyleDeclaration>;
 
@@ -41,30 +40,41 @@ export const thumbnailRender = (
   team_b: string,
   match_date: Date,
   total_score: undefined | number,
-) => {
-  // create basic structure
-  const child = addBaseThumnailStyles(containerElement);
+): HTMLElement => {
+  // This element holds all added stuff so we can easily remove it later.
+  const wrapper = document.createElement('div');
+  wrapper.className = 'espn-spoiler-wrapper';
+  Object.assign(wrapper.style, {
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+    pointerEvents: 'none',
+  });
 
+  containerElement.appendChild(wrapper);
+
+  const child: HTMLElement = addBaseThumnailStyles(wrapper);
   addTeamsBadges(child, [team_a, team_b]);
   addInBetweenBadges(child, match_date, total_score);
-  addRibbon(containerElement);
+  addRibbon(wrapper);
   addHoverEffect(containerElement);
+
+  return wrapper;
 };
 
-function addBaseThumnailStyles(containerElement: HTMLElement) {
-  // Create animated background layer
+function addBaseThumnailStyles(wrapper: HTMLElement): HTMLElement {
   const animatedBorder = document.createElement('div');
   Object.assign(animatedBorder.style, backgroundDivStyle);
   animatedBorder.className = 'background';
 
-  // Create the inner "thumbnail" content
   const childElement = document.createElement('div');
   childElement.className = 'cool_thumbnail';
   Object.assign(childElement.style, childElementStyle);
 
-  // Append both layers
-  containerElement.appendChild(animatedBorder);
-  containerElement.appendChild(childElement);
+  wrapper.appendChild(animatedBorder);
+  wrapper.appendChild(childElement);
 
   // Add keyframe animation via a style tag once
   if (!document.getElementById('espn-blocker-thumbnail-spin-style')) {
@@ -74,15 +84,14 @@ function addBaseThumnailStyles(containerElement: HTMLElement) {
     @keyframes espn-blocker-thumbnail-spin-style {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
-    }
-  `;
+    }`;
     document.head.appendChild(styleTag);
   }
 
   return childElement;
 }
 
-function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
+function addTeamsBadges(container: HTMLElement, teams: string[]) {
   const imageContainer = document.createElement('div');
   Object.assign(imageContainer.style, {
     display: 'flex',
@@ -108,7 +117,7 @@ function addTeamsBadges(container: HTMLDivElement, teams: string[]) {
   }
 }
 
-function addInBetweenBadges(container: HTMLDivElement, match_date: Date | null, total_score: number | null) {
+function addInBetweenBadges(container: HTMLElement, match_date: Date | null, total_score: number | null) {
   const wrapper = document.createElement('div');
   // Some containers start with 0 width, so we need to set a minimum font size
   const base_font_size = container.offsetWidth == 0 ? 20 : container.offsetWidth / 10;
@@ -207,10 +216,17 @@ function addRibbon(container: HTMLElement) {
 }
 
 function addHoverEffect(containerElement: HTMLElement) {
-  const background = containerElement.querySelector('.background') as HTMLElement;
-  const badges = containerElement.querySelectorAll('img');
+  const wrapper = containerElement.querySelector('.espn-spoiler-wrapper') as HTMLElement;
+  const background = wrapper?.querySelector('.background') as HTMLElement;
+  const badges = wrapper?.querySelectorAll('img') || [];
 
-  containerElement.addEventListener('mouseenter', () => {
+  // Helper to detect real "entry" and "exit" from the whole container
+  const isLeavingOrEnteringFromOutside = (e: MouseEvent) =>
+    !containerElement.contains(e.relatedTarget as Node);
+
+  containerElement.addEventListener('mouseover', (e) => {
+    if (!isLeavingOrEnteringFromOutside(e)) return;
+
     if (background) {
       background.style.animationDuration = '8s'; // Slow down the spin
       background.style.filter = 'blur(14px)';
@@ -223,7 +239,9 @@ function addHoverEffect(containerElement: HTMLElement) {
     });
   });
 
-  containerElement.addEventListener('mouseleave', () => {
+  containerElement.addEventListener('mouseout', (e) => {
+    if (!isLeavingOrEnteringFromOutside(e)) return;
+
     if (background) {
       background.style.animationDuration = '4s'; // Reset spin speed
       background.style.filter = 'blur(10px)';
