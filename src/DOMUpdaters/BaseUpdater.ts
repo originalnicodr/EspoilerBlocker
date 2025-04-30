@@ -219,7 +219,7 @@ export class BaseUpdater {
           block_spoilers_basketball: Boolean(data.basketball),
           block_spoilers_football: Boolean(data.football),
           block_spoilers_expiration_days: data.hasOwnProperty('expirationDays') ? data.expirationDays : '',
-          display_total_score: Boolean(data.value),
+          display_total_score: Boolean(data.displayScores),
         });
       });
     });
@@ -324,8 +324,6 @@ export class BaseUpdater {
         */
         break;
       case 'updatedExpirationDaysSetting':
-        break;
-      case 'updatedScoresSetting':
         break;
     }
   }

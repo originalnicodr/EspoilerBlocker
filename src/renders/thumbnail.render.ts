@@ -120,7 +120,7 @@ function addTeamsBadges(container: HTMLElement, teams: string[]) {
 function addInBetweenBadges(container: HTMLElement, match_date: Date | null, total_score: number | null) {
   const wrapper = document.createElement('div');
   // Some containers start with 0 width, so we need to set a minimum font size
-  const base_font_size = container.offsetWidth == 0 ? 20 : container.offsetWidth / 10;
+  const base_font_size = container.offsetWidth === 0 ? 20 : container.offsetWidth / 10;
   Object.assign(wrapper.style, {
     position: 'absolute',
     top: '0',
@@ -130,6 +130,7 @@ function addInBetweenBadges(container: HTMLElement, match_date: Date | null, tot
     pointerEvents: 'none',
     fontSize: `${base_font_size}px`,
   });
+  wrapper.className = 'espn-spoilerblocker-middle-elements';
 
   const vs_element = document.createElement('p');
   vs_element.innerText = 'vs';
@@ -168,24 +169,30 @@ function addInBetweenBadges(container: HTMLElement, match_date: Date | null, tot
   }
 
   if (total_score) {
-    const score_element = document.createElement('p');
-    score_element.innerText = `(${total_score})`;
-    Object.assign(score_element.style, {
-      position: 'absolute',
-      top: '55%',
-      left: '0',
-      transform: 'translateY(100%)',
-      width: '100%',
-      textAlign: 'center',
-      fontSize: '0.75em',
-      color: 'white',
-      margin: '0',
-      pointerEvents: 'none',
-    });
+    const score_element = createScoreElement(total_score);
     wrapper.appendChild(score_element);
   }
 
   container.appendChild(wrapper);
+}
+
+export function createScoreElement(score: number): HTMLElement {
+  const score_element = document.createElement('p');
+  score_element.innerText = `(${score})`;
+  Object.assign(score_element.style, {
+    position: 'absolute',
+    top: '55%',
+    left: '0',
+    transform: 'translateY(100%)',
+    width: '100%',
+    textAlign: 'center',
+    fontSize: '0.75em',
+    color: 'white',
+    margin: '0',
+    pointerEvents: 'none',
+  });
+  score_element.className = 'espn-spoilerblocker-total-score';
+  return score_element;
 }
 
 function addRibbon(container: HTMLElement) {

@@ -1,4 +1,4 @@
-import { thumbnailRender } from '../renders/thumbnail.render';
+import { thumbnailRender, createScoreElement } from '../renders/thumbnail.render';
 import { Settings } from '../utils/settings';
 import { BaseUpdater } from './BaseUpdater';
 
@@ -15,6 +15,8 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
   constructor(container: HTMLElement) {
     super(container);
     this.thumbnail = this.getThumbnail();
+
+    this.subscribeToScoreSettingsChange();
   }
 
   protected debugPrintMembers() {
@@ -68,6 +70,39 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
 
     this.added_thumbnail_element?.remove();
     this.added_thumbnail_element = null;
+  }
+
+  protected addScoreToThumbnail(): void {
+    const middle = this.added_thumbnail_element.querySelector('.espn-spoilerblocker-middle-elements');
+    if (!middle || this.added_thumbnail_element.querySelector('.espn-spoilerblocker-total-score')) return;
+  
+    const score_element = createScoreElement(this.total_score);
+    middle.appendChild(score_element);
+  }
+  
+  protected removeScoreFromThumbnail(): void {
+    const score_element = this.added_thumbnail_element.querySelector('.espn-spoilerblocker-total-score');
+    if (score_element) {
+      score_element.remove();
+    }
+  }
+
+  private subscribeToScoreSettingsChange() {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      this.updateScoreSeettingsChangeMessage(message, sender, sendResponse);
+    });
+  }
+
+  protected updateScoreSeettingsChangeMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
+    if (message.action === 'updatedScoresSetting' && this.added_thumbnail_element) {
+      if (this.added_thumbnail_element) {
+        if (message.value) {
+          this.addScoreToThumbnail();
+        } else {
+          this.removeScoreFromThumbnail();
+        }
+      }
+    }
   }
 
   protected getThumbnail(): HTMLElement {
