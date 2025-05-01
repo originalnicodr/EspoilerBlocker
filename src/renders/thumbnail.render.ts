@@ -35,7 +35,7 @@ const childElementStyle: Style = {
 };
 
 export const thumbnailRender = (
-  containerElement: HTMLElement,
+  container_element: HTMLElement,
   team_a: string,
   team_b: string,
   match_date: Date,
@@ -53,47 +53,47 @@ export const thumbnailRender = (
     pointerEvents: 'none',
   });
 
-  containerElement.appendChild(wrapper);
+  container_element.appendChild(wrapper);
 
   const child: HTMLElement = addBaseThumnailStyles(wrapper);
   addTeamsBadges(child, [team_a, team_b]);
   addInBetweenBadges(child, match_date, total_score);
   addRibbon(wrapper);
-  addHoverEffect(containerElement);
+  addHoverEffect(container_element);
 
   return wrapper;
 };
 
 function addBaseThumnailStyles(wrapper: HTMLElement): HTMLElement {
-  const animatedBorder = document.createElement('div');
-  Object.assign(animatedBorder.style, backgroundDivStyle);
-  animatedBorder.className = 'background';
+  const animated_border = document.createElement('div');
+  Object.assign(animated_border.style, backgroundDivStyle);
+  animated_border.className = 'background';
 
-  const childElement = document.createElement('div');
-  childElement.className = 'cool_thumbnail';
-  Object.assign(childElement.style, childElementStyle);
+  const child_element = document.createElement('div');
+  child_element.className = 'cool_thumbnail';
+  Object.assign(child_element.style, childElementStyle);
 
-  wrapper.appendChild(animatedBorder);
-  wrapper.appendChild(childElement);
+  wrapper.appendChild(animated_border);
+  wrapper.appendChild(child_element);
 
   // Add keyframe animation via a style tag once
   if (!document.getElementById('espn-blocker-thumbnail-spin-style')) {
-    const styleTag = document.createElement('style');
-    styleTag.id = 'espn-blocker-thumbnail-spin-style';
-    styleTag.innerHTML = `
+    const style_tag = document.createElement('style');
+    style_tag.id = 'espn-blocker-thumbnail-spin-style';
+    style_tag.innerHTML = `
     @keyframes espn-blocker-thumbnail-spin-style {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }`;
-    document.head.appendChild(styleTag);
+    document.head.appendChild(style_tag);
   }
 
-  return childElement;
+  return child_element;
 }
 
 function addTeamsBadges(container: HTMLElement, teams: string[]) {
-  const imageContainer = document.createElement('div');
-  Object.assign(imageContainer.style, {
+  const image_container = document.createElement('div');
+  Object.assign(image_container.style, {
     display: 'flex',
     position: 'absolute',
     height: '80%',
@@ -105,7 +105,7 @@ function addTeamsBadges(container: HTMLElement, teams: string[]) {
     filter: 'drop-shadow(rgb(10, 10, 10) 0px 6px 10px)',
   } as Style);
 
-  container.appendChild(imageContainer);
+  container.appendChild(image_container);
 
   for (const team of teams) {
     const image = document.createElement('img');
@@ -113,7 +113,7 @@ function addTeamsBadges(container: HTMLElement, teams: string[]) {
     image.src = getTeamBadge(team);
 
     Object.assign(image.style, { width: '30%', pointerEvents: 'none' } as Style);
-    imageContainer.appendChild(image);
+    image_container.appendChild(image);
   }
 }
 
@@ -222,16 +222,16 @@ function addRibbon(container: HTMLElement) {
   container.appendChild(ribbon);
 }
 
-function addHoverEffect(containerElement: HTMLElement) {
-  const wrapper = containerElement.querySelector('.espn-spoiler-wrapper') as HTMLElement;
+function addHoverEffect(container_element: HTMLElement) {
+  const wrapper = container_element.querySelector('.espn-spoiler-wrapper') as HTMLElement;
   const background = wrapper?.querySelector('.background') as HTMLElement;
   const badges = wrapper?.querySelectorAll('img') || [];
 
   // Helper to detect real "entry" and "exit" from the whole container
   const isLeavingOrEnteringFromOutside = (e: MouseEvent) =>
-    !containerElement.contains(e.relatedTarget as Node);
+    !container_element.contains(e.relatedTarget as Node);
 
-  containerElement.addEventListener('mouseover', (e) => {
+  container_element.addEventListener('mouseover', (e) => {
     if (!isLeavingOrEnteringFromOutside(e)) return;
 
     if (background) {
@@ -246,7 +246,7 @@ function addHoverEffect(containerElement: HTMLElement) {
     });
   });
 
-  containerElement.addEventListener('mouseout', (e) => {
+  container_element.addEventListener('mouseout', (e) => {
     if (!isLeavingOrEnteringFromOutside(e)) return;
 
     if (background) {

@@ -281,8 +281,6 @@ export class BaseUpdater {
     });
   }
 
-  // TODO
-  // Maybe just append restoreSpoilers() and update() calls? Maybe doing so would make spoilers visible a microsecond and we wouldn't want that
   protected handleMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
     switch (message.action) {
       case 'enableSpoilerBlockers':
@@ -293,34 +291,26 @@ export class BaseUpdater {
         this.is_being_spoiler_blocked = false;
         break;
       case 'updatedBasketballSetting':
-        // WIP
-        /*
         if (this.highlight_type === VideoHighlightType.Basketball) {
           if (message.value && !this.is_being_spoiler_blocked) {
-            this.is_being_spoiler_blocked = true;
             this.update();
           } else if (!message.value && this.is_being_spoiler_blocked) {
-            this.is_being_spoiler_blocked = false;
             this.restoreSpoilers();
+            this.is_being_spoiler_blocked = false;
           }
         }
-        */
         break;
       case 'updatedFootballSetting':
-        // WIP
-        /*
         if (this.highlight_type === VideoHighlightType.Football) {
           if (message.value && !this.is_being_spoiler_blocked) {
             console.log('Adding spoiler blockers');
-            this.is_being_spoiler_blocked = true;
             this.update();
           } else if (!message.value && this.is_being_spoiler_blocked) {
             console.log('Removing spoiler blockers');
-            this.is_being_spoiler_blocked = false;
             this.restoreSpoilers();
+            this.is_being_spoiler_blocked = false;
           }
         }
-        */
         break;
       case 'updatedExpirationDaysSetting':
         break;
