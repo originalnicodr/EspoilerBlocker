@@ -26,7 +26,10 @@ export class VideoTitleUpdater extends BaseUpdater {
 
     if (this.getTitleText() !== this.spoiler_blocked_title_text) {
       this.title.textContent = this.spoiler_blocked_title_text;
+      this.title.title = this.spoiler_blocked_title_text;
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   protected getIsESPNVideo(): boolean {
@@ -60,5 +63,6 @@ export class VideoTitleUpdater extends BaseUpdater {
 
   public restoreSpoilers() {
     this.title.textContent = this.originalState.titleTextContent;
+    this.title.title = this.originalState.titleTextContent;
   }
 }

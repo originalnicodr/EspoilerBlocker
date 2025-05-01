@@ -27,6 +27,8 @@ export class TitleUpdater extends BaseUpdater {
       this.backupOriginal();
       document.title = this.spoiler_blocked_title_text;
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   protected getTitleText(): string {
@@ -65,6 +67,12 @@ export class TitleUpdater extends BaseUpdater {
   }
 
   public restoreSpoilers() {
+    // We don't want to restore the title if we are not on a video page, as we didn't change it.
+    const current_url: string = window.location.href;
+    if (!current_url.includes('watch?v=')) {
+      return;
+    }
+
     document.title = this.originalState.titleTextContent;
   }
 }

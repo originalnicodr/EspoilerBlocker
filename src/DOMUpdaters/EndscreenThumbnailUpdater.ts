@@ -29,7 +29,10 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
+      return;
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   protected getIsESPNVideo(): boolean {

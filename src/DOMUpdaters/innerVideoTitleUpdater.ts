@@ -22,6 +22,8 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
       this.backupOriginal();
       this.title.textContent = this.spoiler_blocked_title_text;
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   protected getIsESPNVideo(): boolean {

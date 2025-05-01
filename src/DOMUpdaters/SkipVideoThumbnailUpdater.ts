@@ -50,7 +50,10 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       this.thumbnail.style.borderRadius = '0.5rem'
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
+      return;
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   protected getTitle(): HTMLElement {
@@ -107,6 +110,10 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   public restoreSpoilers() {
     //super.restoreSpoilers();
+    if (!this.is_being_spoiler_blocked) {
+      return;
+    }
+
     if (this.originalState.dataPreview !== undefined) {
       this.container.setAttribute('data-preview', this.originalState.dataPreview);
     }

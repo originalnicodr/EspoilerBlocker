@@ -26,7 +26,7 @@ export class BaseUpdater {
   protected team_b: string;
   protected match_date: Date;
 
-  protected is_being_spoiler_blocked: boolean = true;
+  protected is_being_spoiler_blocked: boolean = false;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -286,12 +286,11 @@ export class BaseUpdater {
   protected handleMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
     switch (message.action) {
       case 'enableSpoilerBlockers':
-        this.is_being_spoiler_blocked = true;
         this.update();
         break;
       case 'removeSpoilerBlockers':
-        this.is_being_spoiler_blocked = false;
         this.restoreSpoilers();
+        this.is_being_spoiler_blocked = false;
         break;
       case 'updatedBasketballSetting':
         // WIP

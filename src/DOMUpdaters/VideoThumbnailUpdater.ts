@@ -31,7 +31,10 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       this.thumbnail.style.borderRadius = '0.5rem'
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
+      return;
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   protected getIsESPNVideo(): boolean {
@@ -129,6 +132,10 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   public restoreSpoilers() {
     super.restoreSpoilers();
+
+    if (!this.is_being_spoiler_blocked) {
+      return;
+    }
 
     let thumbnail_image: HTMLElement = this.thumbnail.querySelector('#thumbnail');
 

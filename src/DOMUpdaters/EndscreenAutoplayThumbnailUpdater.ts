@@ -31,7 +31,10 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
       this.thumbnail.style.borderRadius = '0.5rem'
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
+      return;
     }
+
+    this.is_being_spoiler_blocked = true;
   }
 
   protected getIsESPNVideo(): boolean {
