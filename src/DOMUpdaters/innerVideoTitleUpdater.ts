@@ -19,14 +19,11 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
     }
 
     if (this.getTitleText() !== this.spoiler_blocked_title_text) {
+      this.backupOriginal();
       this.title.textContent = this.spoiler_blocked_title_text;
     }
 
     this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getIsESPNVideo(): boolean {
@@ -39,7 +36,10 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
 
   protected getChannel(): string {
     const channels_name_element: HTMLElement = document.querySelector('yt-formatted-string.style-scope.ytd-channel-name.complex-string');
-    return channels_name_element.innerText;
+    if (channels_name_element) {
+      return channels_name_element ? channels_name_element.innerText.trim() : '';
+    }
+    return 'ESPN Fans';
   }
 
   // Dummy implementations, can't get this info from the video being watched

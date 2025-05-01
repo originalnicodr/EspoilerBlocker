@@ -1,12 +1,14 @@
 import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
 export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater {
+  protected background_image_url: string;
   constructor(container: HTMLElement) {
     super(container);
   }
 
   public async update() {
     //this.debugPrintMembers();
+    this.backupOriginal();
 
     const current_url: string = window.location.href;
     if (!current_url.includes('watch?v=')) {
@@ -21,15 +23,18 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
 
     try {
       await this.spoilerBlockVideo();
+
+      // Make sure the container is positioned relative to the animated background.
+      // Otherwise the rotating background rectangle would be rendered in its entirety.
+      this.thumbnail.style.position = 'relative';
+      this.thumbnail.style.overflow = 'hidden';
+      this.thumbnail.style.borderRadius = '0.5rem'
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
+      return;
     }
 
     this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getIsESPNVideo(): boolean {
@@ -38,7 +43,10 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
   
   protected getChannel(): string {
     const channels_name_element = this.container.querySelector<HTMLElement>('.ytp-autonav-endscreen-upnext-author');
-    return channels_name_element ? channels_name_element.innerText.trim() : '';
+    if (channels_name_element) {
+      return channels_name_element ? channels_name_element.innerText.trim() : '';
+    }
+    return 'ESPN Fans';
   }
 
   // YouTube won't recommend videos the user already watched
@@ -69,4 +77,15 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
     }
   }
 
+  public backupOriginal() {
+    if (!this.container) return;
+    super.backupOriginal();
+    
+    this.background_image_url = this.thumbnail.style.backgroundImage;
+  }
+
+  public restoreSpoilers() {
+    super.restoreSpoilers();
+    this.thumbnail.style.backgroundImage = this.background_image_url;
+  }
 }

@@ -20,18 +20,16 @@ export class VideoTitleUpdater extends BaseUpdater {
     }
 
     if (!this.spoiler_blocked_title_text) {
+      this.backupOriginal();
       this.spoiler_blocked_title_text = this.blockTitleSpoiler(this.getTitleText());
     }
 
     if (this.getTitleText() !== this.spoiler_blocked_title_text) {
       this.title.textContent = this.spoiler_blocked_title_text;
+      this.title.title = this.spoiler_blocked_title_text;
     }
 
     this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getIsESPNVideo(): boolean {
@@ -40,7 +38,10 @@ export class VideoTitleUpdater extends BaseUpdater {
 
   protected getChannel(): string {
     const channels_name_element: HTMLElement = document.querySelector('yt-formatted-string.style-scope.ytd-channel-name.complex-string');
-    return channels_name_element.innerText;
+    if (channels_name_element) {
+      return channels_name_element ? channels_name_element.innerText.trim() : '';
+    }
+    return 'ESPN Fans';
   }
 
   // Dummy implementations, can't get this info from the video being watched
@@ -56,4 +57,12 @@ export class VideoTitleUpdater extends BaseUpdater {
     return this.container.querySelector<HTMLElement>('yt-formatted-string');
   }
 
+  public backupOriginal() {
+    this.originalState.titleTextContent = this.title.textContent;
+  }
+
+  public restoreSpoilers() {
+    this.title.textContent = this.originalState.titleTextContent;
+    this.title.title = this.originalState.titleTextContent;
+  }
 }

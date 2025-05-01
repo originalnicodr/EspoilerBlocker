@@ -9,6 +9,7 @@ import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
+  public static ADDED_CLASS_TO_MARK_AS_ADDED = 'ESPN_SPOILER_BLOCKER_MARK_AS_ADDED';
 
   private observers: Array<MutationObserver> = [];
   private updaters: Array<BaseUpdater> = [];
@@ -39,12 +40,12 @@ export class EspnSpoilerBlocker {
   public stop() {
     // probable this is the method to discard the DOM changes we made.
     this.cleanup();
-    this.updaters.forEach((updater) => updater.removeChanges());
+    this.updaters.forEach((updater) => updater.restoreSpoilers());
   }
 
   private cleanup() {
     this.observers.forEach((observer) => observer.disconnect());
-    this.updaters.forEach((updater) => updater.removeChanges());
+    this.updaters.forEach((updater) => updater.restoreSpoilers());
   }
 
   private reactToVideoThumbnailsChanges() {
@@ -64,13 +65,13 @@ export class EspnSpoilerBlocker {
       return;
     }
 
-    const titleUpdater = new TitleUpdater(title);
+    const title_updater = new TitleUpdater(title);
 
     const observer = new MutationObserver(() => {
-      titleUpdater.update();
+      title_updater.update();
       this.afterTitleUpdate();
     });
-    titleUpdater.update();
+    title_updater.update();
     this.afterTitleUpdate();
 
     this.observers.push(observer);
@@ -82,7 +83,11 @@ export class EspnSpoilerBlocker {
   }
 
   private get youtubeMediaSelectors(): string[] {
-    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer'];
+    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer', 'ytd-video-renderer'];
+  }
+
+  private isElementAddedByUs(node: Element) {
+    return node.classList.contains(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_ADDED);
   }
 
   private isNodeAYoutubeVideo(node: Element) {
@@ -162,7 +167,7 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && this.isNodeAYoutubeVideo(node)) {
+          if (node instanceof HTMLElement && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
           }
         });
@@ -201,7 +206,7 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && this.isNodeAYoutubeVideo(node)) {
+          if (node instanceof HTMLElement && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
           }
         });
@@ -390,8 +395,8 @@ export class EspnSpoilerBlocker {
     // do not watch video titles twice
     if (this.watchingVideoTitle === true) return;
 
-    let visibleVideoTitle = undefined;
-    let innerHTMLvideoTitle = undefined;
+    let visible_video_title = undefined;
+    let inner_HTML_video_title = undefined;
     try {
       // these two elements are on the same page. Fire the two promises at the same time
 
@@ -401,8 +406,8 @@ export class EspnSpoilerBlocker {
       ];
       try {
         const results = await Promise.all(promises);
-        visibleVideoTitle = results[0];
-        innerHTMLvideoTitle = results[1];
+        visible_video_title = results[0];
+        inner_HTML_video_title = results[1];
       } catch (error) {
         return;
       }
@@ -414,29 +419,29 @@ export class EspnSpoilerBlocker {
     this.watchingVideoTitle = true;
 
     // create both updaters
-    const titleUpdater = new VideoTitleUpdater(visibleVideoTitle);
-    const innerTitleUpdater = new InnerVideoTitleUpdater(innerHTMLvideoTitle);
-    this.updaters.push(titleUpdater, innerTitleUpdater);
+    const video_title_updater = new VideoTitleUpdater(visible_video_title);
+    const inner_title_updater = new InnerVideoTitleUpdater(inner_HTML_video_title);
+    this.updaters.push(video_title_updater, inner_title_updater);
 
-    const titleObserver = new MutationObserver(() => {
-      titleUpdater.update();
+    const title_observer = new MutationObserver(() => {
+      video_title_updater.update();
     });
-    titleUpdater.update();
+    video_title_updater.update();
 
-    this.observers.push(titleObserver);
-    titleObserver.observe(visibleVideoTitle, {
+    this.observers.push(title_observer);
+    title_observer.observe(visible_video_title, {
       subtree: true,
       characterData: true,
       childList: true,
     });
 
-    const innerTitleObserver = new MutationObserver(() => {
-      innerTitleUpdater.update();
+    const inner_title_observer = new MutationObserver(() => {
+      inner_title_updater.update();
     });
-    innerTitleUpdater.update();
+    inner_title_updater.update();
 
-    this.observers.push(innerTitleObserver);
-    innerTitleObserver.observe(innerHTMLvideoTitle, {
+    this.observers.push(inner_title_observer);
+    inner_title_observer.observe(inner_HTML_video_title, {
       subtree: true,
       characterData: true,
       childList: true,

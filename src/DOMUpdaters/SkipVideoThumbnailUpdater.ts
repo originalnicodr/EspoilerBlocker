@@ -1,12 +1,20 @@
 import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
 export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
+  protected originalState: {
+    thumbnailDisplayStyle?: string;
+    titleTextContent?: string;
+    containerDisplayStyle?: string;
+    dataPreview?: string;
+  } = {};
+
   constructor(container: HTMLElement) {
     super(container);
   }
 
   public async update() {
     //this.debugPrintMembers();
+    this.backupOriginal();
 
     const current_url: string = window.location.href;
     if (!current_url.includes('watch?v=')) {
@@ -21,15 +29,31 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     try {
       await this.spoilerBlockVideo();
+
+      this.added_thumbnail_element.style.opacity = '0'; 
+      this.container.addEventListener('mouseenter', () => {
+        if (this.added_thumbnail_element) {
+          this.added_thumbnail_element.style.opacity = '100%';
+        }
+      });
+
+      this.container.addEventListener('mouseleave', () => {
+        if (this.added_thumbnail_element) {
+          this.added_thumbnail_element.style.opacity = '0';
+        }
+      });
+
+      // Make sure the container is positioned relative to the animated background.
+      // Other the rotating background rectangle would be rendered in its entirety.
+      this.thumbnail.style.position = 'relative';
+      this.thumbnail.style.overflow = 'hidden';
+      this.thumbnail.style.borderRadius = '0.5rem'
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
+      return;
     }
 
     this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getTitle(): HTMLElement {
@@ -46,8 +70,8 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getIsESPNVideo(): boolean {
-    // If we can properly block the spoiler from the title then it means we should do so
-    return this.canBlockTitleSpoiler(this.getTitleText());
+    // If the title contains spoilers then we should block them, so we consider it an ESPN video
+    return this.videoTitleContainsSpoilers();
   }
 
   protected getChannel(): string {
@@ -77,17 +101,28 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     this.container.removeAttribute('data-preview');
   }
 
-  // Redefine BaseVideoThumbnailUpdater.addThumbnailHoverActions since they need to be different here
-  protected addThumbnailHoverActions(wrapper: HTMLElement){
-    // Hide it by default
-    wrapper.style.opacity = '0'; 
+  public backupOriginal() {
+    if (!this.container) return;
+    //super.backupOriginal();
+    this.originalState.dataPreview = this.container.getAttribute('data-preview');
+    this.originalState.titleTextContent = this.title.getAttribute('data-tooltip-text');
+  }
 
-    this.container.addEventListener('mouseenter', () => {
-      wrapper.style.opacity = '100%';
-    });
+  public restoreSpoilers() {
+    //super.restoreSpoilers();
+    if (!this.is_being_spoiler_blocked) {
+      return;
+    }
 
-    this.container.addEventListener('mouseleave', () => {
-      wrapper.style.opacity = '0';
-    });
+    if (this.originalState.dataPreview !== undefined) {
+      this.container.setAttribute('data-preview', this.originalState.dataPreview);
+    }
+
+    if (this.originalState.titleTextContent !== undefined) {
+      this.container.setAttribute('data-tooltip-text', this.originalState.titleTextContent);
+    }
+
+    this.added_thumbnail_element?.remove();
+    this.added_thumbnail_element = null;
   }
 }

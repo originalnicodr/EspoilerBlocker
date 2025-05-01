@@ -24,14 +24,11 @@ export class TitleUpdater extends BaseUpdater {
     }
 
     if (document.title !== this.spoiler_blocked_title_text) {
+      this.backupOriginal();
       document.title = this.spoiler_blocked_title_text;
     }
 
     this.is_being_spoiler_blocked = true;
-  }
-
-  public removeChanges() {
-    super.removeChanges();
   }
 
   protected getTitleText(): string {
@@ -41,8 +38,8 @@ export class TitleUpdater extends BaseUpdater {
   }
 
   protected getIsESPNVideo(): boolean {
-    // If we can properly block the spoiler from the title then it means we should do so
-    return this.canBlockTitleSpoiler(this.getTitleText());
+    // If the title contains spoilers then we should block them, so we consider it an ESPN video
+    return this.videoTitleContainsSpoilers();
   }
 
   // Dummy implementations, can't get this info from the video being watched
@@ -63,5 +60,19 @@ export class TitleUpdater extends BaseUpdater {
   // We are not using the title because it is an HTMLElement, and this updater only focuses on the document title
   protected getTitle(): HTMLElement {
     return null;
+  }
+
+  public backupOriginal() {
+    this.originalState.titleTextContent = document.title;
+  }
+
+  public restoreSpoilers() {
+    // We don't want to restore the title if we are not on a video page, as we didn't change it.
+    const current_url: string = window.location.href;
+    if (!current_url.includes('watch?v=')) {
+      return;
+    }
+
+    document.title = this.originalState.titleTextContent;
   }
 }
