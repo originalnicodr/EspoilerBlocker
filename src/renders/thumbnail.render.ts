@@ -130,6 +130,8 @@ function addInBetweenBadges(container: HTMLElement, match_date: Date | null, tot
     width: '100%',
     height: '100%',
     pointerEvents: 'none',
+    fontFamily: 'Segoe UI',
+    fontWeight: 'bold',
     fontSize: `${base_font_size}px`,
   });
   wrapper.className = 'espn-spoilerblocker-middle-elements';
@@ -188,6 +190,8 @@ export function createScoreElement(score: number): HTMLElement {
     transform: 'translateY(100%)',
     width: '100%',
     textAlign: 'center',
+    fontFamily: 'Segoe UI',
+    fontWeight: 'bold',
     fontSize: '0.75em',
     color: 'white',
     margin: '0',
@@ -294,6 +298,8 @@ export function addHoverButtons(
     Object.assign(button.style, {
       position: 'absolute',
       transform: 'translate(-50%, -50%)',
+      fontFamily: 'Segoe UI',
+      fontWeight: 'bold',
       fontSize: `${base_font_size}px`,
       //padding: '0.4em 0.8em',
       backgroundColor: 'rgba(0, 0, 0, 0.7)',

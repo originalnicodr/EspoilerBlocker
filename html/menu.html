@@ -1,45 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Extension Settings</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configuración</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
-      width: 300px;
+    :root {
+      --gradient: conic-gradient(from 0deg, #fd4444, #fd4444, #fd4444, #8745fa, #ca47f5, #fd4444);
     }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: transparent;
+    }
+
+    .frame {
+      position: relative;
+      width: 320px;
+      margin: 0 auto;
+      padding: 4px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .frame::before {
+      content: "";
+      position: absolute;
+      top: -25%;
+      left: -25%;
+      width: 150%;
+      height: 150%;
+      z-index: 0;
+      background: var(--gradient);
+      animation: spin-frame 8s linear infinite;
+      border-radius: 50%;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background: #2c2c3c;
+      border-radius: 8px;
+      color: #f0f0f0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    header {
+      background-color: #3b3b4d;
+      padding: 12px;
+      text-align: center;
+      color: white;
+      font-size: 1.4em;
+      font-weight: bold;
+      border-bottom: 1px solid #444;
+    }
+
     .settings-section {
-      margin-bottom: 15px;
+      margin: 20px;
+      background-color: #38384a;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
+
+    h3 {
+      margin-top: 0;
+      font-size: 1.1em;
+      border-bottom: 1px solid #444;
+      padding-bottom: 4px;
+    }
+
     label {
-      display: block;
-      margin: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+      cursor: pointer;
     }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 6px;
+      border-radius: 4px;
+      border: none;
+      margin-top: 5px;
+      font-size: 1em;
+    }
+
     button {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      background: #fd4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
       margin-top: 10px;
-      padding: 5px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #ff6666;
+    }
+
+    @keyframes spin-frame {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <h2>Configuración</h2>
+  <div class="frame">
+    <div class="container">
+      <header>Configuración</header>
 
-  <div class="settings-section">
-    <h3>Bloquear spoilers para:</h3>
-    <label><input type="checkbox" id="checkbox-football" checked> Partidos de futbol</label>
-    <label><input type="checkbox" id="checkbox-basketball"> Partidos de basket</label>
-  </div>
-<!--
-  <div class="settings-section">
-    <h3>Tiempo de expiración del bloquer de spoilers</h3>
-    <input type="number" id="expiration-days" placeholder="Días" />
-  </div>
--->
-  <div class="settings-section">
-    <button id="remove-spoiler-blockers">Remover bloqueo de spoilers</button>
-    <label><input type="checkbox" id="display-scores-checkbox"> Mostrar puntos totales</label>
+      <div class="settings-section">
+        <h3>Bloquear spoilers para:</h3>
+        <label><input type="checkbox" id="checkbox-football" checked> Partidos de futbol</label>
+        <label><input type="checkbox" id="checkbox-basketball"> Partidos de basket</label>
+      </div>
+
+      <!--
+      <div class="settings-section">
+        <h3>Tiempo de expiración del bloqueo</h3>
+        <input type="number" id="expiration-days" placeholder="Días" />
+      </div>
+      -->
+
+      <div class="settings-section">
+        <button id="remove-spoiler-blockers">Remover bloqueo de spoilers</button>
+        <label><input type="checkbox" id="display-scores-checkbox"> Mostrar puntos totales</label>
+      </div>
+    </div>
   </div>
 
   <script src="../dist/menu.js"></script>
