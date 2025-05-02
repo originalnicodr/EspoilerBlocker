@@ -1,3 +1,4 @@
+import { VideoHighlightType } from '../utils/getHighlightType';
 import { getTeamBadge } from '../utils/getTeamBadge';
 
 type Style = Partial<CSSStyleDeclaration>;
@@ -38,6 +39,7 @@ export const thumbnailRender = (
   container_element: HTMLElement,
   team_a: string,
   team_b: string,
+  highlight_type: VideoHighlightType,
   match_date: Date,
   total_score: undefined | number,
 ): HTMLElement => {
@@ -56,7 +58,7 @@ export const thumbnailRender = (
   container_element.appendChild(wrapper);
 
   const child: HTMLElement = addBaseThumnailStyles(wrapper);
-  addTeamsBadges(child, [team_a, team_b]);
+  addTeamsBadges(child, [team_a, team_b], highlight_type);
   addInBetweenBadges(child, match_date, total_score);
   addRibbon(wrapper);
   addHoverEffect(container_element);
@@ -91,7 +93,7 @@ function addBaseThumnailStyles(wrapper: HTMLElement): HTMLElement {
   return child_element;
 }
 
-function addTeamsBadges(container: HTMLElement, teams: string[]) {
+function addTeamsBadges(container: HTMLElement, teams: string[], highlight_type: VideoHighlightType) {
   const image_container = document.createElement('div');
   Object.assign(image_container.style, {
     display: 'flex',
@@ -110,7 +112,7 @@ function addTeamsBadges(container: HTMLElement, teams: string[]) {
   for (const team of teams) {
     const image = document.createElement('img');
     image.alt = team + ' badge';
-    image.src = getTeamBadge(team);
+    image.src = getTeamBadge(team, highlight_type);
 
     Object.assign(image.style, { width: '30%', pointerEvents: 'none' } as Style);
     image_container.appendChild(image);

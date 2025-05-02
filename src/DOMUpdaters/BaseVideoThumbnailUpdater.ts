@@ -59,6 +59,7 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
       this.thumbnail,
       this.team_a,
       this.team_b,
+      this.highlight_type,
       this.match_date,
       settings.display_total_score ? this.total_score : null,
     );

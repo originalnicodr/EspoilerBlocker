@@ -287,8 +287,10 @@ export class BaseUpdater {
         this.update();
         break;
       case 'removeSpoilerBlockers':
-        this.restoreSpoilers();
-        this.is_being_spoiler_blocked = false;
+        if (this.is_being_spoiler_blocked) {
+          this.restoreSpoilers();
+          this.is_being_spoiler_blocked = false;
+        }
         break;
       case 'updatedBasketballSetting':
         if (this.highlight_type === VideoHighlightType.Basketball) {

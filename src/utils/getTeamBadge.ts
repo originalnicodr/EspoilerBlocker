@@ -1,8 +1,10 @@
-export function getTeamBadge(team: string): string {
-  return chrome.runtime.getURL(getTeamBadgeLocalPath(team));
+import { VideoHighlightType } from './getHighlightType';
+
+export function getTeamBadge(team: string, highlight_type: VideoHighlightType): string {
+  return chrome.runtime.getURL(getTeamBadgeLocalPath(team, highlight_type));
 }
 
-function getTeamBadgeLocalPath(team: string): string {
+function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType): string {
   // Premier
   switch (team) {
     case 'Aston Villa':
@@ -768,5 +770,8 @@ function getTeamBadgeLocalPath(team: string): string {
   }
 
   // Default teams logo
-  return 'images/ball.png';
+  if (highlight_type == VideoHighlightType.Basketball) {
+    return 'images/basketball-ball.png';
+  }
+  return 'images/football-ball.png';
 }
