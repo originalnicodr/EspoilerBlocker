@@ -1,4 +1,4 @@
-import { thumbnailRender, createScoreElement } from '../renders/thumbnail.render';
+import { thumbnailRender, createScoreElement, addHoverButtons } from '../renders/thumbnail.render';
 import { Settings } from '../utils/settings';
 import { BaseUpdater } from './BaseUpdater';
 
@@ -11,6 +11,10 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
 
   protected thumbnail: HTMLElement;
   protected added_thumbnail_element: HTMLElement | null = null;
+  protected buttons: { spoiler_button: HTMLButtonElement; score_button: HTMLButtonElement; } = {
+    spoiler_button: undefined,
+    score_button: undefined
+  };
 
   constructor(container: HTMLElement) {
     super(container);
@@ -27,7 +31,14 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
   protected async spoilerBlockVideo(): Promise<void> {
     this.blockSpoilerText();
     this.hideThumbnail();
-    await this.addThumbnailElements();
+
+    const settings: Settings = await this.loadSettings();
+    this.addThumbnailElements(settings);
+
+    // We only add these buttons once on update(), so we dont want to add them again on a new update call
+    if (this.buttons.spoiler_button === undefined && this.buttons.score_button === undefined) {
+      this.addHoverButtons(settings);
+    }
   }
 
   protected blockSpoilerText() {
@@ -42,16 +53,43 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     this.thumbnail.style.backgroundImage = "";
   }
 
-  protected async addThumbnailElements(): Promise<void> {
+  protected addThumbnailElements(settings: Settings): Promise<void> {
     if (!this.thumbnail) return;
-    const settings: Settings = await this.loadSettings();
-
     this.added_thumbnail_element = thumbnailRender(
       this.thumbnail,
       this.team_a,
       this.team_b,
       this.match_date,
       settings.display_total_score ? this.total_score : null,
+    );
+  }
+
+  public addHoverButtons(settings: Settings) {
+    const showSpoilerButtonFunction = (show_spoiler) => {
+      if (show_spoiler) {
+        this.restoreSpoilers();
+        this.is_being_spoiler_blocked = false;
+      } else {
+        this.update();
+      }
+    }
+
+    const showTotalScoreFunction = (show_total_score) => {
+      const score_element = this.added_thumbnail_element.querySelector('.espn-spoilerblocker-total-score');
+      console.log('score_element', score_element);
+      if (score_element && !show_total_score) {
+        this.removeScoreFromThumbnail();
+      } else if (!score_element && show_total_score) {
+        this.addScoreToThumbnail();
+      }
+    }
+
+    this.buttons = addHoverButtons(
+      this.thumbnail,
+      false, // so far we will only add buttons to thumbnails we are blocking spoilers for
+      settings.display_total_score,
+      showSpoilerButtonFunction,
+      showTotalScoreFunction,
     );
   }
 

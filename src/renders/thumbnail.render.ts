@@ -260,3 +260,104 @@ function addHoverEffect(container_element: HTMLElement) {
     });
   });
 }
+
+export function addHoverButtons(
+  container_element: HTMLElement,
+  default_spoiler_button_state: boolean,
+  default_score_button_state: boolean,
+  onToggleSpoiler: (show: boolean) => void,
+  onToggleScore: (show: boolean) => void,
+): { spoiler_button: HTMLButtonElement; score_button: HTMLButtonElement } {
+  const base_font_size = container_element.offsetWidth === 0 ? 12 : Math.min(container_element.offsetWidth / 20, 20);
+
+  const wrapper = document.createElement('div');
+  Object.assign(wrapper.style, {
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+    zIndex: '3',
+    opacity: '0',
+    transition: 'opacity 0.2s ease-in-out',
+    pointerEvents: 'none',
+    fontSize: 'clamp(10%, 2.5vw, 1em)',
+  });
+
+  container_element.appendChild(wrapper);
+
+  const makeButton = (text: string): HTMLButtonElement => {
+    const button = document.createElement('button');
+    button.textContent = text;
+    Object.assign(button.style, {
+      position: 'absolute',
+      transform: 'translate(-50%, -50%)',
+      fontSize: `${base_font_size}px`,
+      //padding: '0.4em 0.8em',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      color: 'white',
+      border: '1px solid white',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      pointerEvents: 'auto',
+      whiteSpace: 'nowrap',
+      zIndex: '1',
+    });
+
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    button.onmouseenter = () => (button.style.backgroundColor = 'rgba(255, 255, 255, 0.2)');
+    button.onmouseleave = () => (button.style.backgroundColor = 'rgba(0, 0, 0, 0.7)');
+
+    return button;
+  };
+
+  let is_spoiler_shown = default_spoiler_button_state;
+  let is_score_shown = default_score_button_state;
+
+  const spoiler_button = makeButton(is_spoiler_shown ? 'Bloquear Spoiler' : 'Revelar Spoiler');
+  const score_button = makeButton(is_score_shown ? 'Esconder Puntos' : 'Mostrar Puntos');
+
+  Object.assign(spoiler_button.style, {
+    left: '25%',
+    top: '85%',
+  });
+  Object.assign(score_button.style, {
+    left: '75%',
+    top: '85%',
+  });
+
+  wrapper.appendChild(spoiler_button);
+  wrapper.appendChild(score_button);
+
+  spoiler_button.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    is_spoiler_shown = !is_spoiler_shown;
+    spoiler_button.textContent = is_spoiler_shown ? 'Bloquear Spoiler' : 'Revelar Spoiler';
+    onToggleSpoiler(is_spoiler_shown);
+  };
+
+  score_button.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    is_score_shown = !is_score_shown;
+    score_button.textContent = is_score_shown ? 'Esconder Puntos' : 'Mostrar Puntos';
+    onToggleScore(is_score_shown);
+  };
+
+  container_element.addEventListener('mouseenter', () => {
+    wrapper.style.opacity = '1';
+    wrapper.style.pointerEvents = 'auto';
+  });
+
+  container_element.addEventListener('mouseleave', () => {
+    wrapper.style.opacity = '0';
+    wrapper.style.pointerEvents = 'none';
+  });
+
+  return { spoiler_button, score_button };
+}
