@@ -303,10 +303,8 @@ export class BaseUpdater {
       case 'updatedFootballSetting':
         if (this.highlight_type === VideoHighlightType.Football) {
           if (message.value && !this.is_being_spoiler_blocked) {
-            console.log('Adding spoiler blockers');
             this.update();
           } else if (!message.value && this.is_being_spoiler_blocked) {
-            console.log('Removing spoiler blockers');
             this.restoreSpoilers();
             this.is_being_spoiler_blocked = false;
           }
