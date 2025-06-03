@@ -41,11 +41,26 @@ export class EspnSpoilerBlocker {
     // probable this is the method to discard the DOM changes we made.
     this.cleanup();
     this.updaters.forEach((updater) => updater.restoreSpoilers());
+
+    this.watchingThumbnailsOnMainPage = false;
+    this.watchingThumbnailsOnVideoPage = false;
+    this.watchingThumbnailsOnSearchPage = false;
+    this.watchingThumbnailsOnEndscreenPage = false;
+    this.watchingThumbnailOnEndscreenAutoplayPage = false;
+    this.watchingSkipVideoThumbnailOnVideoPage = false;
+    this.watchingVideoTitle = false;
   }
 
   private cleanup() {
     this.observers.forEach((observer) => observer.disconnect());
     this.updaters.forEach((updater) => updater.restoreSpoilers());
+  }
+
+  public trackYoutubeNavigation() {
+    document.addEventListener('yt-navigate-start', this.stop);
+    document.addEventListener('yt-navigate-finish', this.start);
+    //if (document.body) this.start();
+    //else document.addEventListener('DOMContentLoaded', this.start);
   }
 
   private reactToVideoThumbnailsChanges() {
