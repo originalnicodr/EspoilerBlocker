@@ -1,10 +1,10 @@
-# ESPN Fans Spoiler Blocker
+# ESPOILER BLOCKER
 
 <p align="center">
-  <img align="center" src="images/logo/logo.png" width="300" height="300">
+  <img align="center" src="images/logo/logo.png" width="300" width="300">
 </p>
 
-Extensión de Chrome para ocultar spoilers de los videos de highlights publicados por ESPN Fans. Oculta la imagen de thumbnail mostrando los resultados, cambia el título del vídeo para solo mencionar los equipos, y muestra los logos (cuando estos están disponibles) en la miniatura.
+Extensión de Chrome para ocultar spoilers de los videos de highlights publicados por [ESPN Fans](https://www.youtube.com/ESPNFans). Oculta la imagen de thumbnail mostrando los resultados, cambia el título del vídeo para solo mencionar los equipos, y muestra los logos (cuando estos están disponibles) en la miniatura.
 
 Se contemplan los videos mostrados en la página principal de YouTube, aquellos en el canal de ESPN Fans, y los videos sugeridos que se encuentran abajo a la derecha al tener uno abierto.
 
