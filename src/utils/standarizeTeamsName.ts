@@ -23,12 +23,14 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'M. United':
     case 'Manchester Utd':
     case 'Man. Utd':
+    case 'Man. United':
     case 'M. Utd.':
       return 'Manchester United';
     case 'Newcastle United':
     case 'Newcastle':
       return 'Newcastle';
     case 'Nottingham Forest':
+    case 'N. Forest':
     case 'Nott.':
       return 'Nottingham Forest';
     case 'Tottenham Hotspur':
@@ -72,6 +74,9 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Real Madrid':
     case 'R. Madrid':
       return 'Real Madrid';
+    case 'Real Sociedad':
+    case 'R. Sociedad':
+      return 'Real Sociedad';
     case 'U.D. Las Palmas':
     case 'U.D. Las Palmas':
     case 'Las Palmas':
@@ -214,6 +219,9 @@ export function standarizeTeamsName(team_alias: string): string {
     case "Rosario Central":
     case "Central":
       return "Rosario Central";
+    case "San Lorenzo":
+    case "CASLA":
+        return "San Lorenzo";
     case "San Martín":
     case "San Martin":
     case "San Martín S. J.":
