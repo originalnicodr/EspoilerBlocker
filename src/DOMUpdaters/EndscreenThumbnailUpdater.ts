@@ -8,6 +8,10 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   public async update() {
     //this.debugPrintMembers();
+    if (this.is_active !== undefined && !this.is_active) {
+      return;
+    }
+
     this.backupOriginal();
 
     const current_url: string = window.location.href;
@@ -32,7 +36,7 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
       return;
     }
 
-    this.is_being_spoiler_blocked = true;
+    this.is_active = true;
   }
 
   protected getIsESPNVideo(): boolean {

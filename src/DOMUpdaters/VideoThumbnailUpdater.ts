@@ -9,6 +9,9 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   public async update() {
     //this.debugPrintMembers();
+    if (this.is_active !== undefined && !this.is_active) {
+      return;
+    }
 
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
@@ -34,7 +37,7 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       return;
     }
 
-    this.is_being_spoiler_blocked = true;
+    this.is_active = true;
   }
 
   protected getIsESPNVideo(): boolean {
@@ -133,7 +136,7 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   public restoreSpoilers() {
     super.restoreSpoilers();
 
-    if (!this.is_being_spoiler_blocked) {
+    if (!this.is_active) {
       return;
     }
 

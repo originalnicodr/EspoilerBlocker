@@ -14,6 +14,10 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   public async update() {
     //this.debugPrintMembers();
+    if (this.is_active !== undefined && !this.is_active) {
+      return;
+    }
+
     this.backupOriginal();
 
     const current_url: string = window.location.href;
@@ -53,7 +57,7 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       return;
     }
 
-    this.is_being_spoiler_blocked = true;
+    this.is_active = true;
   }
 
   protected getTitle(): HTMLElement {
@@ -110,7 +114,7 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   public restoreSpoilers() {
     //super.restoreSpoilers();
-    if (!this.is_being_spoiler_blocked) {
+    if (!this.is_active) {
       return;
     }
 

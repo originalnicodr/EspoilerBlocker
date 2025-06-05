@@ -7,6 +7,10 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
 
   public async update() {
     //this.debugPrintMembers();
+    if (this.is_active !== undefined && !this.is_active) {
+      return;
+    }
+
 
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
@@ -23,7 +27,7 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
       this.title.textContent = this.spoiler_blocked_title_text;
     }
 
-    this.is_being_spoiler_blocked = true;
+    this.is_active = true;
   }
 
   protected getIsESPNVideo(): boolean {

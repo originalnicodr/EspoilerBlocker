@@ -26,7 +26,7 @@ export class BaseUpdater {
   protected team_b: string;
   protected match_date: Date;
 
-  protected is_being_spoiler_blocked: boolean = false;
+  protected is_active: boolean | undefined = undefined;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -59,7 +59,7 @@ export class BaseUpdater {
     console.log('team_a: ', this.team_a);
     console.log('team_b: ', this.team_b);
     console.log('match_date: ', this.match_date);
-    console.log('is_being_spoiler_blocked: ', this.is_being_spoiler_blocked);
+    console.log('is_active: ', this.is_active);
   }
 
   protected getIsESPNVideo(): boolean {
@@ -83,6 +83,11 @@ export class BaseUpdater {
   }
 
   private retrieveUpdaterMetadata() {
+    if (this.is_active)
+    {
+      return;
+    }
+
     const title_text: string = this.getTitleText();
 
     if (
@@ -180,22 +185,19 @@ export class BaseUpdater {
     match_date.setSeconds(match_date.getSeconds() - unit_setters.seconds);
   
     return match_date;
-  }  
+  }
 
   protected async shouldBlockSpoiler(): Promise<boolean> {
     if (!this.is_espn_video || this.highlight_type === VideoHighlightType.None || this.already_watched) {
-      this.is_being_spoiler_blocked = false;
       return false;
     }
 
     const settings: Settings = await this.loadSettings();
     if (this.highlight_type === VideoHighlightType.Basketball && !settings.block_spoilers_basketball) {
-      this.is_being_spoiler_blocked = false;
       return false;
     }
 
     if (this.highlight_type === VideoHighlightType.Football && !settings.block_spoilers_football) {
-      this.is_being_spoiler_blocked = false;
       return false;
     }
 
@@ -204,7 +206,6 @@ export class BaseUpdater {
       const expiration_date = new Date();
       expiration_date.setDate(now.getDate() - settings.block_spoilers_expiration_days);
       if (expiration_date > this.match_date) {
-        //this.is_being_spoiler_blocked = false;
         return false;
       }
     }
@@ -284,31 +285,36 @@ export class BaseUpdater {
   protected handleMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
     switch (message.action) {
       case 'enableSpoilerBlockers':
-        this.update();
+        if (!this.is_active) {
+          this.is_active = true;
+          this.update();
+        }
         break;
       case 'removeSpoilerBlockers':
-        if (this.is_being_spoiler_blocked) {
+        if (this.is_active) {
           this.restoreSpoilers();
-          this.is_being_spoiler_blocked = false;
+          this.is_active = false;
         }
         break;
       case 'updatedBasketballSetting':
         if (this.highlight_type === VideoHighlightType.Basketball) {
-          if (message.value && !this.is_being_spoiler_blocked) {
+          if (message.value && !this.is_active) {
+            this.is_active = true;
             this.update();
-          } else if (!message.value && this.is_being_spoiler_blocked) {
+          } else if (!message.value && this.is_active) {
             this.restoreSpoilers();
-            this.is_being_spoiler_blocked = false;
+            this.is_active = false;
           }
         }
         break;
       case 'updatedFootballSetting':
         if (this.highlight_type === VideoHighlightType.Football) {
-          if (message.value && !this.is_being_spoiler_blocked) {
+          if (message.value && !this.is_active) {
+            this.is_active = true;
             this.update();
-          } else if (!message.value && this.is_being_spoiler_blocked) {
+          } else if (!message.value && this.is_active) {
             this.restoreSpoilers();
-            this.is_being_spoiler_blocked = false;
+            this.is_active = false;
           }
         }
         break;

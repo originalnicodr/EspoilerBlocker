@@ -69,8 +69,9 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     const showSpoilerButtonFunction = (show_spoiler) => {
       if (show_spoiler) {
         this.restoreSpoilers();
-        this.is_being_spoiler_blocked = false;
+        this.is_active = false;
       } else {
+        this.is_active = true;
         this.update();
       }
     }

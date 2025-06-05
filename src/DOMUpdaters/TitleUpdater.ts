@@ -7,6 +7,10 @@ export class TitleUpdater extends BaseUpdater {
 
   public async update() {
     //this.debugPrintMembers();
+    if (this.is_active !== undefined && !this.is_active) {
+      return;
+    }
+
 
     const current_url: string = window.location.href;
     if (!current_url.includes('watch?v=')) {
@@ -28,7 +32,7 @@ export class TitleUpdater extends BaseUpdater {
       document.title = this.spoiler_blocked_title_text;
     }
 
-    this.is_being_spoiler_blocked = true;
+    this.is_active = true;
   }
 
   protected getTitleText(): string {
