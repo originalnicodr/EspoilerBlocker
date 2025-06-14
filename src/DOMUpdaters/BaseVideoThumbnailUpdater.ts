@@ -16,11 +16,50 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     score_button: undefined
   };
 
+  private containerObserver: MutationObserver | null = null; // New observer for container changes
+
   constructor(container: HTMLElement) {
     super(container);
     this.thumbnail = this.getThumbnail();
 
     this.subscribeToScoreSettingsChange();
+    this.observeContainerChanges(); // Start observing container changes
+  }
+
+  private observeContainerChanges() {
+    if (!this.container) return;
+
+    this.containerObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'characterData') {
+          console.log('Container changed, reapplying updater logic. Title text: ', this.getTitleText());
+          if (
+            this.spoiler_blocked_title_text !== '' &&
+            this.getTitleText() !== this.spoiler_blocked_title_text &&
+            this.originalState.titleTextContent !== undefined &&
+            this.getTitleText() !== this.originalState.titleTextContent
+          ) {
+            this.debugPrintMembers();
+            console.log("Title doesnt match spoiler blocked text nor original text.");
+            console.log("Title text: ", this.getTitleText());
+            console.log("Spoiler blocked text: ", this.spoiler_blocked_title_text);
+            console.log("Original text: ", this.originalState.titleTextContent);
+      
+            this.cleanUp();
+            this.retrieveUpdaterData();
+            return;
+          }
+          this.update(); // Reapply the updater logic when container changes
+        }
+      });
+    });
+
+    if (this.getTitle()){
+      this.containerObserver.observe(this.getTitle(), {
+        characterData: true,
+        subtree: true, // Needed if the actual text is inside child text nodes
+      });
+    }
   }
 
   public cleanUp() {
@@ -30,6 +69,11 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     this.buttons.score_button = null;
     this.buttons.spoiler_button?.remove();
     this.buttons.spoiler_button = null;
+
+    if (this.containerObserver) {
+      this.containerObserver.disconnect(); // Stop observing container changes
+      this.containerObserver = null;
+    }
   }
 
   protected debugPrintMembers() {
