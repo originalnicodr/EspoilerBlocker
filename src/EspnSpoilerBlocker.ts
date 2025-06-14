@@ -57,8 +57,8 @@ export class EspnSpoilerBlocker {
   }
 
   public trackYoutubeNavigation() {
-    document.addEventListener('yt-navigate-start', this.stop);
-    document.addEventListener('yt-navigate-finish', this.start);
+    document.addEventListener('yt-navigate-start', this.stop.bind(this));
+    document.addEventListener('yt-navigate-finish', this.start.bind(this));
     //if (document.body) this.start();
     //else document.addEventListener('DOMContentLoaded', this.start);
   }
