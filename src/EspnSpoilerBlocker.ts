@@ -14,6 +14,8 @@ export class EspnSpoilerBlocker {
   private observers: Array<MutationObserver> = [];
   private updaters: Array<BaseUpdater> = [];
 
+  private is_running = false;
+
   /** check if we're watching video thumbnails on Youtube main page. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnMainPage = undefined;
   /** check if we're watching video thumbnails while playing a video. If this is false, container not found. Will retry after next title change */
@@ -31,16 +33,31 @@ export class EspnSpoilerBlocker {
 
   /** Start the Chrome extension */
   public start() {
+    /*
+    if (this.is_running) {
+      return;
+    }
+      */
+    console.log('EspnSpoilerBlocker started');
+
     this.reactToTitleChanges();
     this.reactToVideoThumbnailsChanges();
     this.reactToVideoTitle();
+
+    this.is_running = true;
   }
 
   /** Stop the Chrome extension */
   public stop() {
+    /*
+    if (!this.is_running) {
+      return;
+    }
+      */
+
     // probable this is the method to discard the DOM changes we made.
+    console.log('EspnSpoilerBlocker stopped');
     this.cleanup();
-    this.updaters.forEach((updater) => updater.restoreSpoilers());
 
     this.watchingThumbnailsOnMainPage = false;
     this.watchingThumbnailsOnVideoPage = false;
@@ -49,28 +66,39 @@ export class EspnSpoilerBlocker {
     this.watchingThumbnailOnEndscreenAutoplayPage = false;
     this.watchingSkipVideoThumbnailOnVideoPage = false;
     this.watchingVideoTitle = false;
+
+    this.is_running = false;
   }
 
   private cleanup() {
     this.observers.forEach((observer) => observer.disconnect());
-    this.updaters.forEach((updater) => updater.restoreSpoilers());
+    this.observers = [];
+    this.updaters.forEach((updater) => {
+      updater.cleanUp();
+      updater.unmarkElement();
+    });
+    this.updaters = [];
   }
 
   public trackYoutubeNavigation() {
     document.addEventListener('yt-navigate-start', this.stop.bind(this));
     document.addEventListener('yt-navigate-finish', this.start.bind(this));
+    document.addEventListener('spfdone', function() {
+      console.log('URL hash changed:');
+      this.stop();
+  });
     //if (document.body) this.start();
     //else document.addEventListener('DOMContentLoaded', this.start);
   }
 
-  private reactToVideoThumbnailsChanges() {
+  private async reactToVideoThumbnailsChanges() {
     // these methods are async, but can be invoked like this to improve performance.
-    this.reactToThumbnailsOnMainPage();
-    this.reactToThumnailsOnVideoPage();
-    this.reactToThumnailsOnSearchPage();
-    this.reactToThumbnailsOnEndscreen();
-    this.reactToThumbnailsOnEndscreenAutoplay();
-    this.reactToSkipVideoThumbnail();
+    await this.reactToThumbnailsOnMainPage();
+    await this.reactToThumnailsOnVideoPage();
+    await this.reactToThumnailsOnSearchPage();
+    await this.reactToThumbnailsOnEndscreen();
+    await this.reactToThumbnailsOnEndscreenAutoplay();
+    await this.reactToSkipVideoThumbnail();
   }
 
   private reactToTitleChanges() {

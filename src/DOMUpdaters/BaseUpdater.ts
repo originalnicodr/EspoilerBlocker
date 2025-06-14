@@ -334,6 +334,10 @@ export class BaseUpdater {
     }
   }
 
+  public cleanUp() {
+    this.restoreSpoilers();
+  }
+
   protected videoTitleContainsSpoilers(): boolean {
     // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups.
     // probably we would want to move it to utils

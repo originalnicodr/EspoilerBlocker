@@ -23,6 +23,15 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     this.subscribeToScoreSettingsChange();
   }
 
+  public cleanUp() {
+    super.cleanUp();
+
+    this.buttons.score_button?.remove();
+    this.buttons.score_button = null;
+    this.buttons.spoiler_button?.remove();
+    this.buttons.spoiler_button = null;
+  }
+
   protected debugPrintMembers() {
     super.debugPrintMembers();
     console.log('thumbnail: ', this.thumbnail);
