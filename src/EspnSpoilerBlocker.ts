@@ -38,9 +38,8 @@ export class EspnSpoilerBlocker {
 
   /** Stop the Chrome extension */
   public stop() {
-    // probable this is the method to discard the DOM changes we made.
-    this.cleanup();
-    this.updaters.forEach((updater) => updater.restoreSpoilers());
+    this.observers.forEach((observer) => observer.disconnect());
+    this.observers = [];
 
     this.watchingThumbnailsOnMainPage = false;
     this.watchingThumbnailsOnVideoPage = false;
@@ -51,16 +50,19 @@ export class EspnSpoilerBlocker {
     this.watchingVideoTitle = false;
   }
 
-  private cleanup() {
-    this.observers.forEach((observer) => observer.disconnect());
-    this.updaters.forEach((updater) => updater.restoreSpoilers());
-  }
-
   public trackYoutubeNavigation() {
-    document.addEventListener('yt-navigate-start', this.stop.bind(this));
-    document.addEventListener('yt-navigate-finish', this.start.bind(this));
-    //if (document.body) this.start();
-    //else document.addEventListener('DOMContentLoaded', this.start);
+    // On navigation start, stop observers but keep DOM modifications
+    document.addEventListener('yt-navigate-start', () => {
+      this.stop();
+    });
+
+    // On navigation finish, cleanup old modifications and start new observers
+    document.addEventListener('yt-navigate-finish', () => {
+      this.updaters.forEach(updater => updater.restoreSpoilers());
+      this.updaters = [];
+      
+      this.start();
+    });
   }
 
   private reactToVideoThumbnailsChanges() {
