@@ -1,6 +1,7 @@
 import { BaseUpdater } from './DOMUpdaters/BaseUpdater';
 import { EndscreenAutoplayThumbnailUpdater } from './DOMUpdaters/EndscreenAutoplayThumbnailUpdater';
 import { EndscreenThumbnailUpdater } from './DOMUpdaters/EndscreenThumbnailUpdater';
+import { HomeVideoThumbnailUpdater } from './DOMUpdaters/HomeVideoThumbnailUpdater';
 import { InnerVideoTitleUpdater } from './DOMUpdaters/innerVideoTitleUpdater';
 import { SkipVideoThumbnailUpdater } from './DOMUpdaters/SkipVideoThumbnailUpdater';
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
@@ -137,6 +138,14 @@ export class EspnSpoilerBlocker {
     updater.update();
   }
 
+    private createNewHomeVideoUpdater(node: HTMLElement) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+
+    const updater = new HomeVideoThumbnailUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+  }
+
   private createNewEndscreenVideoUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new EndscreenThumbnailUpdater(node);
@@ -175,7 +184,8 @@ export class EspnSpoilerBlocker {
     // create a VideoThumnailUpdater for each video in the dom
     container.querySelectorAll(this.youtubeMediaSelectors.join(',')).forEach((video) => {
       if (video instanceof HTMLElement) {
-        this.createNewVideoUpdater(video);
+        if (window.location.href == 'https://www.youtube.com/') this.createNewHomeVideoUpdater(video);
+        else this.createNewVideoUpdater(video);
       }
     });
 
@@ -185,7 +195,8 @@ export class EspnSpoilerBlocker {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
           if (node instanceof HTMLElement && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
-            this.createNewVideoUpdater(node);
+            if (window.location.href == 'https://www.youtube.com/') this.createNewHomeVideoUpdater(node);
+            else this.createNewVideoUpdater(node);
           }
         });
       });
