@@ -189,15 +189,18 @@ export class BaseUpdater {
 
   protected async shouldBlockSpoiler(): Promise<boolean> {
     if (!this.is_espn_video || this.highlight_type === VideoHighlightType.None || this.already_watched) {
+      //console.log('Not blocking spoiler because is_espn_video:', this.is_espn_video, 'highlight_type:', this.highlight_type, 'already_watched:', this.already_watched);
       return false;
     }
 
     const settings: Settings = await this.loadSettings();
     if (this.highlight_type === VideoHighlightType.Basketball && !settings.block_spoilers_basketball) {
+      //console.log('Not blocking spoiler because basketball setting is off');
       return false;
     }
 
     if (this.highlight_type === VideoHighlightType.Football && !settings.block_spoilers_football) {
+      //console.log('Not blocking spoiler because football setting is off');
       return false;
     }
 

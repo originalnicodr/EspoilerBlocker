@@ -3,6 +3,7 @@ import { EndscreenAutoplayThumbnailUpdater } from './DOMUpdaters/EndscreenAutopl
 import { EndscreenThumbnailUpdater } from './DOMUpdaters/EndscreenThumbnailUpdater';
 import { HomeVideoThumbnailUpdater } from './DOMUpdaters/HomeVideoThumbnailUpdater';
 import { InnerVideoTitleUpdater } from './DOMUpdaters/innerVideoTitleUpdater';
+import { SidePanelVideoThumbnailUpdater } from './DOMUpdaters/SidePanelVideoThumbnailUpdater';
 import { SkipVideoThumbnailUpdater } from './DOMUpdaters/SkipVideoThumbnailUpdater';
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
 import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
@@ -29,6 +30,8 @@ export class EspnSpoilerBlocker {
   private watchingSkipVideoThumbnailOnVideoPage = undefined;
   /** check if we're watching the video title while playing a video. If this is false, container not found. Will retry after next title change */
   private watchingVideoTitle = undefined;
+  /** check if we're watching video thumbnails on Youtube side panel. If this is false, container not found. Will retry after next title change */
+  private watchingThumbnailsOnSidePanel = undefined;
 
   /** Start the Chrome extension */
   public start() {
@@ -49,6 +52,7 @@ export class EspnSpoilerBlocker {
     this.watchingThumbnailOnEndscreenAutoplayPage = false;
     this.watchingSkipVideoThumbnailOnVideoPage = false;
     this.watchingVideoTitle = false;
+    this.watchingThumbnailsOnSidePanel = false;
   }
 
   public trackYoutubeNavigation() {
@@ -68,6 +72,7 @@ export class EspnSpoilerBlocker {
 
   private reactToVideoThumbnailsChanges() {
     // these methods are async, but can be invoked like this to improve performance.
+    this.reactToThumbnailsOnSidePanel();
     this.reactToThumbnailsOnMainPage();
     this.reactToThumnailsOnVideoPage();
     this.reactToThumnailsOnSearchPage();
@@ -101,7 +106,7 @@ export class EspnSpoilerBlocker {
   }
 
   private get youtubeMediaSelectors(): string[] {
-    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer', 'ytd-video-renderer'];
+    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer', 'ytd-video-renderer', 'yt-lockup-view-model'];
   }
 
   private isElementAddedByUs(node: Element) {
@@ -163,6 +168,14 @@ export class EspnSpoilerBlocker {
   private createNewSkipVideoThumbnailUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new SkipVideoThumbnailUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+  }
+
+  private createNewSidePanelVideoUpdater(node: HTMLElement) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+
+    const updater = new SidePanelVideoThumbnailUpdater(node);
     this.updaters.push(updater);
     updater.update();
   }
@@ -387,8 +400,53 @@ export class EspnSpoilerBlocker {
     });
   }
 
+  private async reactToThumbnailsOnSidePanel() {
+    // do not observe element twice
+    if (this.watchingThumbnailsOnSidePanel) return;
+
+    let container: Element = undefined;
+    try {
+      container = await this.getElementOrRetry('ytd-watch-next-secondary-results-renderer', 400);
+    } catch (error) {
+      this.watchingThumbnailsOnSidePanel = false;
+      return;
+    }
+
+    this.watchingThumbnailsOnSidePanel = true;
+
+    // create a VideoThumnailUpdater for each video in the dom
+    container.querySelectorAll(this.youtubeMediaSelectors.join(',')).forEach((video) => {
+      if (video instanceof HTMLElement) {
+        console.log('Side panel video found:', video);
+        this.createNewSidePanelVideoUpdater(video);
+      }
+    });
+
+    // observe new added elements and do the same
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        // Get any newly added video elements
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
+            this.createNewSidePanelVideoUpdater(node);
+          }
+        });
+      });
+    });
+
+    this.observers.push(observer);
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
   /** Method executed after a title was updated */
   private afterTitleUpdate() {
+    if (this.watchingThumbnailsOnSidePanel === false) {
+      this.reactToThumbnailsOnSidePanel();
+    }
+
     // Retry to observe elements if container elements were not found. We'd probably want to do this on route changes, not on title changes.
     if (this.watchingThumbnailsOnMainPage === false) {
       this.reactToThumbnailsOnMainPage();

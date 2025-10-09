@@ -1,6 +1,6 @@
 import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
-export class HomeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
+export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   protected title_link: HTMLElement;
 
   constructor(container: HTMLElement) {
@@ -83,17 +83,13 @@ export class HomeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getTitle(): HTMLElement {
-    var potential_container : HTMLElement = this.container.querySelector('#video-title');
-    if (!potential_container) {
-      // homepage videos have a different div
-      potential_container = this.container.querySelector('.yt-core-attributed-string');
-    }
+    var potential_container : HTMLElement = this.container.querySelector('.yt-core-attributed-string');
 
     return potential_container;
   }
 
   protected getThumbnail(): HTMLElement {
-    let thumbnail_element: HTMLInputElement = this.container.querySelector('#thumbnail');
+    let thumbnail_element: HTMLInputElement = this.container.querySelector('.yt-thumbnail-view-model');
     if (!thumbnail_element) {
       thumbnail_element = this.container.querySelector('ytd-compact-video-renderer ytd-thumbnail img');
     }
