@@ -1,7 +1,7 @@
 import { VideoHighlightType } from '../utils/getHighlightType';
 import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
-export class YoutubeThumbnailUpdater extends BaseVideoThumbnailUpdater {
+export class BeforeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   constructor(container: HTMLElement) {
     super(container);
   }

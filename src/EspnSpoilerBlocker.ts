@@ -8,7 +8,7 @@ import { SkipVideoThumbnailUpdater } from './DOMUpdaters/SkipVideoThumbnailUpdat
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
 import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
 import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
-import { YoutubeThumbnailUpdater } from './DOMUpdaters/YoutubeThumbnailUpdater';
+import { BeforeVideoThumbnailUpdater } from './DOMUpdaters/BeforeVideoThumbnailUpdater';
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
@@ -222,9 +222,9 @@ export class EspnSpoilerBlocker {
     }
   }
 
-  private createNewYoutubeThumbnailUpdater(node: HTMLElement) {
+  private createNewBeforeVideoThumbnailUpdater (node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
-    const updater = new YoutubeThumbnailUpdater(node);
+    const updater = new BeforeVideoThumbnailUpdater(node);
     this.updaters.push(updater);
     updater.update();
 
@@ -473,7 +473,7 @@ export class EspnSpoilerBlocker {
     try {
       container = await this.getElementOrRetry('.ytp-cued-thumbnail-overlay-image', 400);
       if (container instanceof HTMLElement && container.matches('.ytp-cued-thumbnail-overlay-image')) {
-            this.createNewYoutubeThumbnailUpdater(container);
+            this.createNewBeforeVideoThumbnailUpdater (container);
       }
     } catch (error) {
       this.watchingPlayerThumbnail = false;
