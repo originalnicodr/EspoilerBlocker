@@ -8,6 +8,7 @@ import { SkipVideoThumbnailUpdater } from './DOMUpdaters/SkipVideoThumbnailUpdat
 import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
 import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
 import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
+import { YoutubeThumbnailUpdater } from './DOMUpdaters/YoutubeThumbnailUpdater';
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
@@ -18,6 +19,8 @@ export class EspnSpoilerBlocker {
 
   /** check if we're watching video thumbnails on Youtube main page. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnMainPage = undefined;
+  /** check if we're watching YouTube video player thumbnail. If this is false, container not found. Will retry after next title change */
+  private watchingPlayerThumbnail = undefined;
   /** check if we're watching video thumbnails while playing a video. If this is false, container not found. Will retry after next title change */
   private watchingThumbnailsOnVideoPage = undefined;
   /** check if we're watching video thumbnails on Youtube search page. If this is false, container not found. Will retry after next title change */
@@ -38,6 +41,7 @@ export class EspnSpoilerBlocker {
     this.reactToTitleChanges();
     this.reactToVideoThumbnailsChanges();
     this.reactToVideoTitle();
+    this.reactToPlayerThumbnail();
   }
 
   /** Stop the Chrome extension */
@@ -53,6 +57,7 @@ export class EspnSpoilerBlocker {
     this.watchingSkipVideoThumbnailOnVideoPage = false;
     this.watchingVideoTitle = false;
     this.watchingThumbnailsOnSidePanel = false;
+    this.watchingPlayerThumbnail = false;
   }
 
   public trackYoutubeNavigation() {
@@ -87,6 +92,7 @@ export class EspnSpoilerBlocker {
     if (!title) {
       return;
     }
+    if (BaseUpdater.isElementAlreadyBeingWatched(title)) return;
 
     const title_updater = new TitleUpdater(title);
 
@@ -178,6 +184,51 @@ export class EspnSpoilerBlocker {
     const updater = new SidePanelVideoThumbnailUpdater(node);
     this.updaters.push(updater);
     updater.update();
+  }
+
+  private createVideoTitleUpdater(node: HTMLElement) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+    const updater = new VideoTitleUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+
+    const title_observer = new MutationObserver(() => {
+      updater.update();
+    });
+
+    this.observers.push(title_observer);
+    title_observer.observe(node, {
+      subtree: true,
+      characterData: true,
+      childList: true,
+    });
+  }
+
+  private createInnerVideoTitleUpdater(node: HTMLElement) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+    if (node instanceof HTMLAnchorElement) {
+      const updater = new InnerVideoTitleUpdater(node);
+      this.updaters.push(updater);
+      updater.update();
+    }
+  }
+
+  private createNewYoutubeThumbnailUpdater(node: HTMLElement) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+    const updater = new YoutubeThumbnailUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+
+    const inner_title_observer = new MutationObserver(() => {
+      updater.update();
+    });
+
+    this.observers.push(inner_title_observer);
+    inner_title_observer.observe(node, {
+      subtree: true,
+      characterData: true,
+      childList: true,
+    });
   }
 
   private async reactToThumbnailsOnMainPage() {
@@ -400,6 +451,29 @@ export class EspnSpoilerBlocker {
     });
   }
 
+  private async reactToPlayerThumbnail() {
+    // do not observe element twice
+    if (this.watchingPlayerThumbnail) return;
+
+    const current_url: string = window.location.href;
+    if (!current_url.includes('watch?v=')) {
+      return;
+    }
+
+    let container: Element = undefined;
+    try {
+      container = await this.getElementOrRetry('.ytp-cued-thumbnail-overlay-image', 400);
+      if (container instanceof HTMLElement && container.matches('.ytp-cued-thumbnail-overlay-image')) {
+            this.createNewYoutubeThumbnailUpdater(container);
+      }
+    } catch (error) {
+      this.watchingPlayerThumbnail = false;
+      return;
+    }
+
+    this.watchingPlayerThumbnail = true;
+  }
+
   private async reactToThumbnailsOnSidePanel() {
     // do not observe element twice
     if (this.watchingThumbnailsOnSidePanel) return;
@@ -417,7 +491,6 @@ export class EspnSpoilerBlocker {
     // create a VideoThumnailUpdater for each video in the dom
     container.querySelectorAll(this.youtubeMediaSelectors.join(',')).forEach((video) => {
       if (video instanceof HTMLElement) {
-        console.log('Side panel video found:', video);
         this.createNewSidePanelVideoUpdater(video);
       }
     });
@@ -475,6 +548,10 @@ export class EspnSpoilerBlocker {
     if (this.watchingVideoTitle === false) {
       this.reactToVideoTitle();
     }
+
+    if (this.watchingPlayerThumbnail === false) {
+      this.reactToPlayerThumbnail();
+    }
   }
 
   private async reactToVideoTitle() {
@@ -505,32 +582,7 @@ export class EspnSpoilerBlocker {
     this.watchingVideoTitle = true;
 
     // create both updaters
-    const video_title_updater = new VideoTitleUpdater(visible_video_title);
-    const inner_title_updater = new InnerVideoTitleUpdater(inner_HTML_video_title);
-    this.updaters.push(video_title_updater, inner_title_updater);
-
-    const title_observer = new MutationObserver(() => {
-      video_title_updater.update();
-    });
-    video_title_updater.update();
-
-    this.observers.push(title_observer);
-    title_observer.observe(visible_video_title, {
-      subtree: true,
-      characterData: true,
-      childList: true,
-    });
-
-    const inner_title_observer = new MutationObserver(() => {
-      inner_title_updater.update();
-    });
-    inner_title_updater.update();
-
-    this.observers.push(inner_title_observer);
-    inner_title_observer.observe(inner_HTML_video_title, {
-      subtree: true,
-      characterData: true,
-      childList: true,
-    });
+    this.createVideoTitleUpdater(visible_video_title);
+    this.createInnerVideoTitleUpdater(inner_HTML_video_title);
   }
 }

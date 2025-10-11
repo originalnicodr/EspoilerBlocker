@@ -21,7 +21,7 @@ export class HomeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
-    console.log('Should block spoiler:', should_block_spoiler);
+    //console.log('Should block spoiler:', should_block_spoiler);
     if (!should_block_spoiler) {
       return;
     }

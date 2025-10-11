@@ -55,6 +55,7 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
 
   protected addThumbnailElements(settings: Settings): Promise<void> {
     if (!this.thumbnail) return;
+    //console.log('Adding thumbnail elements', { team_a: this.team_a, team_b: this.team_b, highlight_type: this.highlight_type, match_date: this.match_date, total_score: this.total_score, settings });
     this.added_thumbnail_element = thumbnailRender(
       this.thumbnail,
       this.team_a,
