@@ -359,12 +359,14 @@ export function addHoverButtons(
 
   container_element.addEventListener('mouseenter', () => {
     wrapper.style.opacity = '1';
-    wrapper.style.pointerEvents = 'auto';
+    spoiler_button.style.pointerEvents = 'auto';
+    score_button.style.pointerEvents = 'auto';
   });
 
   container_element.addEventListener('mouseleave', () => {
     wrapper.style.opacity = '0';
-    wrapper.style.pointerEvents = 'none';
+    spoiler_button.style.pointerEvents = 'none';
+    score_button.style.pointerEvents = 'none';
   });
 
   return { spoiler_button, score_button };
