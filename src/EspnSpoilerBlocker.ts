@@ -64,6 +64,15 @@ export class EspnSpoilerBlocker {
     // On navigation start, stop observers but keep DOM modifications
     document.addEventListener('yt-navigate-start', () => {
       this.stop();
+
+      // If navigating to a video page, force a page reload
+      // We would want to avoid doing this, but unfortunately, we couldn't find a reliable way
+      // of handling extension DOM changes alongside allowing YouTube ones when navigating.
+      if (window.location.href.includes('watch?v=')) {
+        console.log("Navigating to video page, forcing page reload");
+        window.location.reload();
+        return;
+      }
     });
 
     // On navigation finish, cleanup old modifications and start new observers

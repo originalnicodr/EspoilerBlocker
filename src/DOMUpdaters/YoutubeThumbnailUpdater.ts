@@ -7,7 +7,7 @@ export class YoutubeThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   public async update() {
-    this.debugPrintMembers();
+    //this.debugPrintMembers();
     if (this.is_active !== undefined && !this.is_active) {
       return;
     }
