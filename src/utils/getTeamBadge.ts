@@ -17,6 +17,8 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
       return 'football-logos/logos/England - Premier League/Brentford FC.png';
     case 'Brighton':
       return 'football-logos/logos/England - Premier League/Brighton & Hove Albion.png';
+    case 'Burnley':
+      return 'images/England - Premier League (missing)/burnley.png';
     case 'Chelsea':
       return 'football-logos/logos/England - Premier League/Chelsea FC.png';
     case 'Crystal Palace':
@@ -27,6 +29,8 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
       return 'football-logos/logos/England - Premier League/Fulham FC.png';
     case 'Ipswich':
       return 'football-logos/logos/England - Premier League/Ipswich Town.png';
+    case 'Leeds United':
+      return 'images/England - Premier League (missing)/leeds.png'
     case 'Leicester':
       return 'football-logos/logos/England - Premier League/Leicester City.png';
     case 'Liverpool':
@@ -41,6 +45,8 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
       return 'football-logos/logos/England - Premier League/Nottingham Forest.png';
     case 'Southampton':
       return 'football-logos/logos/England - Premier League/Southampton FC.png';
+    case 'Sunderland':
+      return 'images/England - Premier League (missing)/sunderland.png';
     case 'Tottenham':
       return 'football-logos/logos/England - Premier League/Tottenham Hotspur.png';
     case 'West Ham':
@@ -189,7 +195,7 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
       return "football-logos/logos/France - Ligue 1/FC Toulouse.png";
     case "Havre":
       return "football-logos/logos/France - Ligue 1/Le Havre AC.png";
-    case "LOSC":
+    case "Lille":
       return "football-logos/logos/France - Ligue 1/LOSC Lille.png";
     case "Montpellier":
       return "football-logos/logos/France - Ligue 1/Montpellier HSC.png";
@@ -197,7 +203,7 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
       return "football-logos/logos/France - Ligue 1/OGC Nice.png";
     case "Lyon":
       return "football-logos/logos/France - Ligue 1/Olympique Lyon.png";
-    case "Marseille":
+    case "Olympique de Marsella":
       return "football-logos/logos/France - Ligue 1/Olympique Marseille.png";
     case "PSG":
       return "football-logos/logos/France - Ligue 1/Paris Saint-Germain.png";
@@ -255,7 +261,7 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
   switch (team) {
     case "Aldosivi":
       return "images/Argentina - Primera Division/aldosivi.png";
-    case "Argentinos":
+    case "Argentinos Juniors":
       return "images/Argentina - Primera Division/argentinos.png";
     case "Atlético Tucumán":
       return "images/Argentina - Primera Division/atleticotucuman.png";
@@ -430,6 +436,7 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
     case "Chipre":
       return "images/Countries/cy.svg";
     case "Chequia":
+    case "República Checa":
       return "images/Countries/cz.svg";
     case "Alemania":
       return "images/Countries/de.svg";

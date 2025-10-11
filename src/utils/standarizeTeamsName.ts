@@ -6,12 +6,18 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'A. Villa':
     case 'Villa':
       return 'Aston Villa';
+    case 'Burnley':
+    case 'Burnley FC':
+      return 'Burnley';
     case 'Crystal Palace':
     case 'C. Palace':
       return 'Crystal Palace';
     case 'Ipswich Town':
     case 'Ipswich':
       return 'Ipswich';
+    case 'Leeds United':
+    case 'Leeds':
+      return 'Leeds United';
     case 'Leicester City':
     case 'Leicester':
       return 'Leicester';
@@ -31,8 +37,12 @@ export function standarizeTeamsName(team_alias: string): string {
       return 'Newcastle';
     case 'Nottingham Forest':
     case 'N. Forest':
+    case 'Nottingham':
     case 'Nott.':
       return 'Nottingham Forest';
+    case 'Sunderland':
+    case 'Sunderland AFC':
+      return 'Sunderland';
     case 'Tottenham Hotspur':
     case 'Tottenham':
       return 'Tottenham';
@@ -49,6 +59,7 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Ath. Bilbao':
     case 'Bilbao':
     case 'Athletic':
+    case 'Athletic Club':
     case 'Athletic Club Bilbao':
       return 'Athletic Club Bilbao';
     case 'Atlético de Madrid':
@@ -56,6 +67,9 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Atlético':
     case 'Atleti':
       return 'Atlético de Madrid';
+    case 'Betis':
+    case 'Real Betis':
+      return 'Real Betis';
     case 'Celta de Vigo':
     case 'Celta':
       return 'Celta';
@@ -127,14 +141,23 @@ export function standarizeTeamsName(team_alias: string): string {
     case "Havre":
       return "Havre";
     case "Olympique Lyon":
+    case "Lille":
+    case "LOSC Lille":
+      return "Lille";
     case "Lyon":
       return "Lyon";
+    case "Olympique de Marsella":
     case "Olympique Marseille":
+    case "O. Marsella":
     case "Marseille":
-      return "Marseille";
+      return "Olympique de Marsella";
     case "Paris Saint-Germain":
     case "PSG":
       return "PSG";
+    case "Racing de Estrasburgo":
+    case "Estrasburgo":
+    case "Strasbourg":
+      return "Racing de Estrasburgo";
     case "Stade Reims":
     case "Reims":
       return "Reims";
@@ -148,6 +171,7 @@ export function standarizeTeamsName(team_alias: string): string {
     case "FC Unión Berlín":
     case "Union Berlin":
     case "Unión Berlín":
+    case "U. Berlin":
       return "Unión Berlín";
     case "FSV Mainz 05":
     case "Mainz 05":
@@ -169,6 +193,7 @@ export function standarizeTeamsName(team_alias: string): string {
     case "Mönchengladbach":
       return "Mönchengladbach";
     case "Eintracht Frankfurt":
+    case "E. Frankfurt":
     case "Frankfurt":
       return "Frankfurt";
     case "Holstein Kiel":
@@ -177,9 +202,20 @@ export function standarizeTeamsName(team_alias: string): string {
     case "RB Leipzig":
     case "Leipzig":
       return "Leipzig";
+    case "Wolfsburgo":
+    case "Wolfsburg":
+      return "Wolfsburg";
+    case "Werder Bremen":
+    case "W. Bremen":
+      return "Werder Bremen";
   }
   // Primera División de Argentina
   switch (team_alias) {
+    case "Argentinos Juniors":
+    case "Argentinos Jr.s":
+    case "Argentinos Jrs.":
+    case "Argentinos":
+      return "Argentinos Juniors";
     case "Atlético Tucumán":
     case "Atl. Tucumán":
     case "Atletico Tucuman":
@@ -189,7 +225,12 @@ export function standarizeTeamsName(team_alias: string): string {
       return "Barracas Central";
     case "Central Córdoba":
     case "Central Cordoba":
+    case "C. Cordoba":
+    case "C. Córdoba":
       return "Central Córdoba";
+    case "Defensa y Justicia":
+    case "DyJ":
+      return "Defensa y Justicia";
     case "Estudiantes":
     case "Estudiantes de La Plata":
       return "Estudiantes de La Plata";
@@ -201,6 +242,8 @@ export function standarizeTeamsName(team_alias: string): string {
     case "Huracán":
       return "Huracán";
     case "Independiente Rivadavia":
+    case "I. Rivadavia":
+    case "I Rivadavia":
     case "Ind. Rivadavia":
     case "Independiente Riv.":
     case "Ind. Riv.":
@@ -211,12 +254,14 @@ export function standarizeTeamsName(team_alias: string): string {
     case "Newells":
       return "Newell's Old Boys";
     case "Deportivo Riestra":
+    case "Dep. Riestra":
     case "Riestra":
       return "Deportivo Riestra";
     case "River Plate":
     case "River":
       return "River Plate";
     case "Rosario Central":
+    case "R. Central":
     case "Central":
       return "Rosario Central";
     case "San Lorenzo":
@@ -226,6 +271,8 @@ export function standarizeTeamsName(team_alias: string): string {
     case "San Martin":
     case "San Martín S. J.":
     case "San Martin S. J.":
+    case "San Martin SJ":
+    case "San Martín SJ":
       return "San Martín";
     case "Unión":
     case "Union":
