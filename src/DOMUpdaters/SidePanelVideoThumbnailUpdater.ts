@@ -96,7 +96,7 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     if (!thumbnail_element) {
       // homepage videos have a different div
-      thumbnail_element = this.container.querySelector('.ytThumbnailViewModelImage');
+      thumbnail_element = this.container.querySelector('.ytThumbnailViewModelHost');
     }
 
     return thumbnail_element;
