@@ -112,7 +112,7 @@ export class EspnSpoilerBlocker {
   }
 
   private get youtubeMediaSelectors(): string[] {
-    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer', 'ytd-video-renderer', 'yt-lockup-view-model'];
+    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer', 'ytd-video-renderer'];
   }
 
   private isElementAddedByUs(node: Element) {
@@ -149,7 +149,7 @@ export class EspnSpoilerBlocker {
     updater.update();
   }
 
-    private createNewHomeVideoUpdater(node: HTMLElement) {
+  private createNewHomeVideoUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
 
     const updater = new HomeVideoThumbnailUpdater(node);
@@ -489,7 +489,7 @@ export class EspnSpoilerBlocker {
     this.watchingThumbnailsOnSidePanel = true;
 
     // create a VideoThumnailUpdater for each video in the dom
-    container.querySelectorAll(this.youtubeMediaSelectors.join(',')).forEach((video) => {
+    container.querySelectorAll('yt-lockup-view-model').forEach((video) => {
       if (video instanceof HTMLElement) {
         this.createNewSidePanelVideoUpdater(video);
       }
