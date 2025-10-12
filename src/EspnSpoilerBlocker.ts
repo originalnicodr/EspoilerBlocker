@@ -69,7 +69,7 @@ export class EspnSpoilerBlocker {
       // We would want to avoid doing this, but unfortunately, we couldn't find a reliable way
       // of handling extension DOM changes alongside allowing YouTube ones when navigating.
       if (window.location.href.includes('watch?v=')) {
-        console.log("Navigating to video page, forcing page reload");
+        console.log('Navigating to video page, forcing page reload');
         window.location.reload();
         return;
       }
@@ -77,9 +77,9 @@ export class EspnSpoilerBlocker {
 
     // On navigation finish, cleanup old modifications and start new observers
     document.addEventListener('yt-navigate-finish', () => {
-      this.updaters.forEach(updater => updater.restoreSpoilers());
+      this.updaters.forEach((updater) => updater.restoreSpoilers());
       this.updaters = [];
-      
+
       this.start();
     });
   }
@@ -121,7 +121,13 @@ export class EspnSpoilerBlocker {
   }
 
   private get youtubeMediaSelectors(): string[] {
-    return ['ytd-rich-item-renderer', 'ytd-compact-video-renderer', 'ytd-grid-video-renderer', 'ytd-video-renderer', 'ytd-video-renderer'];
+    return [
+      'ytd-rich-item-renderer',
+      'ytd-compact-video-renderer',
+      'ytd-grid-video-renderer',
+      'ytd-video-renderer',
+      'ytd-video-renderer',
+    ];
   }
 
   private isElementAddedByUs(node: Element) {
@@ -222,7 +228,7 @@ export class EspnSpoilerBlocker {
     }
   }
 
-  private createNewBeforeVideoThumbnailUpdater (node: HTMLElement) {
+  private createNewBeforeVideoThumbnailUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new BeforeVideoThumbnailUpdater(node);
     this.updaters.push(updater);
@@ -267,7 +273,11 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
+          if (
+            node instanceof HTMLElement &&
+            this.isElementAddedByUs(node) === false &&
+            this.isNodeAYoutubeVideo(node)
+          ) {
             if (window.location.href == 'https://www.youtube.com/') this.createNewHomeVideoUpdater(node);
             else this.createNewVideoUpdater(node);
           }
@@ -307,7 +317,11 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
+          if (
+            node instanceof HTMLElement &&
+            this.isElementAddedByUs(node) === false &&
+            this.isNodeAYoutubeVideo(node)
+          ) {
             this.createNewVideoUpdater(node);
           }
         });
@@ -415,7 +429,8 @@ export class EspnSpoilerBlocker {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
-          const potential_parent: HTMLElement = node instanceof Element && node.closest('.ytp-autonav-endscreen-upnext-container');
+          const potential_parent: HTMLElement =
+            node instanceof Element && node.closest('.ytp-autonav-endscreen-upnext-container');
           if (potential_parent) {
             this.createNewEndscreenAutoplayVideoUpdater(potential_parent);
           }
@@ -446,7 +461,7 @@ export class EspnSpoilerBlocker {
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName == "data-tooltip-text") {
+        if (mutation.attributeName == 'data-tooltip-text') {
           this.createNewSkipVideoThumbnailUpdater(skip_video_suggestion);
         }
       });
@@ -473,7 +488,7 @@ export class EspnSpoilerBlocker {
     try {
       container = await this.getElementOrRetry('.ytp-cued-thumbnail-overlay-image', 400);
       if (container instanceof HTMLElement && container.matches('.ytp-cued-thumbnail-overlay-image')) {
-            this.createNewBeforeVideoThumbnailUpdater (container);
+        this.createNewBeforeVideoThumbnailUpdater(container);
       }
     } catch (error) {
       this.watchingPlayerThumbnail = false;
@@ -509,7 +524,11 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && this.isElementAddedByUs(node) === false && this.isNodeAYoutubeVideo(node)) {
+          if (
+            node instanceof HTMLElement &&
+            this.isElementAddedByUs(node) === false &&
+            this.isNodeAYoutubeVideo(node)
+          ) {
             this.createNewSidePanelVideoUpdater(node);
           }
         });

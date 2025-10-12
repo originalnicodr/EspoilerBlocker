@@ -30,7 +30,6 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
       const info_content: HTMLElement = this.container.querySelector('.ytp-videowall-still-info-content');
       info_content.style.pointerEvents = 'none';
-
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
       return;
@@ -82,7 +81,7 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
   public backupOriginal() {
     if (!this.container) return;
     super.backupOriginal();
-    
+
     this.background_image_url = this.thumbnail.style.backgroundImage;
   }
 

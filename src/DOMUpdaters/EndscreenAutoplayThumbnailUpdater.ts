@@ -32,7 +32,7 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
       // Otherwise the rotating background rectangle would be rendered in its entirety.
       this.thumbnail.style.position = 'relative';
       this.thumbnail.style.overflow = 'hidden';
-      this.thumbnail.style.borderRadius = '0.5rem'
+      this.thumbnail.style.borderRadius = '0.5rem';
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
       return;
@@ -44,7 +44,7 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
   protected getIsESPNVideo(): boolean {
     return this.getChannel() === 'ESPN Fans';
   }
-  
+
   protected getChannel(): string {
     const channels_name_element = this.container.querySelector<HTMLElement>('.ytp-autonav-endscreen-upnext-author');
     if (channels_name_element) {
@@ -84,7 +84,7 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
   public backupOriginal() {
     if (!this.container) return;
     super.backupOriginal();
-    
+
     this.background_image_url = this.thumbnail.style.backgroundImage;
   }
 

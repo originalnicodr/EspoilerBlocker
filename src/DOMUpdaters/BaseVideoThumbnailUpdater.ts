@@ -11,9 +11,9 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
 
   protected thumbnail: HTMLElement;
   protected added_thumbnail_element: HTMLElement | null = null;
-  protected buttons: { spoiler_button: HTMLButtonElement; score_button: HTMLButtonElement; } = {
+  protected buttons: { spoiler_button: HTMLButtonElement; score_button: HTMLButtonElement } = {
     spoiler_button: undefined,
-    score_button: undefined
+    score_button: undefined,
   };
 
   constructor(container: HTMLElement) {
@@ -49,8 +49,8 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     if (this.thumbnail === undefined) {
       return;
     }
-  
-    this.thumbnail.style.backgroundImage = "";
+
+    this.thumbnail.style.backgroundImage = '';
   }
 
   protected addThumbnailElements(settings: Settings): Promise<void> {
@@ -75,7 +75,7 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
         this.is_active = true;
         this.update();
       }
-    }
+    };
 
     const showTotalScoreFunction = (show_total_score) => {
       const score_element = this.added_thumbnail_element.querySelector('.espn-spoilerblocker-total-score');
@@ -85,7 +85,7 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
       } else if (!score_element && show_total_score) {
         this.addScoreToThumbnail();
       }
-    }
+    };
 
     this.buttons = addHoverButtons(
       this.thumbnail,
@@ -116,11 +116,11 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
   protected addScoreToThumbnail(): void {
     const middle = this.added_thumbnail_element.querySelector('.espn-spoilerblocker-middle-elements');
     if (!middle || this.added_thumbnail_element.querySelector('.espn-spoilerblocker-total-score')) return;
-  
+
     const score_element = createScoreElement(this.total_score);
     middle.appendChild(score_element);
   }
-  
+
   protected removeScoreFromThumbnail(): void {
     const score_element = this.added_thumbnail_element.querySelector('.espn-spoilerblocker-total-score');
     if (score_element) {
@@ -134,7 +134,11 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     });
   }
 
-  protected updateScoreSeettingsChangeMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
+  protected updateScoreSeettingsChangeMessage(
+    message: any,
+    sender: chrome.runtime.MessageSender,
+    sendResponse: (response?: any) => void,
+  ) {
     if (message.action === 'updatedScoresSetting' && this.added_thumbnail_element) {
       if (this.added_thumbnail_element) {
         if (message.value) {

@@ -40,7 +40,9 @@ export class VideoTitleUpdater extends BaseUpdater {
   }
 
   protected getChannel(): string {
-    const channels_name_element: HTMLElement = document.querySelector('yt-formatted-string.style-scope.ytd-channel-name.complex-string');
+    const channels_name_element: HTMLElement = document.querySelector(
+      'yt-formatted-string.style-scope.ytd-channel-name.complex-string',
+    );
     if (channels_name_element) {
       return channels_name_element ? channels_name_element.innerText.trim() : '';
     }

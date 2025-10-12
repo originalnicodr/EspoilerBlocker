@@ -29,11 +29,10 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     this.backupOriginal();
     try {
       await this.spoilerBlockVideo();
-      
+
       // Render the new thumbnail above the original one to avoid the automatic thumbnail
       // player from spoiling the match.
       this.added_thumbnail_element.style.zIndex = '2';
-
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
       return;
@@ -83,7 +82,7 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getTitle(): HTMLElement {
-    var potential_container : HTMLElement = this.container.querySelector('.yt-core-attributed-string');
+    var potential_container: HTMLElement = this.container.querySelector('.yt-core-attributed-string');
 
     return potential_container;
   }

@@ -234,8 +234,7 @@ function addHoverEffect(container_element: HTMLElement) {
   const badges = wrapper?.querySelectorAll('img') || [];
 
   // Helper to detect real "entry" and "exit" from the whole container
-  const isLeavingOrEnteringFromOutside = (e: MouseEvent) =>
-    !container_element.contains(e.relatedTarget as Node);
+  const isLeavingOrEnteringFromOutside = (e: MouseEvent) => !container_element.contains(e.relatedTarget as Node);
 
   container_element.addEventListener('mouseover', (e) => {
     if (!isLeavingOrEnteringFromOutside(e)) return;
