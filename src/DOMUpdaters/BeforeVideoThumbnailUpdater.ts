@@ -1,4 +1,3 @@
-import { VideoHighlightType } from '../utils/getHighlightType';
 import { BaseVideoThumbnailUpdater } from './BaseVideoThumbnailUpdater';
 
 export class BeforeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
@@ -33,7 +32,9 @@ export class BeforeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getChannel(): string {
-    const channels_name_element: HTMLElement = document.querySelector('yt-formatted-string.style-scope.ytd-channel-name.complex-string');
+    const channels_name_element: HTMLElement = document.querySelector(
+      'yt-formatted-string.style-scope.ytd-channel-name.complex-string',
+    );
     if (channels_name_element) {
       return channels_name_element ? channels_name_element.innerText.trim() : '';
     }
@@ -41,11 +42,11 @@ export class BeforeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getIfAlreadyWatched(): boolean {
-    return false;  // No watched state in this context
+    return false; // No watched state in this context
   }
 
   protected getAriaText(): string {
-    return '';  // No aria text in this context
+    return ''; // No aria text in this context
   }
 
   protected getTitle(): HTMLElement {

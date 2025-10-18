@@ -34,7 +34,7 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     try {
       await this.spoilerBlockVideo();
 
-      this.added_thumbnail_element.style.opacity = '0'; 
+      this.added_thumbnail_element.style.opacity = '0';
       this.container.addEventListener('mouseenter', () => {
         if (this.added_thumbnail_element) {
           this.added_thumbnail_element.style.opacity = '100%';
@@ -51,7 +51,7 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       // Other the rotating background rectangle would be rendered in its entirety.
       this.thumbnail.style.position = 'relative';
       this.thumbnail.style.overflow = 'hidden';
-      this.thumbnail.style.borderRadius = '0.5rem'
+      this.thumbnail.style.borderRadius = '0.5rem';
     } catch (error) {
       console.error('Error spoiling video:', { container: this.container, error });
       return;
@@ -70,7 +70,7 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   protected getThumbnail(): HTMLElement {
     // The thumbnail is outside of the element that holds this title
-    return document.querySelector(".ytp-tooltip-bg");
+    return document.querySelector('.ytp-tooltip-bg');
   }
 
   protected getIsESPNVideo(): boolean {

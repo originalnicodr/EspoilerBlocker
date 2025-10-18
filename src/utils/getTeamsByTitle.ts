@@ -1,4 +1,4 @@
-import { standarizeTeamsName } from "./standarizeTeamsName";
+import { standarizeTeamsName } from './standarizeTeamsName';
 
 export function getTeamsByTitle(title: string): string[] {
   // Remove penalty parts of the title (like "(1)" and "(4)") using a regular expression

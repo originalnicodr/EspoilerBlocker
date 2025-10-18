@@ -11,7 +11,6 @@ export class TitleUpdater extends BaseUpdater {
       return;
     }
 
-
     const current_url: string = window.location.href;
     if (!current_url.includes('watch?v=')) {
       return;
@@ -48,7 +47,7 @@ export class TitleUpdater extends BaseUpdater {
 
   // Dummy implementations, can't get this info from the video being watched
   protected getChannel(): string {
-    // Since the TitleUpdater is applied as soon as the website gives a document title (aka the website name we see in the tab) the page itself won't 
+    // Since the TitleUpdater is applied as soon as the website gives a document title (aka the website name we see in the tab) the page itself won't
     // have been loaded at that point, making it so that we can't check the channel before trying to block spoilers in the title
     return '';
   }

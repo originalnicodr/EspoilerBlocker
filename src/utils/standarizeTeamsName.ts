@@ -115,171 +115,171 @@ export function standarizeTeamsName(team_alias: string): string {
       return 'Udinese';
   }
   // Liga Portugal
-  switch(team_alias) {
-    case "AVS Futebol SAD":
-    case "AVS":
-      return "AVS";
-    case "Estrela da Amadora":
-    case "Estrela Amadora":
-      return "Estrela Amadora";
-    case "Gil Vicente":
-    case "Vicente":
-      return "Vicente";
-    case "Sporting CP":
-    case "Sporting":
-      return "Sporting";
+  switch (team_alias) {
+    case 'AVS Futebol SAD':
+    case 'AVS':
+      return 'AVS';
+    case 'Estrela da Amadora':
+    case 'Estrela Amadora':
+      return 'Estrela Amadora';
+    case 'Gil Vicente':
+    case 'Vicente':
+      return 'Vicente';
+    case 'Sporting CP':
+    case 'Sporting':
+      return 'Sporting';
   }
   // Ligue 1
   switch (team_alias) {
-    case "Monaco":
-    case "Mónaco":
-      return "Monaco";
-    case "Saint-Étienne":
-    case "Saint Etienne":
-      return "Saint Etienne";
-    case "Le Havre":
-    case "Havre":
-      return "Havre";
-    case "Olympique Lyon":
-    case "Lille":
-    case "LOSC Lille":
-      return "Lille";
-    case "Lyon":
-      return "Lyon";
-    case "Olympique de Marsella":
-    case "Olympique Marseille":
-    case "O. Marsella":
-    case "Marseille":
-      return "Olympique de Marsella";
-    case "Paris Saint-Germain":
-    case "PSG":
-      return "PSG";
-    case "Racing de Estrasburgo":
-    case "Estrasburgo":
-    case "Strasbourg":
-      return "Racing de Estrasburgo";
-    case "Stade Reims":
-    case "Reims":
-      return "Reims";
-    case "Stade Rennais":
-    case "Rennais":
-      return "Rennais";
+    case 'Monaco':
+    case 'Mónaco':
+      return 'Monaco';
+    case 'Saint-Étienne':
+    case 'Saint Etienne':
+      return 'Saint Etienne';
+    case 'Le Havre':
+    case 'Havre':
+      return 'Havre';
+    case 'Olympique Lyon':
+    case 'Lille':
+    case 'LOSC Lille':
+      return 'Lille';
+    case 'Lyon':
+      return 'Lyon';
+    case 'Olympique de Marsella':
+    case 'Olympique Marseille':
+    case 'O. Marsella':
+    case 'Marseille':
+      return 'Olympique de Marsella';
+    case 'Paris Saint-Germain':
+    case 'PSG':
+      return 'PSG';
+    case 'Racing de Estrasburgo':
+    case 'Estrasburgo':
+    case 'Strasbourg':
+      return 'Racing de Estrasburgo';
+    case 'Stade Reims':
+    case 'Reims':
+      return 'Reims';
+    case 'Stade Rennais':
+    case 'Rennais':
+      return 'Rennais';
   }
   // Bundesliga
   switch (team_alias) {
-    case "FC Union Berlin":
-    case "FC Unión Berlín":
-    case "Union Berlin":
-    case "Unión Berlín":
-    case "U. Berlin":
-      return "Unión Berlín";
-    case "FSV Mainz 05":
-    case "Mainz 05":
-    case "Mainz":
-      return "Mainz";
-    case "Bayer Leverkusen":
-    case "B. Leverkusen":
-    case "B Leverkusen":
-      return "Bayer Leverkusen";
-    case "Bayern Munich":
-    case "B. Munich":
-    case "Bayern":
-      return "Bayern";
-    case "Borussia Dortmund":
-    case "B. Dortmund":
-    case "Dortmund":
-      return "Dortmund";
-    case "Borussia Mönchengladbach":
-    case "Mönchengladbach":
-      return "Mönchengladbach";
-    case "Eintracht Frankfurt":
-    case "E. Frankfurt":
-    case "Frankfurt":
-      return "Frankfurt";
-    case "Holstein Kiel":
-    case "KSV Holstein": 
-      return "Holstein Kiel";
-    case "RB Leipzig":
-    case "Leipzig":
-      return "Leipzig";
-    case "Wolfsburgo":
-    case "Wolfsburg":
-      return "Wolfsburg";
-    case "Werder Bremen":
-    case "W. Bremen":
-      return "Werder Bremen";
+    case 'FC Union Berlin':
+    case 'FC Unión Berlín':
+    case 'Union Berlin':
+    case 'Unión Berlín':
+    case 'U. Berlin':
+      return 'Unión Berlín';
+    case 'FSV Mainz 05':
+    case 'Mainz 05':
+    case 'Mainz':
+      return 'Mainz';
+    case 'Bayer Leverkusen':
+    case 'B. Leverkusen':
+    case 'B Leverkusen':
+      return 'Bayer Leverkusen';
+    case 'Bayern Munich':
+    case 'B. Munich':
+    case 'Bayern':
+      return 'Bayern';
+    case 'Borussia Dortmund':
+    case 'B. Dortmund':
+    case 'Dortmund':
+      return 'Dortmund';
+    case 'Borussia Mönchengladbach':
+    case 'Mönchengladbach':
+      return 'Mönchengladbach';
+    case 'Eintracht Frankfurt':
+    case 'E. Frankfurt':
+    case 'Frankfurt':
+      return 'Frankfurt';
+    case 'Holstein Kiel':
+    case 'KSV Holstein':
+      return 'Holstein Kiel';
+    case 'RB Leipzig':
+    case 'Leipzig':
+      return 'Leipzig';
+    case 'Wolfsburgo':
+    case 'Wolfsburg':
+      return 'Wolfsburg';
+    case 'Werder Bremen':
+    case 'W. Bremen':
+      return 'Werder Bremen';
   }
   // Primera División de Argentina
   switch (team_alias) {
-    case "Argentinos Juniors":
-    case "Argentinos Jr.s":
-    case "Argentinos Jrs.":
-    case "Argentinos":
-      return "Argentinos Juniors";
-    case "Atlético Tucumán":
-    case "Atl. Tucumán":
-    case "Atletico Tucuman":
-      return "Atlético Tucumán";
-    case "Barracas Central":
-    case "Barracas":
-      return "Barracas Central";
-    case "Central Córdoba":
-    case "Central Cordoba":
-    case "C. Cordoba":
-    case "C. Córdoba":
-      return "Central Córdoba";
-    case "Defensa y Justicia":
-    case "DyJ":
-      return "Defensa y Justicia";
-    case "Estudiantes":
-    case "Estudiantes de La Plata":
-      return "Estudiantes de La Plata";
-    case "Gimnasia":
-    case "Gimnasia y Esgrima":
-    case "Gimnasia y Esgrima La Plata":
-      return "Gimnasia y Esgrima La Plata";
-    case "Huracan":
-    case "Huracán":
-      return "Huracán";
-    case "Independiente Rivadavia":
-    case "I. Rivadavia":
-    case "I Rivadavia":
-    case "Ind. Rivadavia":
-    case "Independiente Riv.":
-    case "Ind. Riv.":
-      return "Independiente Rivadavia";
+    case 'Argentinos Juniors':
+    case 'Argentinos Jr.s':
+    case 'Argentinos Jrs.':
+    case 'Argentinos':
+      return 'Argentinos Juniors';
+    case 'Atlético Tucumán':
+    case 'Atl. Tucumán':
+    case 'Atletico Tucuman':
+      return 'Atlético Tucumán';
+    case 'Barracas Central':
+    case 'Barracas':
+      return 'Barracas Central';
+    case 'Central Córdoba':
+    case 'Central Cordoba':
+    case 'C. Cordoba':
+    case 'C. Córdoba':
+      return 'Central Córdoba';
+    case 'Defensa y Justicia':
+    case 'DyJ':
+      return 'Defensa y Justicia';
+    case 'Estudiantes':
+    case 'Estudiantes de La Plata':
+      return 'Estudiantes de La Plata';
+    case 'Gimnasia':
+    case 'Gimnasia y Esgrima':
+    case 'Gimnasia y Esgrima La Plata':
+      return 'Gimnasia y Esgrima La Plata';
+    case 'Huracan':
+    case 'Huracán':
+      return 'Huracán';
+    case 'Independiente Rivadavia':
+    case 'I. Rivadavia':
+    case 'I Rivadavia':
+    case 'Ind. Rivadavia':
+    case 'Independiente Riv.':
+    case 'Ind. Riv.':
+      return 'Independiente Rivadavia';
     case "Newell's Old Boys":
-    case "Newells Old Boys":
+    case 'Newells Old Boys':
     case "Newell's":
-    case "Newells":
+    case 'Newells':
       return "Newell's Old Boys";
-    case "Deportivo Riestra":
-    case "Dep. Riestra":
-    case "Riestra":
-      return "Deportivo Riestra";
-    case "River Plate":
-    case "River":
-      return "River Plate";
-    case "Rosario Central":
-    case "R. Central":
-    case "Central":
-      return "Rosario Central";
-    case "San Lorenzo":
-    case "CASLA":
-        return "San Lorenzo";
-    case "San Martín":
-    case "San Martin":
-    case "San Martín S. J.":
-    case "San Martin S. J.":
-    case "San Martin SJ":
-    case "San Martín SJ":
-      return "San Martín";
-    case "Unión":
-    case "Union":
-      return "Unión";
-    case "Vélez":
-    case "Velez":
-      return "Vélez";
+    case 'Deportivo Riestra':
+    case 'Dep. Riestra':
+    case 'Riestra':
+      return 'Deportivo Riestra';
+    case 'River Plate':
+    case 'River':
+      return 'River Plate';
+    case 'Rosario Central':
+    case 'R. Central':
+    case 'Central':
+      return 'Rosario Central';
+    case 'San Lorenzo':
+    case 'CASLA':
+      return 'San Lorenzo';
+    case 'San Martín':
+    case 'San Martin':
+    case 'San Martín S. J.':
+    case 'San Martin S. J.':
+    case 'San Martin SJ':
+    case 'San Martín SJ':
+      return 'San Martín';
+    case 'Unión':
+    case 'Union':
+      return 'Unión';
+    case 'Vélez':
+    case 'Velez':
+      return 'Vélez';
   }
 
   // Couldn't find teams name, return passed alias

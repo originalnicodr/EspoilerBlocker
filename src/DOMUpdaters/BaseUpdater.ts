@@ -83,8 +83,7 @@ export class BaseUpdater {
   }
 
   private retrieveUpdaterMetadata() {
-    if (this.is_active)
-    {
+    if (this.is_active) {
       return;
     }
 
@@ -121,7 +120,7 @@ export class BaseUpdater {
     if (!relative_time) return null;
     return this.parseRelativeTimeString(relative_time);
   }
-  
+
   private extractRelativeTimeText(aria_text: string): string | null {
     if (aria_text.includes('hace ')) {
       // Spanish: extract everything after "hace"
@@ -133,7 +132,7 @@ export class BaseUpdater {
     } else {
       // Attempt to get date data from the visual HTMLElement
       const metadata_list: NodeListOf<HTMLElement> = this.container.querySelectorAll(
-        ".inline-metadata-item.style-scope.ytd-video-meta-block"
+        '.inline-metadata-item.style-scope.ytd-video-meta-block',
       );
       if (metadata_list.length > 1) {
         return metadata_list[1].innerText.trim();
@@ -141,32 +140,49 @@ export class BaseUpdater {
       return null;
     }
   }
-  
+
   private parseRelativeTimeString(relative_time: string): Date {
-    let years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0;
-  
+    let years = 0,
+      months = 0,
+      days = 0,
+      hours = 0,
+      minutes = 0,
+      seconds = 0;
+
     const unit_setters = { years, months, days, hours, minutes, seconds };
-  
+
     const time_units_map: { [unit: string]: keyof typeof unit_setters } = {
       // Spanish
-      'año': 'years', 'años': 'years',
-      'mes': 'months', 'meses': 'months',
-      'día': 'days', 'días': 'days',
-      'hora': 'hours', 'horas': 'hours',
-      'minuto': 'minutes', 'minutos': 'minutes',
-      'segundo': 'seconds', 'segundos': 'seconds',
+      año: 'years',
+      años: 'years',
+      mes: 'months',
+      meses: 'months',
+      día: 'days',
+      días: 'days',
+      hora: 'hours',
+      horas: 'hours',
+      minuto: 'minutes',
+      minutos: 'minutes',
+      segundo: 'seconds',
+      segundos: 'seconds',
       // English
-      'year': 'years', 'years': 'years',
-      'month': 'months', 'months': 'months',
-      'day': 'days', 'days': 'days',
-      'hour': 'hours', 'hours': 'hours',
-      'minute': 'minutes', 'minutes': 'minutes',
-      'second': 'seconds', 'seconds': 'seconds',
+      year: 'years',
+      years: 'years',
+      month: 'months',
+      months: 'months',
+      day: 'days',
+      days: 'days',
+      hour: 'hours',
+      hours: 'hours',
+      minute: 'minutes',
+      minutes: 'minutes',
+      second: 'seconds',
+      seconds: 'seconds',
     };
-  
+
     const all_units = Object.keys(time_units_map).join('|');
     const duration_regex = new RegExp(`(\\d+)\\s*(${all_units})`, 'gi');
-  
+
     let match: RegExpExecArray;
     while ((match = duration_regex.exec(relative_time)) !== null) {
       const value = parseInt(match[1]);
@@ -175,7 +191,7 @@ export class BaseUpdater {
         unit_setters[unit_key] += value;
       }
     }
-  
+
     const match_date = new Date();
     match_date.setFullYear(match_date.getFullYear() - unit_setters.years);
     match_date.setMonth(match_date.getMonth() - unit_setters.months);
@@ -183,7 +199,7 @@ export class BaseUpdater {
     match_date.setHours(match_date.getHours() - unit_setters.hours - 2); // Offset for upload delay
     match_date.setMinutes(match_date.getMinutes() - unit_setters.minutes);
     match_date.setSeconds(match_date.getSeconds() - unit_setters.seconds);
-  
+
     return match_date;
   }
 
@@ -331,7 +347,7 @@ export class BaseUpdater {
       this.title.textContent = this.originalState.titleTextContent;
       this.title.innerText = this.originalState.titleTextContent;
     }
-  
+
     if (this.originalState.containerDisplayStyle !== undefined) {
       (this.container as HTMLElement).style.display = this.originalState.containerDisplayStyle;
     }
@@ -360,4 +376,3 @@ function getTotalGoals(original_title: string): number {
   const [part1, part2] = match_teams_string.split('-');
   return Number(part1.trim().split(' ').at(-1)) + Number(part2.trim().split(' ').at(0));
 }
-

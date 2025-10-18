@@ -11,7 +11,6 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
       return;
     }
 
-
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
     if (!should_block_spoiler) {
@@ -39,7 +38,9 @@ export class InnerVideoTitleUpdater extends BaseUpdater {
   }
 
   protected getChannel(): string {
-    const channels_name_element: HTMLElement = document.querySelector('yt-formatted-string.style-scope.ytd-channel-name.complex-string');
+    const channels_name_element: HTMLElement = document.querySelector(
+      'yt-formatted-string.style-scope.ytd-channel-name.complex-string',
+    );
     if (channels_name_element) {
       return channels_name_element ? channels_name_element.innerText.trim() : '';
     }
