@@ -46,6 +46,10 @@ export class HomeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     return this.getChannel() === 'ESPN Fans';
   }
 
+  protected shouldDisableWrapperPointerEvents(): boolean {
+    return false;
+  }
+
   protected getChannel(): string {
     let channel_element = this.container.querySelector<HTMLElement>('ytd-channel-name a');
     if (!channel_element) {

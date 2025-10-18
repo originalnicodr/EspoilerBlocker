@@ -53,6 +53,10 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
     this.thumbnail.style.backgroundImage = "";
   }
 
+  protected shouldDisableWrapperPointerEvents(): boolean {
+    return true;
+  }
+
   protected addThumbnailElements(settings: Settings): Promise<void> {
     if (!this.thumbnail) return;
     //console.log('Adding thumbnail elements', { team_a: this.team_a, team_b: this.team_b, highlight_type: this.highlight_type, match_date: this.match_date, total_score: this.total_score, settings });
@@ -63,6 +67,7 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
       this.highlight_type,
       this.match_date,
       settings.display_total_score ? this.total_score : null,
+      { disablePointerEvents: this.shouldDisableWrapperPointerEvents() },
     );
   }
 

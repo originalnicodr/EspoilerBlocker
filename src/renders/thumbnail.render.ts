@@ -42,6 +42,7 @@ export const thumbnailRender = (
   highlight_type: VideoHighlightType,
   match_date: Date,
   total_score: undefined | number,
+  options: { disablePointerEvents?: boolean } = { disablePointerEvents: true },
 ): HTMLElement => {
   // This element holds all added stuff so we can easily remove it later.
   const wrapper = document.createElement('div');
@@ -52,7 +53,7 @@ export const thumbnailRender = (
     left: '0',
     width: '100%',
     height: '100%',
-    pointerEvents: 'none',
+    pointerEvents: options.disablePointerEvents ? 'none' : 'auto',
   });
 
   container_element.appendChild(wrapper);
