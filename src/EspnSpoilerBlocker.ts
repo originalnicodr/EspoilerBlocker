@@ -376,7 +376,9 @@ export class EspnSpoilerBlocker {
     let container = undefined;
     try {
       // Might need to increase this to cover ads
-      container = await this.getElementOrRetry('.ytp-endscreen-content', 400);
+      // legacy youtube style
+      //container = await this.getElementOrRetry('.ytp-endscreen-content', 400);
+      container = await this.getElementOrRetry('.ytp-fullscreen-grid-stills-container', 400);
     } catch (error) {
       this.watchingThumbnailsOnEndscreenPage = false;
       return;
@@ -386,7 +388,9 @@ export class EspnSpoilerBlocker {
 
     // create a EndscreenVideoUpdater for each video in the dom
     container
-      .querySelectorAll(this.youtubeMediaSelectors.join(','))
+      // legacy youtube style
+      //.querySelectorAll(this.youtubeMediaSelectors.join(','))
+      .querySelectorAll(".ytp-modern-videowall-still.ytp-suggestion-set")
       .forEach((video: HTMLElement) => this.createNewEndscreenVideoUpdater(video));
 
     // observe new added elements and do the same
@@ -394,7 +398,9 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && node.matches('.ytp-videowall-still')) {
+          // legacy youtube style
+          //if (node instanceof HTMLElement && node.matches('.ytp-videowall-still')) {
+          if (node instanceof HTMLElement && node.matches(".ytp-modern-videowall-still.ytp-suggestion-set")) {
             this.createNewEndscreenVideoUpdater(node);
           }
         });
