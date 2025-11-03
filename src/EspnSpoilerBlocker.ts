@@ -531,7 +531,7 @@ export class EspnSpoilerBlocker {
           if (
             node instanceof HTMLElement &&
             this.isElementAddedByUs(node) === false &&
-            this.isNodeAYoutubeVideo(node)
+            node.matches('yt-lockup-view-model')
           ) {
             this.createNewSidePanelVideoUpdater(node);
           }
