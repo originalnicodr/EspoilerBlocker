@@ -219,13 +219,11 @@ export class EspnSpoilerBlocker {
     });
   }
 
-  private createInnerVideoTitleUpdater(node: HTMLElement) {
+  private createInnerVideoTitleUpdater(node: HTMLAnchorElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
-    if (node instanceof HTMLAnchorElement) {
-      const updater = new InnerVideoTitleUpdater(node);
-      this.updaters.push(updater);
-      updater.update();
-    }
+    const updater = new InnerVideoTitleUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
   }
 
   private createNewBeforeVideoThumbnailUpdater(node: HTMLElement) {
@@ -378,7 +376,9 @@ export class EspnSpoilerBlocker {
     let container = undefined;
     try {
       // Might need to increase this to cover ads
-      container = await this.getElementOrRetry('.ytp-endscreen-content', 400);
+      // legacy youtube style
+      //container = await this.getElementOrRetry('.ytp-endscreen-content', 400);
+      container = await this.getElementOrRetry('.ytp-fullscreen-grid-stills-container', 400);
     } catch (error) {
       this.watchingThumbnailsOnEndscreenPage = false;
       return;
@@ -388,7 +388,9 @@ export class EspnSpoilerBlocker {
 
     // create a EndscreenVideoUpdater for each video in the dom
     container
-      .querySelectorAll(this.youtubeMediaSelectors.join(','))
+      // legacy youtube style
+      //.querySelectorAll(this.youtubeMediaSelectors.join(','))
+      .querySelectorAll(".ytp-modern-videowall-still.ytp-suggestion-set")
       .forEach((video: HTMLElement) => this.createNewEndscreenVideoUpdater(video));
 
     // observe new added elements and do the same
@@ -396,7 +398,9 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && node.matches('.ytp-videowall-still')) {
+          // legacy youtube style
+          //if (node instanceof HTMLElement && node.matches('.ytp-videowall-still')) {
+          if (node instanceof HTMLElement && node.matches(".ytp-modern-videowall-still.ytp-suggestion-set")) {
             this.createNewEndscreenVideoUpdater(node);
           }
         });
@@ -527,7 +531,7 @@ export class EspnSpoilerBlocker {
           if (
             node instanceof HTMLElement &&
             this.isElementAddedByUs(node) === false &&
-            this.isNodeAYoutubeVideo(node)
+            node.matches('yt-lockup-view-model')
           ) {
             this.createNewSidePanelVideoUpdater(node);
           }
@@ -593,7 +597,9 @@ export class EspnSpoilerBlocker {
 
       const promises = [
         this.getElementOrRetry('h1.style-scope.ytd-watch-metadata', 400),
-        this.getElementOrRetry('a.ytp-title-fullerscreen-link', 400),
+        // legacy youtube style
+        // this.getElementOrRetry('a.ytp-title-fullerscreen-link', 400),
+        this.getElementOrRetry('.yt-core-attributed-string.yt-core-attributed-string--white-space-pre-wrap', 400),
       ];
       try {
         const results = await Promise.all(promises);
