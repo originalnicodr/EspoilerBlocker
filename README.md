@@ -28,7 +28,7 @@ npm run build
 ## Creditos
 
 - Logos de equipos europeos de [luukhopman/football-logos](https://github.com/luukhopman/football-logos)
-- Banderas de países de [lipis/flag-icons](https://github.com/lipis/flag-icons)
+- Banderas de países de [flagcdn.com](https://flagcdn.com/)
 
 ## Disclaimer
 

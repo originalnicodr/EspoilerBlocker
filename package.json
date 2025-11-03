@@ -4,7 +4,7 @@
   "description": "Oculta información de partidos en los highlights subidos en YouTube por la cuenta ESPN Fans.",
   "main": "main.js",
   "scripts": {
-    "build": "rm -rf ./dist && webpack"
+    "build": "del dist && webpack"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-prettier": "^5.2.3",
     "globals": "^16.0.0",
+    "http-server": "^14.1.1",
     "prettier": "^3.5.2",
     "ts-loader": "^9.5.2",
     "typescript": "^5.7.3",

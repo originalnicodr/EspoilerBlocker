@@ -1,10 +1,25 @@
 import { VideoHighlightType } from './getHighlightType';
 
 export function getTeamBadge(team: string, highlight_type: VideoHighlightType): string {
-  return chrome.runtime.getURL(getTeamBadgeLocalPath(team, highlight_type));
+  var badge_url: string = getTeamBadgeURL(team, highlight_type);
+  if (badge_url) {
+    badge_url = chrome.runtime.getURL(badge_url);
+  }
+  else {
+    badge_url = getCountryFlagURL(team);
+  }
+
+  if (!badge_url) {
+    // Default teams logo
+    if (highlight_type == VideoHighlightType.Basketball) {
+      badge_url = chrome.runtime.getURL('images/basketball-ball.png');
+    }
+    badge_url = chrome.runtime.getURL('images/football-ball.png');
+  }
+  return badge_url;
 }
 
-function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType): string {
+function getTeamBadgeURL(team: string, highlight_type: VideoHighlightType): string | null {
   // Premier
   switch (team) {
     case 'Aston Villa':
@@ -321,463 +336,463 @@ function getTeamBadgeLocalPath(team: string, highlight_type: VideoHighlightType)
       return 'images/Argentina - Primera Division/velez.png';
   }
 
+  return null;
+}
+
+function getCountryFlagURL(team: string): string | null {
   switch (team) {
     case 'Andorra':
-      return 'images/Countries/ad.svg';
+      return 'https://flagcdn.com/ad.svg';
     case 'Emiratos Árabes Unidos':
-      return 'images/Countries/ae.svg';
+      return 'https://flagcdn.com/ae.svg';
     case 'Afganistán':
-      return 'images/Countries/af.svg';
+      return 'https://flagcdn.com/af.svg';
     case 'Antigua y Barbuda':
-      return 'images/Countries/ag.svg';
+      return 'https://flagcdn.com/ag.svg';
     case 'Anguila':
-      return 'images/Countries/ai.svg';
+      return 'https://flagcdn.com/ai.svg';
     case 'Albania':
-      return 'images/Countries/al.svg';
+      return 'https://flagcdn.com/al.svg';
     case 'Armenia':
-      return 'images/Countries/am.svg';
+      return 'https://flagcdn.com/am.svg';
     case 'Angola':
-      return 'images/Countries/ao.svg';
+      return 'https://flagcdn.com/ao.svg';
     case 'Antártida':
-      return 'images/Countries/aq.svg';
+      return 'https://flagcdn.com/aq.svg';
     case 'Argentina':
-      return 'images/Countries/ar.svg';
+      return 'https://flagcdn.com/ar.svg';
     case 'Samoa Americana':
-      return 'images/Countries/as.svg';
+      return 'https://flagcdn.com/as.svg';
     case 'Austria':
-      return 'images/Countries/at.svg';
+      return 'https://flagcdn.com/at.svg';
     case 'Australia':
-      return 'images/Countries/au.svg';
+      return 'https://flagcdn.com/au.svg';
     case 'Aruba':
-      return 'images/Countries/aw.svg';
+      return 'https://flagcdn.com/aw.svg';
     case 'Islas Åland':
-      return 'images/Countries/ax.svg';
+      return 'https://flagcdn.com/ax.svg';
     case 'Azerbaiyán':
-      return 'images/Countries/az.svg';
+      return 'https://flagcdn.com/az.svg';
     case 'Bosnia y Herzegovina':
-      return 'images/Countries/ba.svg';
+      return 'https://flagcdn.com/ba.svg';
     case 'Barbados':
-      return 'images/Countries/bb.svg';
+      return 'https://flagcdn.com/bb.svg';
     case 'Bangladés':
-      return 'images/Countries/bd.svg';
+      return 'https://flagcdn.com/bd.svg';
     case 'Bélgica':
-      return 'images/Countries/be.svg';
+      return 'https://flagcdn.com/be.svg';
     case 'Burkina Faso':
-      return 'images/Countries/bf.svg';
+      return 'https://flagcdn.com/bf.svg';
     case 'Bulgaria':
-      return 'images/Countries/bg.svg';
+      return 'https://flagcdn.com/bg.svg';
     case 'Baréin':
-      return 'images/Countries/bh.svg';
+      return 'https://flagcdn.com/bh.svg';
     case 'Burundi':
-      return 'images/Countries/bi.svg';
+      return 'https://flagcdn.com/bi.svg';
     case 'Benín':
-      return 'images/Countries/bj.svg';
+      return 'https://flagcdn.com/bj.svg';
     case 'San Bartolomé':
-      return 'images/Countries/bl.svg';
+      return 'https://flagcdn.com/bl.svg';
     case 'Bermudas':
-      return 'images/Countries/bm.svg';
+      return 'https://flagcdn.com/bm.svg';
     case 'Brunéi':
-      return 'images/Countries/bn.svg';
+      return 'https://flagcdn.com/bn.svg';
     case 'Bolivia':
-      return 'images/Countries/bo.svg';
+      return 'https://flagcdn.com/bo.svg';
     case 'Caribe Neerlandés':
-      return 'images/Countries/bq.svg';
+      return 'https://flagcdn.com/bq.svg';
     case 'Brasil':
-      return 'images/Countries/br.svg';
+      return 'https://flagcdn.com/br.svg';
     case 'Bahamas':
-      return 'images/Countries/bs.svg';
+      return 'https://flagcdn.com/bs.svg';
     case 'Bután':
-      return 'images/Countries/bt.svg';
+      return 'https://flagcdn.com/bt.svg';
     case 'Isla Bouvet':
-      return 'images/Countries/bv.svg';
+      return 'https://flagcdn.com/bv.svg';
     case 'Botsuana':
-      return 'images/Countries/bw.svg';
+      return 'https://flagcdn.com/bw.svg';
     case 'Bielorrusia':
-      return 'images/Countries/by.svg';
+      return 'https://flagcdn.com/by.svg';
     case 'Belice':
-      return 'images/Countries/bz.svg';
+      return 'https://flagcdn.com/bz.svg';
     case 'Canadá':
-      return 'images/Countries/ca.svg';
+      return 'https://flagcdn.com/ca.svg';
     case 'Islas Cocos':
-      return 'images/Countries/cc.svg';
+      return 'https://flagcdn.com/cc.svg';
     case 'República Democrática del Congo':
-      return 'images/Countries/cd.svg';
+      return 'https://flagcdn.com/cd.svg';
     case 'República Centroafricana':
-      return 'images/Countries/cf.svg';
+      return 'https://flagcdn.com/cf.svg';
     case 'Congo':
-      return 'images/Countries/cg.svg';
+      return 'https://flagcdn.com/cg.svg';
     case 'Suiza':
-      return 'images/Countries/ch.svg';
+      return 'https://flagcdn.com/ch.svg';
     case 'Costa de Marfil':
-      return 'images/Countries/ci.svg';
+      return 'https://flagcdn.com/ci.svg';
     case 'Islas Cook':
-      return 'images/Countries/ck.svg';
+      return 'https://flagcdn.com/ck.svg';
     case 'Chile':
-      return 'images/Countries/cl.svg';
+      return 'https://flagcdn.com/cl.svg';
     case 'Camerún':
-      return 'images/Countries/cm.svg';
+      return 'https://flagcdn.com/cm.svg';
     case 'China':
-      return 'images/Countries/cn.svg';
+      return 'https://flagcdn.com/cn.svg';
     case 'Colombia':
-      return 'images/Countries/co.svg';
+      return 'https://flagcdn.com/co.svg';
     case 'Isla Clipperton':
-      return 'images/Countries/cp.svg';
+      return 'https://flagcdn.com/cp.svg';
     case 'Costa Rica':
-      return 'images/Countries/cr.svg';
+      return 'https://flagcdn.com/cr.svg';
     case 'Cuba':
-      return 'images/Countries/cu.svg';
+      return 'https://flagcdn.com/cu.svg';
     case 'Cabo Verde':
-      return 'images/Countries/cv.svg';
+      return 'https://flagcdn.com/cv.svg';
     case 'Curazao':
-      return 'images/Countries/cw.svg';
+      return 'https://flagcdn.com/cw.svg';
     case 'Isla Christmas':
-      return 'images/Countries/cx.svg';
+      return 'https://flagcdn.com/cx.svg';
     case 'Chipre':
-      return 'images/Countries/cy.svg';
+      return 'https://flagcdn.com/cy.svg';
     case 'Chequia':
     case 'República Checa':
-      return 'images/Countries/cz.svg';
+      return 'https://flagcdn.com/cz.svg';
     case 'Alemania':
-      return 'images/Countries/de.svg';
+      return 'https://flagcdn.com/de.svg';
     case 'Diego García':
-      return 'images/Countries/dg.svg';
+      return 'https://flagcdn.com/dg.svg';
     case 'Yibuti':
-      return 'images/Countries/dj.svg';
+      return 'https://flagcdn.com/dj.svg';
     case 'Dinamarca':
-      return 'images/Countries/dk.svg';
+      return 'https://flagcdn.com/dk.svg';
     case 'Dominica':
-      return 'images/Countries/dm.svg';
+      return 'https://flagcdn.com/dm.svg';
     case 'República Dominicana':
-      return 'images/Countries/do.svg';
+      return 'https://flagcdn.com/do.svg';
     case 'Argelia':
-      return 'images/Countries/dz.svg';
+      return 'https://flagcdn.com/dz.svg';
     case 'Ecuador':
-      return 'images/Countries/ec.svg';
+      return 'https://flagcdn.com/ec.svg';
     case 'Estonia':
-      return 'images/Countries/ee.svg';
+      return 'https://flagcdn.com/ee.svg';
     case 'Egipto':
-      return 'images/Countries/eg.svg';
+      return 'https://flagcdn.com/eg.svg';
     case 'Sahara Occidental':
-      return 'images/Countries/eh.svg';
+      return 'https://flagcdn.com/eh.svg';
     case 'Eritrea':
-      return 'images/Countries/er.svg';
+      return 'https://flagcdn.com/er.svg';
     case 'Cataluña':
-      return 'images/Countries/es-ct.svg';
+      return 'https://flagcdn.com/es-ct.svg';
     case 'Galicia':
-      return 'images/Countries/es-ga.svg';
+      return 'https://flagcdn.com/es-ga.svg';
     case 'País Vasco':
-      return 'images/Countries/es-pv.svg';
+      return 'https://flagcdn.com/es-pv.svg';
     case 'España':
-      return 'images/Countries/es.svg';
+      return 'https://flagcdn.com/es.svg';
     case 'Etiopía':
-      return 'images/Countries/et.svg';
+      return 'https://flagcdn.com/et.svg';
     case 'Unión Europea':
-      return 'images/Countries/eu.svg';
+      return 'https://flagcdn.com/eu.svg';
     case 'Finlandia':
-      return 'images/Countries/fi.svg';
+      return 'https://flagcdn.com/fi.svg';
     case 'Fiyi':
-      return 'images/Countries/fj.svg';
+      return 'https://flagcdn.com/fj.svg';
     case 'Islas Malvinas':
-      return 'images/Countries/fk.svg';
+      return 'https://flagcdn.com/fk.svg';
     case 'Micronesia':
-      return 'images/Countries/fm.svg';
+      return 'https://flagcdn.com/fm.svg';
     case 'Islas Feroe':
-      return 'images/Countries/fo.svg';
+      return 'https://flagcdn.com/fo.svg';
     case 'Francia':
-      return 'images/Countries/fr.svg';
+      return 'https://flagcdn.com/fr.svg';
     case 'Gabón':
-      return 'images/Countries/ga.svg';
+      return 'https://flagcdn.com/ga.svg';
     case 'Inglaterra':
-      return 'images/Countries/gb-eng.svg';
+      return 'https://flagcdn.com/gb-eng.svg';
     case 'Irlanda del Norte':
-      return 'images/Countries/gb-nir.svg';
+      return 'https://flagcdn.com/gb-nir.svg';
     case 'Escocia':
-      return 'images/Countries/gb-sct.svg';
+      return 'https://flagcdn.com/gb-sct.svg';
     case 'Gales':
-      return 'images/Countries/gb-wls.svg';
+      return 'https://flagcdn.com/gb-wls.svg';
     case 'Granada':
-      return 'images/Countries/gd.svg';
+      return 'https://flagcdn.com/gd.svg';
     case 'Georgia':
-      return 'images/Countries/ge.svg';
+      return 'https://flagcdn.com/ge.svg';
     case 'Guayana Francesa':
-      return 'images/Countries/gf.svg';
+      return 'https://flagcdn.com/gf.svg';
     case 'Guernsey':
-      return 'images/Countries/gg.svg';
+      return 'https://flagcdn.com/gg.svg';
     case 'Ghana':
-      return 'images/Countries/gh.svg';
+      return 'https://flagcdn.com/gh.svg';
     case 'Gibraltar':
-      return 'images/Countries/gi.svg';
+      return 'https://flagcdn.com/gi.svg';
     case 'Groenlandia':
-      return 'images/Countries/gl.svg';
+      return 'https://flagcdn.com/gl.svg';
     case 'Gambia':
-      return 'images/Countries/gm.svg';
+      return 'https://flagcdn.com/gm.svg';
     case 'Guinea':
-      return 'images/Countries/gn.svg';
+      return 'https://flagcdn.com/gn.svg';
     case 'Guadalupe':
-      return 'images/Countries/gp.svg';
+      return 'https://flagcdn.com/gp.svg';
     case 'Guinea Ecuatorial':
-      return 'images/Countries/gq.svg';
+      return 'https://flagcdn.com/gq.svg';
     case 'Grecia':
-      return 'images/Countries/gr.svg';
+      return 'https://flagcdn.com/gr.svg';
     case 'Georgia del Sur e Islas Sandwich del Sur':
-      return 'images/Countries/gs.svg';
+      return 'https://flagcdn.com/gs.svg';
     case 'Guatemala':
-      return 'images/Countries/gt.svg';
+      return 'https://flagcdn.com/gt.svg';
     case 'Guam':
-      return 'images/Countries/gu.svg';
+      return 'https://flagcdn.com/gu.svg';
     case 'Guinea-Bisáu':
-      return 'images/Countries/gw.svg';
+      return 'https://flagcdn.com/gw.svg';
     case 'Guyana':
-      return 'images/Countries/gy.svg';
+      return 'https://flagcdn.com/gy.svg';
     case 'Hong Kong':
-      return 'images/Countries/hk.svg';
+      return 'https://flagcdn.com/hk.svg';
     case 'Islas Heard y McDonald':
-      return 'images/Countries/hm.svg';
+      return 'https://flagcdn.com/hm.svg';
     case 'Honduras':
-      return 'images/Countries/hn.svg';
+      return 'https://flagcdn.com/hn.svg';
     case 'Croacia':
-      return 'images/Countries/hr.svg';
+      return 'https://flagcdn.com/hr.svg';
     case 'Haití':
-      return 'images/Countries/ht.svg';
+      return 'https://flagcdn.com/ht.svg';
     case 'Hungría':
-      return 'images/Countries/hu.svg';
+      return 'https://flagcdn.com/hu.svg';
     case 'Indonesia':
-      return 'images/Countries/id.svg';
+      return 'https://flagcdn.com/id.svg';
     case 'Irlanda':
-      return 'images/Countries/ie.svg';
+      return 'https://flagcdn.com/ie.svg';
     case 'Israel':
-      return 'images/Countries/il.svg';
+      return 'https://flagcdn.com/il.svg';
     case 'Isla de Man':
-      return 'images/Countries/im.svg';
+      return 'https://flagcdn.com/im.svg';
     case 'India':
-      return 'images/Countries/in.svg';
+      return 'https://flagcdn.com/in.svg';
     case 'Territorio Británico del Océano Índico':
-      return 'images/Countries/io.svg';
+      return 'https://flagcdn.com/io.svg';
     case 'Irak':
-      return 'images/Countries/iq.svg';
+      return 'https://flagcdn.com/iq.svg';
     case 'Irán':
-      return 'images/Countries/ir.svg';
+      return 'https://flagcdn.com/ir.svg';
     case 'Islandia':
-      return 'images/Countries/is.svg';
+      return 'https://flagcdn.com/is.svg';
     case 'Italia':
-      return 'images/Countries/it.svg';
+      return 'https://flagcdn.com/it.svg';
     case 'Jersey':
-      return 'images/Countries/je.svg';
+      return 'https://flagcdn.com/je.svg';
     case 'Jamaica':
-      return 'images/Countries/jm.svg';
+      return 'https://flagcdn.com/jm.svg';
     case 'Jordania':
-      return 'images/Countries/jo.svg';
+      return 'https://flagcdn.com/jo.svg';
     case 'Japón':
-      return 'images/Countries/jp.svg';
+      return 'https://flagcdn.com/jp.svg';
     case 'Kenia':
-      return 'images/Countries/ke.svg';
+      return 'https://flagcdn.com/ke.svg';
     case 'Kirguistán':
-      return 'images/Countries/kg.svg';
+      return 'https://flagcdn.com/kg.svg';
     case 'Camboya':
-      return 'images/Countries/kh.svg';
+      return 'https://flagcdn.com/kh.svg';
     case 'Kiribati':
-      return 'images/Countries/ki.svg';
+      return 'https://flagcdn.com/ki.svg';
     case 'Comoras':
-      return 'images/Countries/km.svg';
+      return 'https://flagcdn.com/km.svg';
     case 'San Cristóbal y Nieves':
-      return 'images/Countries/kn.svg';
+      return 'https://flagcdn.com/kn.svg';
     case 'Corea del Norte':
-      return 'images/Countries/kp.svg';
+      return 'https://flagcdn.com/kp.svg';
     case 'Corea del Sur':
-      return 'images/Countries/kr.svg';
+      return 'https://flagcdn.com/kr.svg';
     case 'Kuwait':
-      return 'images/Countries/kw.svg';
+      return 'https://flagcdn.com/kw.svg';
     case 'Islas Caimán':
-      return 'images/Countries/ky.svg';
+      return 'https://flagcdn.com/ky.svg';
     case 'Kazajistán':
-      return 'images/Countries/kz.svg';
+      return 'https://flagcdn.com/kz.svg';
     case 'Laos':
-      return 'images/Countries/la.svg';
+      return 'https://flagcdn.com/la.svg';
     case 'Líbano':
-      return 'images/Countries/lb.svg';
+      return 'https://flagcdn.com/lb.svg';
     case 'Santa Lucía':
-      return 'images/Countries/lc.svg';
+      return 'https://flagcdn.com/lc.svg';
     case 'Liechtenstein':
-      return 'images/Countries/li.svg';
+      return 'https://flagcdn.com/li.svg';
     case 'Sri Lanka':
-      return 'images/Countries/lk.svg';
+      return 'https://flagcdn.com/lk.svg';
     case 'Liberia':
-      return 'images/Countries/lr.svg';
+      return 'https://flagcdn.com/lr.svg';
     case 'Lesoto':
-      return 'images/Countries/ls.svg';
+      return 'https://flagcdn.com/ls.svg';
     case 'Lituania':
-      return 'images/Countries/lt.svg';
+      return 'https://flagcdn.com/lt.svg';
     case 'Luxemburgo':
-      return 'images/Countries/lu.svg';
+      return 'https://flagcdn.com/lu.svg';
     case 'Letonia':
-      return 'images/Countries/lv.svg';
+      return 'https://flagcdn.com/lv.svg';
     case 'Libia':
-      return 'images/Countries/ly.svg';
+      return 'https://flagcdn.com/ly.svg';
     case 'Marruecos':
-      return 'images/Countries/ma.svg';
+      return 'https://flagcdn.com/ma.svg';
     case 'Mónaco':
-      return 'images/Countries/mc.svg';
+      return 'https://flagcdn.com/mc.svg';
     case 'Moldavia':
-      return 'images/Countries/md.svg';
+      return 'https://flagcdn.com/md.svg';
     case 'Montenegro':
-      return 'images/Countries/me.svg';
+      return 'https://flagcdn.com/me.svg';
     case 'Madagascar':
-      return 'images/Countries/mg.svg';
+      return 'https://flagcdn.com/mg.svg';
     case 'Islas Marshall':
-      return 'images/Countries/mh.svg';
+      return 'https://flagcdn.com/mh.svg';
     case 'Macedonia del Norte':
-      return 'images/Countries/mk.svg';
+      return 'https://flagcdn.com/mk.svg';
     case 'Malí':
-      return 'images/Countries/ml.svg';
+      return 'https://flagcdn.com/ml.svg';
     case 'Birmania':
-      return 'images/Countries/mm.svg';
+      return 'https://flagcdn.com/mm.svg';
     case 'Mongolia':
-      return 'images/Countries/mn.svg';
+      return 'https://flagcdn.com/mn.svg';
     case 'Macao':
-      return 'images/Countries/mo.svg';
+      return 'https://flagcdn.com/mo.svg';
     case 'Islas Marianas del Norte':
-      return 'images/Countries/mp.svg';
+      return 'https://flagcdn.com/mp.svg';
     case 'Martinica':
-      return 'images/Countries/mq.svg';
+      return 'https://flagcdn.com/mq.svg';
     case 'Mauritania':
-      return 'images/Countries/mr.svg';
+      return 'https://flagcdn.com/mr.svg';
     case 'Montserrat':
-      return 'images/Countries/ms.svg';
+      return 'https://flagcdn.com/ms.svg';
     case 'Malta':
-      return 'images/Countries/mt.svg';
+      return 'https://flagcdn.com/mt.svg';
     case 'Mauricio':
-      return 'images/Countries/mu.svg';
+      return 'https://flagcdn.com/mu.svg';
     case 'Maldivas':
-      return 'images/Countries/mv.svg';
+      return 'https://flagcdn.com/mv.svg';
     case 'Malaui':
-      return 'images/Countries/mw.svg';
+      return 'https://flagcdn.com/mw.svg';
     case 'México':
-      return 'images/Countries/mx.svg';
+      return 'https://flagcdn.com/mx.svg';
     case 'Malasia':
-      return 'images/Countries/my.svg';
+      return 'https://flagcdn.com/my.svg';
     case 'Mozambique':
-      return 'images/Countries/mz.svg';
+      return 'https://flagcdn.com/mz.svg';
     case 'Namibia':
-      return 'images/Countries/na.svg';
+      return 'https://flagcdn.com/na.svg';
     case 'Nueva Caledonia':
-      return 'images/Countries/nc.svg';
+      return 'https://flagcdn.com/nc.svg';
     case 'Níger':
-      return 'images/Countries/ne.svg';
+      return 'https://flagcdn.com/ne.svg';
     case 'Isla Norfolk':
-      return 'images/Countries/nf.svg';
+      return 'https://flagcdn.com/nf.svg';
     case 'Nigeria':
-      return 'images/Countries/ng.svg';
+      return 'https://flagcdn.com/ng.svg';
     case 'Nicaragua':
-      return 'images/Countries/ni.svg';
+      return 'https://flagcdn.com/ni.svg';
     case 'Países Bajos':
-      return 'images/Countries/nl.svg';
+      return 'https://flagcdn.com/nl.svg';
     case 'Noruega':
-      return 'images/Countries/no.svg';
+      return 'https://flagcdn.com/no.svg';
     case 'Nepal':
-      return 'images/Countries/np.svg';
+      return 'https://flagcdn.com/np.svg';
     case 'Nauru':
-      return 'images/Countries/nr.svg';
+      return 'https://flagcdn.com/nr.svg';
     case 'Niue':
-      return 'images/Countries/nu.svg';
+      return 'https://flagcdn.com/nu.svg';
     case 'Nueva Zelanda':
-      return 'images/Countries/nz.svg';
+      return 'https://flagcdn.com/nz.svg';
     case 'Omán':
-      return 'images/Countries/om.svg';
+      return 'https://flagcdn.com/om.svg';
     case 'Panamá':
-      return 'images/Countries/pa.svg';
+      return 'https://flagcdn.com/pa.svg';
     case 'Perú':
-      return 'images/Countries/pe.svg';
+      return 'https://flagcdn.com/pe.svg';
     case 'Filipinas':
-      return 'images/Countries/ph.svg';
+      return 'https://flagcdn.com/ph.svg';
     case 'Pakistán':
-      return 'images/Countries/pk.svg';
+      return 'https://flagcdn.com/pk.svg';
     case 'Polonia':
-      return 'images/Countries/pl.svg';
+      return 'https://flagcdn.com/pl.svg';
     case 'San Pedro y Miquelón':
-      return 'images/Countries/pm.svg';
+      return 'https://flagcdn.com/pm.svg';
     case 'Pitcairn':
-      return 'images/Countries/pn.svg';
+      return 'https://flagcdn.com/pn.svg';
     case 'Puerto Rico':
-      return 'images/Countries/pr.svg';
+      return 'https://flagcdn.com/pr.svg';
     case 'Palestina':
-      return 'images/Countries/ps.svg';
+      return 'https://flagcdn.com/ps.svg';
     case 'Portugal':
-      return 'images/Countries/pt.svg';
+      return 'https://flagcdn.com/pt.svg';
     case 'Palaos':
-      return 'images/Countries/pw.svg';
+      return 'https://flagcdn.com/pw.svg';
     case 'Paraguay':
-      return 'images/Countries/py.svg';
+      return 'https://flagcdn.com/py.svg';
     case 'Catar':
-      return 'images/Countries/qa.svg';
+      return 'https://flagcdn.com/qa.svg';
     case 'Reunión':
-      return 'images/Countries/re.svg';
+      return 'https://flagcdn.com/re.svg';
     case 'Rumania':
-      return 'images/Countries/ro.svg';
+      return 'https://flagcdn.com/ro.svg';
     case 'Serbia':
-      return 'images/Countries/rs.svg';
+      return 'https://flagcdn.com/rs.svg';
     case 'Rusia':
-      return 'images/Countries/ru.svg';
+      return 'https://flagcdn.com/ru.svg';
     case 'Ruanda':
-      return 'images/Countries/rw.svg';
+      return 'https://flagcdn.com/rw.svg';
     case 'Arabia Saudita':
-      return 'images/Countries/sa.svg';
+      return 'https://flagcdn.com/sa.svg';
     case 'Islas Salomón':
-      return 'images/Countries/sb.svg';
+      return 'https://flagcdn.com/sb.svg';
     case 'Seychelles':
-      return 'images/Countries/sc.svg';
+      return 'https://flagcdn.com/sc.svg';
     case 'Sudán':
-      return 'images/Countries/sd.svg';
+      return 'https://flagcdn.com/sd.svg';
     case 'Suecia':
-      return 'images/Countries/se.svg';
+      return 'https://flagcdn.com/se.svg';
     case 'Singapur':
-      return 'images/Countries/sg.svg';
+      return 'https://flagcdn.com/sg.svg';
     case 'Eslovenia':
-      return 'images/Countries/si.svg';
+      return 'https://flagcdn.com/si.svg';
     case 'Eslovaquia':
-      return 'images/Countries/sk.svg';
+      return 'https://flagcdn.com/sk.svg';
     case 'Sierra Leona':
-      return 'images/Countries/sl.svg';
+      return 'https://flagcdn.com/sl.svg';
     case 'San Marino':
-      return 'images/Countries/sm.svg';
+      return 'https://flagcdn.com/sm.svg';
     case 'Senegal':
-      return 'images/Countries/sn.svg';
+      return 'https://flagcdn.com/sn.svg';
     case 'Somalia':
-      return 'images/Countries/so.svg';
+      return 'https://flagcdn.com/so.svg';
     case 'Surinam':
-      return 'images/Countries/sr.svg';
+      return 'https://flagcdn.com/sr.svg';
     case 'El Salvador':
-      return 'images/Countries/sv.svg';
+      return 'https://flagcdn.com/sv.svg';
     case 'Siria':
-      return 'images/Countries/sy.svg';
+      return 'https://flagcdn.com/sy.svg';
     case 'Esuatini':
-      return 'images/Countries/sz.svg';
+      return 'https://flagcdn.com/sz.svg';
     case 'Tailandia':
-      return 'images/Countries/th.svg';
+      return 'https://flagcdn.com/th.svg';
     case 'Togo':
-      return 'images/Countries/tg.svg';
+      return 'https://flagcdn.com/tg.svg';
     case 'Túnez':
-      return 'images/Countries/tn.svg';
+      return 'https://flagcdn.com/tn.svg';
     case 'Turquía':
-      return 'images/Countries/tr.svg';
+      return 'https://flagcdn.com/tr.svg';
     case 'Ucrania':
-      return 'images/Countries/ua.svg';
+      return 'https://flagcdn.com/ua.svg';
     case 'Uruguay':
-      return 'images/Countries/uy.svg';
+      return 'https://flagcdn.com/uy.svg';
     case 'Venezuela':
-      return 'images/Countries/ve.svg';
+      return 'https://flagcdn.com/ve.svg';
     case 'Vietnam':
-      return 'images/Countries/vn.svg';
+      return 'https://flagcdn.com/vn.svg';
     case 'Yemen':
-      return 'images/Countries/ye.svg';
+      return 'https://flagcdn.com/ye.svg';
     case 'Zambia':
-      return 'images/Countries/zm.svg';
+      return 'https://flagcdn.com/zm.svg';
     case 'Zimbabue':
-      return 'images/Countries/zw.svg';
+      return 'https://flagcdn.com/zw.svg';
   }
 
-  // Default teams logo
-  if (highlight_type == VideoHighlightType.Basketball) {
-    return 'images/basketball-ball.png';
-  }
-  return 'images/football-ball.png';
+  return null;
 }
