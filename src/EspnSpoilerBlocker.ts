@@ -219,13 +219,11 @@ export class EspnSpoilerBlocker {
     });
   }
 
-  private createInnerVideoTitleUpdater(node: HTMLElement) {
+  private createInnerVideoTitleUpdater(node: HTMLAnchorElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
-    if (node instanceof HTMLAnchorElement) {
-      const updater = new InnerVideoTitleUpdater(node);
-      this.updaters.push(updater);
-      updater.update();
-    }
+    const updater = new InnerVideoTitleUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
   }
 
   private createNewBeforeVideoThumbnailUpdater(node: HTMLElement) {
@@ -593,7 +591,7 @@ export class EspnSpoilerBlocker {
 
       const promises = [
         this.getElementOrRetry('h1.style-scope.ytd-watch-metadata', 400),
-        this.getElementOrRetry('a.ytp-title-fullerscreen-link', 400),
+        this.getElementOrRetry('.ytPlayerOverlayVideoDetailsRendererTitle.ytPlayerOverlayVideoDetailsRendererSingleLineTitle', 400),
       ];
       try {
         const results = await Promise.all(promises);
