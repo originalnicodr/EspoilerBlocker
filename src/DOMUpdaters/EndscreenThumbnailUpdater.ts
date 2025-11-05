@@ -60,11 +60,15 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getTitle(): HTMLElement {
-    return this.container.querySelector('.ytp-videowall-still-info-title');
+    // legacy youtube style
+    //return this.container.querySelector('.ytp-videowall-still-info-title');
+    return this.container.querySelector('.ytp-modern-videowall-still-info-title');
   }
 
   protected getThumbnail(): HTMLElement {
-    return this.container.querySelector('.ytp-videowall-still-image');
+    // legacy youtube style
+    //return this.container.querySelector('.ytp-videowall-still-image');
+    return this.container.querySelector('.ytp-modern-videowall-still-image');
   }
 
   protected blockSpoilerText() {
