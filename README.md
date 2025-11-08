@@ -4,13 +4,15 @@
   <img align="center" src="images/logo/logo.png" width="300" width="300">
 </p>
 
-Extensión de Chrome para ocultar spoilers de los videos de highlights publicados por [ESPN Fans](https://www.youtube.com/ESPNFans). Modifica los thumbnail y título para evitar mostrar los resultados, cambia los múltiples títulos del video actual para solo mencionar los equipos, muestra los logos (cuando estos están disponibles) en la miniatura, da la posibilidad de revelar la cantidad de goles totales de un partido específico o el resultado total, entre otras cosas.
+---
+
+Extensión de Chrome para ocultar spoilers de los videos de highlights publicados por [ESPN Fans](https://www.youtube.com/ESPNFans). Modifica los thumbnail y título para evitar mostrar los resultados, cambia los múltiples títulos del video actual para solo mencionar los equipos, muestra los logos (cuando estos están disponibles) en la miniatura, no bloquear spoilers de videos ya vistos, da la posibilidad de revelar la cantidad de goles totales de un partido específico o el resultado total, entre otras cosas.
+
+Se buscó bloquear spoilers de todos los lugares comunes que vienen de navegar naturalmente por YouTube, lo cual incluye pero no se limita a la página principal, el canal de ESPN Fans, videos sugeridos en la barra derecha y los sugeridos en múltiples lugares dentro del reproductor.
 
 <img width="1338" height="917" alt="XKMSJNSqQE" src="https://github.com/user-attachments/assets/d2e72d70-fa4a-413f-8a94-b5fc358172b5" />
 
 <img width="1722" height="806" alt="chrome_LzoYskZxkq" src="https://github.com/user-attachments/assets/1cde4bb6-407d-4352-bd37-8a43d84821ac" />
-
-Se buscó bloquear spoilers de todos los lugares comunes que vienen de navegar naturalmente por YouTube, lo cual incluye pero no se limita a la página principal, el canal de ESPN Fans, videos sugeridos en la barra derecha y los sugeridos en múltiples lugares dentro del reproductor.
 
 ## Buildear y testear
 
