@@ -6,6 +6,10 @@
 
 Extensión de Chrome para ocultar spoilers de los videos de highlights publicados por [ESPN Fans](https://www.youtube.com/ESPNFans). Oculta la imagen de thumbnail mostrando los resultados, cambia el título del vídeo para solo mencionar los equipos, y muestra los logos (cuando estos están disponibles) en la miniatura.
 
+<img width="1338" height="917" alt="XKMSJNSqQE" src="https://github.com/user-attachments/assets/d2e72d70-fa4a-413f-8a94-b5fc358172b5" />
+
+<img width="1722" height="806" alt="chrome_LzoYskZxkq" src="https://github.com/user-attachments/assets/1cde4bb6-407d-4352-bd37-8a43d84821ac" />
+
 Se contemplan los videos mostrados en la página principal de YouTube, aquellos en el canal de ESPN Fans, y los videos sugeridos que se encuentran abajo a la derecha al tener uno abierto.
 
 Además, cuando se abre un video de highlights, se modifican el título del vídeo, del reproductor, y de la pestaña para evitar spoilers.
