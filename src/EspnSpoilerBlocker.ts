@@ -14,7 +14,6 @@ import { PlaylistVideoThumbnailUpdater } from './DOMUpdaters/PlaylistVideoThumbn
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
-  public static ADDED_CLASS_TO_MARK_AS_ADDED = 'ESPN_SPOILER_BLOCKER_MARK_AS_ADDED';
 
   private observers: Array<MutationObserver> = [];
   private updaters: Array<BaseUpdater> = [];
@@ -139,10 +138,6 @@ export class EspnSpoilerBlocker {
       'ytd-video-renderer',
       'ytd-video-renderer',
     ];
-  }
-
-  private isElementAddedByUs(node: Element) {
-    return node.classList.contains(EspnSpoilerBlocker.ADDED_CLASS_TO_MARK_AS_ADDED);
   }
 
   private isNodeAYoutubeVideo(node: Element) {
@@ -302,7 +297,6 @@ export class EspnSpoilerBlocker {
         mutation.addedNodes.forEach((node) => {
           if (
             node instanceof HTMLElement &&
-            this.isElementAddedByUs(node) === false &&
             this.isNodeAYoutubeVideo(node)
           ) {
             if (window.location.href == 'https://www.youtube.com/') this.createNewHomeVideoUpdater(node);
@@ -368,7 +362,6 @@ export class EspnSpoilerBlocker {
         mutation.addedNodes.forEach((node) => {
           if (
             node instanceof HTMLElement &&
-            this.isElementAddedByUs(node) === false &&
             this.isNodeAYoutubeVideo(node)
           ) {
             this.createNewVideoUpdater(node);
@@ -676,7 +669,6 @@ export class EspnSpoilerBlocker {
         mutation.addedNodes.forEach((node) => {
           if (
             node instanceof HTMLElement &&
-            this.isElementAddedByUs(node) === false &&
             node.matches('yt-lockup-view-model')
           ) {
             this.createNewSidePanelVideoUpdater(node);
