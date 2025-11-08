@@ -713,7 +713,7 @@ export class EspnSpoilerBlocker {
         mutation.addedNodes.forEach((node) => {
           if (!(node instanceof HTMLElement)) return;
 
-          if (node.tagName === 'ytd-playlist-video-renderer') {
+          if (node.tagName.toLowerCase() === 'ytd-playlist-video-renderer') {
             this.createPlaylistVideoThumbnailUpdater(node);
           } else {
             node.querySelectorAll('ytd-playlist-video-renderer').forEach((renderer) => {
