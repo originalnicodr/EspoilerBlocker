@@ -28,8 +28,8 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
     try {
       await this.spoilerBlockVideo();
 
-      const info_content: HTMLElement = this.container.querySelector('.ytp-videowall-still-info-content');
-      info_content.style.pointerEvents = 'none';
+      //const info_content: HTMLElement = this.container.querySelector('.ytp-videowall-still-info-content');
+      //info_content.style.pointerEvents = 'none';
     } catch (error) {
       console.error('Error blocking spoiler from video:', { container: this.container, error });
       return;
