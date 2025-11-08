@@ -111,6 +111,27 @@
       background: #ff6666;
     }
 
+    .credits {
+      text-align: center;
+      font-size: 1em;
+      color: #aaa;
+      margin: 12px 0 16px;
+      border-top: 1px solid #444;
+      padding-top: 8px;
+    }
+
+    .credits a {
+      color: #fd6666;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .credits a:hover {
+      color: #ff7a7a;
+      text-shadow: 0 0 6px #ff6666;
+    }
+
     @keyframes spin-frame {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -138,6 +159,11 @@
       <div class="settings-section">
         <button id="remove-spoiler-blockers">Remover bloqueo de spoilers</button>
         <label><input type="checkbox" id="display-scores-checkbox"> Mostrar puntos totales en thumbnail</label>
+      </div>
+
+      <div class="credits">
+        Hecho por <a href="https://github.com/originalnicodr" target="_blank">Originalnicodr</a> y 
+        <a href="https://github.com/danilobassi8" target="_blank">danilobassi8</a>
       </div>
     </div>
   </div>
