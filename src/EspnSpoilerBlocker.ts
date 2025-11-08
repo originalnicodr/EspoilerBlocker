@@ -10,6 +10,7 @@ import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
 import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
 import { BeforeVideoThumbnailUpdater } from './DOMUpdaters/BeforeVideoThumbnailUpdater';
 import { EndscreenMainSuggestionUpdater } from './DOMUpdaters/EndscreenMainSuggestionUpdater';
+import { PlaylistVideoThumbnailUpdater } from './DOMUpdaters/PlaylistVideoThumbnailUpdater';
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
@@ -32,6 +33,8 @@ export class EspnSpoilerBlocker {
   private watchingThumbnailOnEndscreenAutoplayPage = undefined;
   /** check if we're watching the main suggested video thumbnail just before the end of a video. If this is false, such video wasn't found. Will retry after next title change */
   private watchingMainSuggestionThumbnailOnEndscreen = undefined;
+  /** check if we're watching video thumbnails on a Youtube playlist. If this is false, the container wasn't found. Will retry after next title change */
+  private watchingThumbnailsOnPlaylistPage = undefined;
   /** check if we're watching the suggested video to skip to thumbnail. If this is false, we couldn't find the skip button. Will retry after next title change */
   private watchingSkipVideoThumbnailOnVideoPage = undefined;
   /** check if we're watching the video title while playing a video. If this is false, container not found. Will retry after next title change */
@@ -71,7 +74,7 @@ export class EspnSpoilerBlocker {
       // If navigating to a video page, force a page reload
       // We would want to avoid doing this, but unfortunately, we couldn't find a reliable way
       // of handling extension DOM changes alongside allowing YouTube ones when navigating.
-      if (window.location.href.includes('watch?v=')) {
+      if (window.location.href.includes('watch?v=') || window.location.href.includes('playlist?list=')) {
         console.log('Navigating to video page, forcing page reload');
         window.location.reload();
         return;
@@ -96,6 +99,7 @@ export class EspnSpoilerBlocker {
     this.reactToThumbnailsOnEndscreen();
     this.reactToThumbnailsOnEndscreenAutoplay();
     this.reactToEndscreenMainVideoSuggestion();
+    this.reactToThumbnailsOnPlaylist();
     this.reactToSkipVideoThumbnail();
   }
 
@@ -193,6 +197,13 @@ export class EspnSpoilerBlocker {
   private createEndscreenMainSuggestionUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new EndscreenMainSuggestionUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+  }
+
+  private createPlaylistVideoThumbnailUpdater(node: HTMLElement) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+    const updater = new PlaylistVideoThumbnailUpdater(node);
     this.updaters.push(updater);
     updater.update();
   }
@@ -588,6 +599,10 @@ export class EspnSpoilerBlocker {
       this.reactToEndscreenMainVideoSuggestion();
     }
 
+    if (this.watchingThumbnailsOnPlaylistPage == false) {
+      this.reactToThumbnailsOnPlaylist();
+    }
+
     if (this.watchingSkipVideoThumbnailOnVideoPage == false) {
       this.reactToSkipVideoThumbnail();
     }
@@ -674,5 +689,43 @@ export class EspnSpoilerBlocker {
       childList: true,
       subtree: true,
     });
+  }
+
+  private async reactToThumbnailsOnPlaylist() {
+    if (this.watchingThumbnailsOnPlaylistPage) return;
+
+    let container;
+    try {
+      container = await this.getElementOrRetry('ytd-two-column-browse-results-renderer', 400);
+    } catch {
+      this.watchingThumbnailsOnPlaylistPage = false;
+      return;
+    }
+
+    this.watchingThumbnailsOnPlaylistPage = true;
+
+    container.querySelectorAll('ytd-playlist-video-renderer').forEach((video) => {
+      this.createPlaylistVideoThumbnailUpdater(video);
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+
+          if (node.tagName === 'ytd-playlist-video-renderer') {
+            this.createPlaylistVideoThumbnailUpdater(node);
+          } else {
+            node.querySelectorAll('ytd-playlist-video-renderer').forEach((renderer) => {
+              if (renderer instanceof HTMLElement) this.createPlaylistVideoThumbnailUpdater(renderer);
+            }
+            );
+          }
+        });
+      }
+    });
+
+    this.observers.push(observer);
+    observer.observe(container, { childList: true, subtree: true });
   }
 }
