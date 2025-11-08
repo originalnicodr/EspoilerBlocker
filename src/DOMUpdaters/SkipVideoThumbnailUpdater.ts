@@ -75,7 +75,7 @@ export class SkipVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
   protected getIsESPNVideo(): boolean {
     // If the title contains spoilers then we should block them, so we consider it an ESPN video
-    return this.videoTitleContainsSpoilers();
+    return this.videoTitleContainsSpoilers(this.getTitleText());
   }
 
   protected getChannel(): string {

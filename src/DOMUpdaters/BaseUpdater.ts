@@ -91,9 +91,7 @@ export class BaseUpdater {
 
     if (
       typeof title_text === 'undefined' ||
-      !title_text.includes('|') ||
-      !title_text.includes('-') ||
-      !this.canBlockTitleSpoiler(title_text)
+      !this.videoTitleContainsSpoilers(title_text)
     ) {
       this.highlight_type = VideoHighlightType.None;
     } else {
@@ -255,8 +253,13 @@ export class BaseUpdater {
     return team_a + ' vs ' + team_b;
   }
 
-  protected canBlockTitleSpoiler(original_title: string): boolean {
-    return this.blockTitleSpoiler(original_title) !== '';
+  protected videoTitleContainsSpoilers(video_title: string): boolean {
+    // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups.
+    // probably we would want to move it to utils
+    const regex =
+      /(?<summary>.+) \| (?<team1>.+) (?<goalsTeam1>\d+)( \((?<penaltyTeam1>\d+)\)-\((?<penaltyTeam2>\d+)\))? ?-? ?(?<goalsTeam2>\d+) (?<team2>.+) \| RESUMEN$/;
+
+    return regex.test(video_title);
   }
 
   public static isElementAlreadyBeingWatched(element: HTMLElement) {
@@ -351,15 +354,6 @@ export class BaseUpdater {
     if (this.originalState.containerDisplayStyle !== undefined) {
       (this.container as HTMLElement).style.display = this.originalState.containerDisplayStyle;
     }
-  }
-
-  protected videoTitleContainsSpoilers(): boolean {
-    // NOTE: we could use this regex to retrieve groups, goals, and extra info using the named groups.
-    // probably we would want to move it to utils
-    const regex =
-      /(?<summary>.+) \| (?<team1>.+) (?<goalsTeam1>\d+)( \((?<penaltyTeam1>\d+)\)-\((?<penaltyTeam2>\d+)\))? ?-? ?(?<goalsTeam2>\d+) (?<team2>.+) \| RESUMEN$/;
-
-    return regex.test(this.getTitleText());
   }
 }
 
