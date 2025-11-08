@@ -34,7 +34,7 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       // player from spoiling the match.
       this.added_thumbnail_element.style.zIndex = '2';
     } catch (error) {
-      console.error('Error spoiling video:', { container: this.container, error });
+      console.error('Error blocking spoiler from video:', { container: this.container, error });
       return;
     }
 

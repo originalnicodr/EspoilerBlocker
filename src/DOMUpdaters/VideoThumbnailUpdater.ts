@@ -33,7 +33,7 @@ export class VideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
       this.thumbnail.style.overflow = 'hidden';
       this.thumbnail.style.borderRadius = '0.5rem';
     } catch (error) {
-      console.error('Error spoiling video:', { container: this.container, error });
+      console.error('Error blocking spoiler from video:', { container: this.container, error });
       return;
     }
 

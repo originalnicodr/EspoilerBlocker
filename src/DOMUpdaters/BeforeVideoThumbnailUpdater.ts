@@ -20,7 +20,7 @@ export class BeforeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     try {
       this.hideThumbnail();
     } catch (error) {
-      console.error('Error spoiling video:', { container: this.container, error });
+      console.error('Error blocking spoiler from video:', { container: this.container, error });
       return;
     }
 

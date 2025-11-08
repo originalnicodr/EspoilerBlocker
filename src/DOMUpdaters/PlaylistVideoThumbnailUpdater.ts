@@ -28,7 +28,7 @@ export class PlaylistVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     try {
       await this.spoilerBlockVideo();
     } catch (error) {
-      console.error('Error spoiling video:', { container: this.container, error });
+      console.error('Error blocking spoiler from video:', { container: this.container, error });
       return;
     }
 
