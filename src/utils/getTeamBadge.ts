@@ -93,9 +93,13 @@ function getTeamBadgeURL(team: string, highlight_type: VideoHighlightType): stri
       return 'football-logos/logos/Spain - LaLiga/Rayo Vallecano.png';
     case 'Espanyol':
       return 'football-logos/logos/Spain - LaLiga/RCD Espanyol Barcelona.png';
+    case 'Elche':
+      return 'football-logos/history/2021-22/Spain - LaLiga/Elche CF.png';
+    case 'Levante':
+      return 'football-logos/history/2021-22/Spain - LaLiga/Levante UD.png';
     case 'Mallorca':
       return 'football-logos/logos/Spain - LaLiga/RCD Mallorca.png';
-    case 'Betis':
+    case 'Real Betis':
       return 'football-logos/logos/Spain - LaLiga/Real Betis Balompié.png';
     case 'Real Madrid':
       return 'football-logos/logos/Spain - LaLiga/Real Madrid.png';
@@ -152,6 +156,8 @@ function getTeamBadgeURL(team: string, highlight_type: VideoHighlightType): stri
       return 'football-logos/logos/Italy - Serie A/Udinese Calcio.png';
     case 'Lecce':
       return 'football-logos/logos/Italy - Serie A/US Lecce.png';
+    case 'Cremonese':
+      return 'football-logos/history/2022-23/Italy - Serie A/US Cremonese.png';
     case 'Venezia':
       return 'football-logos/logos/Italy - Serie A/Venezia FC.png';
   }
@@ -200,10 +206,12 @@ function getTeamBadgeURL(team: string, highlight_type: VideoHighlightType): stri
       return 'football-logos/logos/France - Ligue 1/AJ Auxerre.png';
     case 'Angers':
       return 'football-logos/logos/France - Ligue 1/Angers SCO.png';
-    case 'Mónaco':
+    case 'Monaco':
       return 'football-logos/logos/France - Ligue 1/AS Monaco.png';
     case 'Saint Etienne':
       return 'football-logos/logos/France - Ligue 1/AS Saint-Étienne.png';
+    case 'Metz':
+      return 'football-logos/history/2021-22/France - Ligue 1/FC Metz.png';
     case 'Nantes':
       return 'football-logos/logos/France - Ligue 1/FC Nantes.png';
     case 'Toulouse':
@@ -212,6 +220,8 @@ function getTeamBadgeURL(team: string, highlight_type: VideoHighlightType): stri
       return 'football-logos/logos/France - Ligue 1/Le Havre AC.png';
     case 'Lille':
       return 'football-logos/logos/France - Ligue 1/LOSC Lille.png';
+    case 'Lorient':
+      return 'football-logos/history/2021-22/France - Ligue 1/FC Lorient.png';
     case 'Montpellier':
       return 'football-logos/logos/France - Ligue 1/Montpellier HSC.png';
     case 'Niza':
@@ -472,6 +482,8 @@ function getCountryFlagURL(team: string): string | null {
       return 'https://flagcdn.com/dz.svg';
     case 'Ecuador':
       return 'https://flagcdn.com/ec.svg';
+    case 'Estados Unidos':
+      return 'https://flagcdn.com/us.svg';
     case 'Estonia':
       return 'https://flagcdn.com/ee.svg';
     case 'Egipto':

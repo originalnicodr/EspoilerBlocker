@@ -11,6 +11,7 @@ export function standarizeTeamsName(team_alias: string): string {
       return 'Burnley';
     case 'Crystal Palace':
     case 'C. Palace':
+    case 'Crystal':
       return 'Crystal Palace';
     case 'Ipswich Town':
     case 'Ipswich':
@@ -23,6 +24,7 @@ export function standarizeTeamsName(team_alias: string): string {
       return 'Leicester';
     case 'Manchester City':
     case 'Man. City':
+    case 'Man City':
     case 'M. City':
       return 'Manchester City';
     case 'Manchester United':
@@ -30,7 +32,9 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Manchester Utd':
     case 'Man. Utd':
     case 'Man. United':
+    case 'Man Utd':
     case 'M. Utd.':
+    case 'Manchester U.':
       return 'Manchester United';
     case 'Newcastle United':
     case 'Newcastle':
@@ -45,9 +49,11 @@ export function standarizeTeamsName(team_alias: string): string {
       return 'Sunderland';
     case 'Tottenham Hotspur':
     case 'Tottenham':
+    case 'T. Hotspur':
       return 'Tottenham';
     case 'West Ham United':
     case 'West Ham':
+    case 'W. Ham':
       return 'West Ham';
     case 'Wolverhampton Wanderers':
     case 'Wolverhampton':
@@ -61,8 +67,10 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Athletic':
     case 'Athletic Club':
     case 'Athletic Club Bilbao':
+    case 'Athletic Bilbao':
       return 'Athletic Club Bilbao';
     case 'Atlético de Madrid':
+    case 'Atlético Madrid':
     case 'Atl. Madrid':
     case 'Atlético':
     case 'Atleti':
@@ -70,25 +78,34 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Betis':
     case 'Real Betis':
       return 'Real Betis';
-    case 'Celta de Vigo':
-    case 'Celta':
-      return 'Celta';
     case 'Barcelona':
     case 'Barca':
     case 'Barça':
       return 'Barcelona';
+    case 'Celta de Vigo':
+    case 'Celta':
+      return 'Celta';
     case 'RCD Espanyol':
     case 'R.C.D. Espanyol':
+    case 'Elche':
+      return 'Elche';
     case 'Espanyol':
       return 'Espanyol';
+    case 'Levante':
+      return 'Levante';
     case 'RCD Mallorca':
     case 'R.C.D. Mallorca':
     case 'Mallorca':
       return 'Mallorca';
+    case 'Rayo Vallecano':
+    case 'R. Vallecano':
+      return 'Rayo Vallecano';
     case 'Real Madrid':
     case 'R. Madrid':
+    case 'R Madrid':
       return 'Real Madrid';
     case 'Real Sociedad':
+    case 'Real Soc.':
     case 'R. Sociedad':
       return 'Real Sociedad';
     case 'U.D. Las Palmas':
@@ -101,7 +118,10 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Cagliari Calcio':
     case 'Cagliari':
       return 'Cagliari';
+    case 'Cremonese':
+      return 'Cremonese'
     case 'Hellas Verona':
+    case 'H. Verona':
     case 'Verona':
       return 'Verona';
     case 'Inter':
@@ -131,26 +151,33 @@ export function standarizeTeamsName(team_alias: string): string {
   }
   // Ligue 1
   switch (team_alias) {
-    case 'Monaco':
-    case 'Mónaco':
-      return 'Monaco';
     case 'Saint-Étienne':
     case 'Saint Etienne':
       return 'Saint Etienne';
     case 'Le Havre':
     case 'Havre':
       return 'Havre';
-    case 'Olympique Lyon':
     case 'Lille':
     case 'LOSC Lille':
       return 'Lille';
+    case 'Olympique Lyon':
+    case 'Ol. Lyon':
+    case 'O. Lyon':
     case 'Lyon':
       return 'Lyon';
     case 'Olympique de Marsella':
+    case 'Olympique Marsella':
     case 'Olympique Marseille':
     case 'O. Marsella':
+    case 'O Marsella':
+    case 'Marsella':
     case 'Marseille':
       return 'Olympique de Marsella';
+    case 'Metz':
+      return 'Metz';
+    case 'Mónaco':
+    case 'Monaco':
+      return 'Monaco';
     case 'Paris Saint-Germain':
     case 'PSG':
       return 'PSG';
@@ -163,6 +190,7 @@ export function standarizeTeamsName(team_alias: string): string {
       return 'Reims';
     case 'Stade Rennais':
     case 'Rennais':
+    case 'Rennes':
       return 'Rennais';
   }
   // Bundesliga
@@ -178,12 +206,15 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Mainz':
       return 'Mainz';
     case 'Bayer Leverkusen':
+    case 'Bayer L.':
     case 'B. Leverkusen':
     case 'B Leverkusen':
       return 'Bayer Leverkusen';
     case 'Bayern Munich':
     case 'B. Munich':
     case 'Bayern':
+    case 'Bayern M':
+    case 'Bayern M.':
       return 'Bayern';
     case 'Borussia Dortmund':
     case 'B. Dortmund':
@@ -191,6 +222,7 @@ export function standarizeTeamsName(team_alias: string): string {
       return 'Dortmund';
     case 'Borussia Mönchengladbach':
     case 'Mönchengladbach':
+    case 'B. Gladbach':
       return 'Mönchengladbach';
     case 'Eintracht Frankfurt':
     case 'E. Frankfurt':
@@ -238,6 +270,9 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Gimnasia y Esgrima':
     case 'Gimnasia y Esgrima La Plata':
       return 'Gimnasia y Esgrima La Plata';
+    case 'G. Cruz':
+    case 'Godoy Cruz':
+      return 'Godoy Cruz';
     case 'Huracan':
     case 'Huracán':
       return 'Huracán';
@@ -265,6 +300,7 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Central':
       return 'Rosario Central';
     case 'San Lorenzo':
+    case 'S. Lorenzo':
     case 'CASLA':
       return 'San Lorenzo';
     case 'San Martín':
@@ -273,6 +309,7 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'San Martin S. J.':
     case 'San Martin SJ':
     case 'San Martín SJ':
+    case 'San Martín (SJ)':
       return 'San Martín';
     case 'Unión':
     case 'Union':
@@ -280,6 +317,28 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Vélez':
     case 'Velez':
       return 'Vélez';
+  }
+
+  // Paises
+  switch (team_alias) {
+    case 'C. Rica':
+    case 'Costa Rica':
+      return 'Costa Rica';
+    case 'USA':
+    case 'EEUU':
+      return 'Estados Unidos';
+    case 'Países Bajos':
+    case 'P. Bajos':
+    case 'Paises Bajos':
+    case 'Holanda':
+      return 'Países Bajos';
+    case 'R. Dominicana':
+    case 'Republica Dominicana':
+    case 'República Dominicana':
+      return 'Republica Dominicana';
+    case 'USA':
+    case 'EEUU':
+      return 'Estados Unidos';
   }
 
   // Couldn't find teams name, return passed alias
