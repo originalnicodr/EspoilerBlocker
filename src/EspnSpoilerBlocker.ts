@@ -56,14 +56,16 @@ export class EspnSpoilerBlocker {
     this.observers = [];
 
     this.watchingThumbnailsOnMainPage = false;
+    this.watchingPlayerThumbnail = false;
     this.watchingThumbnailsOnVideoPage = false;
     this.watchingThumbnailsOnSearchPage = false;
     this.watchingThumbnailsOnEndscreenPage = false;
     this.watchingThumbnailOnEndscreenAutoplayPage = false;
+    this.watchingMainSuggestionThumbnailOnEndscreen = false;
+    this.watchingThumbnailsOnPlaylistPage = false;
     this.watchingSkipVideoThumbnailOnVideoPage = false;
     this.watchingVideoTitle = false;
     this.watchingThumbnailsOnSidePanel = false;
-    this.watchingPlayerThumbnail = false;
   }
 
   public trackYoutubeNavigation() {
@@ -71,7 +73,7 @@ export class EspnSpoilerBlocker {
     document.addEventListener('yt-navigate-start', () => {
       this.stop();
 
-      // If navigating to a video page, force a page reload
+      // If navigating to a video or playlist page, force a page reload
       // We would want to avoid doing this, but unfortunately, we couldn't find a reliable way
       // of handling extension DOM changes alongside allowing YouTube ones when navigating.
       if (window.location.href.includes('watch?v=') || window.location.href.includes('playlist?list=')) {
@@ -128,6 +130,7 @@ export class EspnSpoilerBlocker {
     });
   }
 
+  // Might want to deprecate this eventually to be more specific about the classes each observer should target (and avoid false positives)
   private get youtubeMediaSelectors(): string[] {
     return [
       'ytd-rich-item-renderer',
@@ -163,7 +166,11 @@ export class EspnSpoilerBlocker {
     });
   }
 
-  /** Creates a new video updater for the youtube thumnail element */
+  /**
+   * Creates a new video updater for the youtube thumbnail element
+   * 
+   * Covers some default video thumbnails on various pages.
+  */
   private createNewVideoUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
 
@@ -312,7 +319,29 @@ export class EspnSpoilerBlocker {
     });
   }
 
-  // naming functions is my passion (?)
+  private async reactToPlayerThumbnail() {
+    // do not observe element twice
+    if (this.watchingPlayerThumbnail) return;
+
+    const current_url: string = window.location.href;
+    if (!current_url.includes('watch?v=')) {
+      return;
+    }
+
+    let container: Element = undefined;
+    try {
+      container = await this.getElementOrRetry('.ytp-cued-thumbnail-overlay-image', 400);
+      if (container instanceof HTMLElement && container.matches('.ytp-cued-thumbnail-overlay-image')) {
+        this.createNewBeforeVideoThumbnailUpdater(container);
+      }
+    } catch (error) {
+      this.watchingPlayerThumbnail = false;
+      return;
+    }
+
+    this.watchingPlayerThumbnail = true;
+  }
+
   private async reactToThumnailsOnVideoPage() {
     // do not observe element twice
     if (this.watchingThumbnailsOnVideoPage) return;
@@ -471,6 +500,90 @@ export class EspnSpoilerBlocker {
     });
   }
 
+  private async reactToEndscreenMainVideoSuggestion() {
+    if (this.watchingMainSuggestionThumbnailOnEndscreen) return;
+
+    let video_player = undefined;
+    try {
+      video_player = await this.getElementOrRetry('.style-scope.ytd-player', 400);
+    } catch (error) {
+      this.watchingMainSuggestionThumbnailOnEndscreen = false;
+      return;
+    }
+
+    this.watchingMainSuggestionThumbnailOnEndscreen = true;
+
+    let container = video_player.querySelector('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad');
+    if (container) {
+      this.createEndscreenMainSuggestionUpdater(container);
+    }
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement && node.matches('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad')) {
+            this.createEndscreenMainSuggestionUpdater(node);
+            return;
+          }
+          const potential_parent: HTMLElement =
+            node instanceof Element && node.closest('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad');
+            if (potential_parent) {
+            this.createEndscreenMainSuggestionUpdater(potential_parent);
+          }
+        });
+      });
+    });
+
+    this.observers.push(observer);
+    observer.observe(video_player, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  private async reactToThumbnailsOnPlaylist() {
+    if (this.watchingThumbnailsOnPlaylistPage) return;
+
+    const current_url: string = window.location.href;
+    if (!current_url.includes('playlist?list=')) {
+      return;
+    }
+
+    let container;
+    try {
+      container = await this.getElementOrRetry('ytd-two-column-browse-results-renderer', 400);
+    } catch {
+      this.watchingThumbnailsOnPlaylistPage = false;
+      return;
+    }
+
+    this.watchingThumbnailsOnPlaylistPage = true;
+
+    container.querySelectorAll('ytd-playlist-video-renderer').forEach((video) => {
+      this.createPlaylistVideoThumbnailUpdater(video);
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+
+          if (node.tagName.toLowerCase() === 'ytd-playlist-video-renderer') {
+            this.createPlaylistVideoThumbnailUpdater(node);
+          } else {
+            node.querySelectorAll('ytd-playlist-video-renderer').forEach((renderer) => {
+              if (renderer instanceof HTMLElement) this.createPlaylistVideoThumbnailUpdater(renderer);
+            }
+            );
+          }
+        });
+      }
+    });
+
+    this.observers.push(observer);
+    observer.observe(container, { childList: true, subtree: true });
+  }
+
   private async reactToSkipVideoThumbnail() {
     // do not observe element twice
     if (this.watchingSkipVideoThumbnailOnVideoPage) return;
@@ -501,27 +614,38 @@ export class EspnSpoilerBlocker {
     });
   }
 
-  private async reactToPlayerThumbnail() {
-    // do not observe element twice
-    if (this.watchingPlayerThumbnail) return;
+  private async reactToVideoTitle() {
+    // do not watch video titles twice
+    if (this.watchingVideoTitle === true) return;
 
-    const current_url: string = window.location.href;
-    if (!current_url.includes('watch?v=')) {
-      return;
-    }
-
-    let container: Element = undefined;
+    let visible_video_title = undefined;
+    let inner_HTML_video_title = undefined;
     try {
-      container = await this.getElementOrRetry('.ytp-cued-thumbnail-overlay-image', 400);
-      if (container instanceof HTMLElement && container.matches('.ytp-cued-thumbnail-overlay-image')) {
-        this.createNewBeforeVideoThumbnailUpdater(container);
+      // these two elements are on the same page. Fire the two promises at the same time
+
+      const promises = [
+        this.getElementOrRetry('h1.style-scope.ytd-watch-metadata', 400),
+        // legacy youtube style
+        // this.getElementOrRetry('a.ytp-title-fullerscreen-link', 400),
+        this.getElementOrRetry('.yt-core-attributed-string.yt-core-attributed-string--white-space-pre-wrap', 400),
+      ];
+      try {
+        const results = await Promise.all(promises);
+        visible_video_title = results[0];
+        inner_HTML_video_title = results[1];
+      } catch (error) {
+        return;
       }
     } catch (error) {
-      this.watchingPlayerThumbnail = false;
+      this.watchingVideoTitle = false;
       return;
     }
 
-    this.watchingPlayerThumbnail = true;
+    this.watchingVideoTitle = true;
+
+    // create both updaters
+    this.createVideoTitleUpdater(visible_video_title);
+    this.createInnerVideoTitleUpdater(inner_HTML_video_title);
   }
 
   private async reactToThumbnailsOnSidePanel() {
@@ -570,13 +694,13 @@ export class EspnSpoilerBlocker {
 
   /** Method executed after a title was updated */
   private afterTitleUpdate() {
-    if (this.watchingThumbnailsOnSidePanel === false) {
-      this.reactToThumbnailsOnSidePanel();
-    }
-
     // Retry to observe elements if container elements were not found. We'd probably want to do this on route changes, not on title changes.
     if (this.watchingThumbnailsOnMainPage === false) {
       this.reactToThumbnailsOnMainPage();
+    }
+
+    if (this.watchingPlayerThumbnail === false) {
+      this.reactToPlayerThumbnail();
     }
 
     if (this.watchingThumbnailsOnVideoPage === false) {
@@ -611,121 +735,8 @@ export class EspnSpoilerBlocker {
       this.reactToVideoTitle();
     }
 
-    if (this.watchingPlayerThumbnail === false) {
-      this.reactToPlayerThumbnail();
+    if (this.watchingThumbnailsOnSidePanel === false) {
+      this.reactToThumbnailsOnSidePanel();
     }
-  }
-
-  private async reactToVideoTitle() {
-    // do not watch video titles twice
-    if (this.watchingVideoTitle === true) return;
-
-    let visible_video_title = undefined;
-    let inner_HTML_video_title = undefined;
-    try {
-      // these two elements are on the same page. Fire the two promises at the same time
-
-      const promises = [
-        this.getElementOrRetry('h1.style-scope.ytd-watch-metadata', 400),
-        // legacy youtube style
-        // this.getElementOrRetry('a.ytp-title-fullerscreen-link', 400),
-        this.getElementOrRetry('.yt-core-attributed-string.yt-core-attributed-string--white-space-pre-wrap', 400),
-      ];
-      try {
-        const results = await Promise.all(promises);
-        visible_video_title = results[0];
-        inner_HTML_video_title = results[1];
-      } catch (error) {
-        return;
-      }
-    } catch (error) {
-      this.watchingVideoTitle = false;
-      return;
-    }
-
-    this.watchingVideoTitle = true;
-
-    // create both updaters
-    this.createVideoTitleUpdater(visible_video_title);
-    this.createInnerVideoTitleUpdater(inner_HTML_video_title);
-  }
-
-  private async reactToEndscreenMainVideoSuggestion() {
-    if (this.watchingMainSuggestionThumbnailOnEndscreen) return;
-
-    let video_player = undefined;
-    try {
-      video_player = await this.getElementOrRetry('.style-scope.ytd-player', 400);
-    } catch (error) {
-      this.watchingMainSuggestionThumbnailOnEndscreen = false;
-      return;
-    }
-
-    this.watchingMainSuggestionThumbnailOnEndscreen = true;
-
-    let container = video_player.querySelector('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad');
-    if (container) {
-      this.createEndscreenMainSuggestionUpdater(container);
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && node.matches('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad')) {
-            this.createEndscreenMainSuggestionUpdater(node);
-            return;
-          }
-          const potential_parent: HTMLElement =
-            node instanceof Element && node.closest('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad');
-            if (potential_parent) {
-            this.createEndscreenMainSuggestionUpdater(potential_parent);
-          }
-        });
-      });
-    });
-
-    this.observers.push(observer);
-    observer.observe(video_player, {
-      childList: true,
-      subtree: true,
-    });
-  }
-
-  private async reactToThumbnailsOnPlaylist() {
-    if (this.watchingThumbnailsOnPlaylistPage) return;
-
-    let container;
-    try {
-      container = await this.getElementOrRetry('ytd-two-column-browse-results-renderer', 400);
-    } catch {
-      this.watchingThumbnailsOnPlaylistPage = false;
-      return;
-    }
-
-    this.watchingThumbnailsOnPlaylistPage = true;
-
-    container.querySelectorAll('ytd-playlist-video-renderer').forEach((video) => {
-      this.createPlaylistVideoThumbnailUpdater(video);
-    });
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (!(node instanceof HTMLElement)) return;
-
-          if (node.tagName.toLowerCase() === 'ytd-playlist-video-renderer') {
-            this.createPlaylistVideoThumbnailUpdater(node);
-          } else {
-            node.querySelectorAll('ytd-playlist-video-renderer').forEach((renderer) => {
-              if (renderer instanceof HTMLElement) this.createPlaylistVideoThumbnailUpdater(renderer);
-            }
-            );
-          }
-        });
-      }
-    });
-
-    this.observers.push(observer);
-    observer.observe(container, { childList: true, subtree: true });
   }
 }
