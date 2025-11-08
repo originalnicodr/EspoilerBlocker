@@ -58,7 +58,7 @@ export const thumbnailRender = (
 
   container_element.appendChild(wrapper);
 
-  const child: HTMLElement = addBaseThumnailStyles(wrapper);
+  const child: HTMLElement = addBaseThumbnailStyles(wrapper);
   addTeamsBadges(child, [team_a, team_b], highlight_type);
   addInBetweenBadges(child, match_date, total_score);
   addRibbon(wrapper);
@@ -67,7 +67,7 @@ export const thumbnailRender = (
   return wrapper;
 };
 
-function addBaseThumnailStyles(wrapper: HTMLElement): HTMLElement {
+function addBaseThumbnailStyles(wrapper: HTMLElement): HTMLElement {
   const animated_border = document.createElement('div');
   Object.assign(animated_border.style, backgroundDivStyle);
   animated_border.className = 'background';

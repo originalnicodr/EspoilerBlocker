@@ -96,8 +96,8 @@ export class EspnSpoilerBlocker {
     // these methods are async, but can be invoked like this to improve performance.
     this.reactToThumbnailsOnSidePanel();
     this.reactToThumbnailsOnMainPage();
-    this.reactToThumnailsOnVideoPage();
-    this.reactToThumnailsOnSearchPage();
+    this.reactToThumbnailsOnVideoPage();
+    this.reactToThumbnailsOnSearchPage();
     this.reactToThumbnailsOnEndscreen();
     this.reactToThumbnailsOnEndscreenAutoplay();
     this.reactToEndscreenMainVideoSuggestion();
@@ -287,7 +287,7 @@ export class EspnSpoilerBlocker {
 
     this.watchingThumbnailsOnMainPage = true;
 
-    // create a VideoThumnailUpdater for each video in the dom
+    // create a VideoThumbnailUpdater for each video in the dom
     container.querySelectorAll(this.youtubeMediaSelectors.join(',')).forEach((video) => {
       if (video instanceof HTMLElement) {
         if (window.location.href == 'https://www.youtube.com/') this.createNewHomeVideoUpdater(video);
@@ -342,7 +342,7 @@ export class EspnSpoilerBlocker {
     this.watchingPlayerThumbnail = true;
   }
 
-  private async reactToThumnailsOnVideoPage() {
+  private async reactToThumbnailsOnVideoPage() {
     // do not observe element twice
     if (this.watchingThumbnailsOnVideoPage) return;
 
@@ -356,7 +356,7 @@ export class EspnSpoilerBlocker {
 
     this.watchingThumbnailsOnVideoPage = true;
 
-    // create a VideoThumnailUpdater for each video in the dom
+    // create a VideoThumbnailUpdater for each video in the dom
     container
       .querySelectorAll(this.youtubeMediaSelectors.join(','))
       .forEach((video) => this.createNewVideoUpdater(video));
@@ -384,7 +384,7 @@ export class EspnSpoilerBlocker {
     });
   }
 
-  private async reactToThumnailsOnSearchPage() {
+  private async reactToThumbnailsOnSearchPage() {
     // do not observe element twice
     if (this.watchingThumbnailsOnSearchPage) return;
 
@@ -398,7 +398,7 @@ export class EspnSpoilerBlocker {
 
     this.watchingThumbnailsOnSearchPage = true;
 
-    // create a VideoThumnailUpdater for each video in the dom
+    // create a VideoThumbnailUpdater for each video in the dom
     container.querySelector(this.youtubeMediaSelectors.join(',')).forEach((video) => this.createNewVideoUpdater(video));
 
     // observe new added elements and do the same
@@ -662,7 +662,7 @@ export class EspnSpoilerBlocker {
 
     this.watchingThumbnailsOnSidePanel = true;
 
-    // create a VideoThumnailUpdater for each video in the dom
+    // create a VideoThumbnailUpdater for each video in the dom
     container.querySelectorAll('yt-lockup-view-model').forEach((video) => {
       if (video instanceof HTMLElement) {
         this.createNewSidePanelVideoUpdater(video);
@@ -704,11 +704,11 @@ export class EspnSpoilerBlocker {
     }
 
     if (this.watchingThumbnailsOnVideoPage === false) {
-      this.reactToThumnailsOnVideoPage();
+      this.reactToThumbnailsOnVideoPage();
     }
 
     if (this.watchingThumbnailsOnSearchPage === false) {
-      this.reactToThumnailsOnSearchPage();
+      this.reactToThumbnailsOnSearchPage();
     }
 
     if (this.watchingThumbnailsOnEndscreenPage === false) {
