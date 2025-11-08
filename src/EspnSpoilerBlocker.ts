@@ -9,6 +9,7 @@ import { TitleUpdater } from './DOMUpdaters/TitleUpdater';
 import { VideoThumbnailUpdater } from './DOMUpdaters/VideoThumbnailUpdater';
 import { VideoTitleUpdater } from './DOMUpdaters/VideoTitleUpdater';
 import { BeforeVideoThumbnailUpdater } from './DOMUpdaters/BeforeVideoThumbnailUpdater';
+import { EndscreenMainSuggestionUpdater } from './DOMUpdaters/EndscreenMainSuggestionUpdater';
 
 export class EspnSpoilerBlocker {
   public static ADDED_CLASS_TO_MARK_AS_WATCHED = 'ESPN_SPOILER_BLOCKER_MARK_AS_WATCHED';
@@ -29,6 +30,8 @@ export class EspnSpoilerBlocker {
   private watchingThumbnailsOnEndscreenPage = undefined;
   /** check if we're watching the suggested autoplay video thumbnail at the end of a video. If this is false, such video wasn't found. Will retry after next title change */
   private watchingThumbnailOnEndscreenAutoplayPage = undefined;
+  /** check if we're watching the main suggested video thumbnail just before the end of a video. If this is false, such video wasn't found. Will retry after next title change */
+  private watchingMainSuggestionThumbnailOnEndscreen = undefined;
   /** check if we're watching the suggested video to skip to thumbnail. If this is false, we couldn't find the skip button. Will retry after next title change */
   private watchingSkipVideoThumbnailOnVideoPage = undefined;
   /** check if we're watching the video title while playing a video. If this is false, container not found. Will retry after next title change */
@@ -92,6 +95,7 @@ export class EspnSpoilerBlocker {
     this.reactToThumnailsOnSearchPage();
     this.reactToThumbnailsOnEndscreen();
     this.reactToThumbnailsOnEndscreenAutoplay();
+    this.reactToEndscreenMainVideoSuggestion();
     this.reactToSkipVideoThumbnail();
   }
 
@@ -182,6 +186,13 @@ export class EspnSpoilerBlocker {
   private createNewEndscreenAutoplayVideoUpdater(node: HTMLElement) {
     if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
     const updater = new EndscreenAutoplayThumbnailUpdater(node);
+    this.updaters.push(updater);
+    updater.update();
+  }
+
+  private createEndscreenMainSuggestionUpdater(node: HTMLElement) {
+    if (BaseUpdater.isElementAlreadyBeingWatched(node)) return;
+    const updater = new EndscreenMainSuggestionUpdater(node);
     this.updaters.push(updater);
     updater.update();
   }
@@ -573,6 +584,10 @@ export class EspnSpoilerBlocker {
       this.reactToThumbnailsOnEndscreenAutoplay();
     }
 
+    if (this.watchingMainSuggestionThumbnailOnEndscreen == false) {
+      this.reactToEndscreenMainVideoSuggestion();
+    }
+
     if (this.watchingSkipVideoThumbnailOnVideoPage == false) {
       this.reactToSkipVideoThumbnail();
     }
@@ -618,5 +633,46 @@ export class EspnSpoilerBlocker {
     // create both updaters
     this.createVideoTitleUpdater(visible_video_title);
     this.createInnerVideoTitleUpdater(inner_HTML_video_title);
+  }
+
+  private async reactToEndscreenMainVideoSuggestion() {
+    if (this.watchingMainSuggestionThumbnailOnEndscreen) return;
+
+    let video_player = undefined;
+    try {
+      video_player = await this.getElementOrRetry('.style-scope.ytd-player', 400);
+    } catch (error) {
+      this.watchingMainSuggestionThumbnailOnEndscreen = false;
+      return;
+    }
+
+    this.watchingMainSuggestionThumbnailOnEndscreen = true;
+
+    let container = video_player.querySelector('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad');
+    if (container) {
+      this.createEndscreenMainSuggestionUpdater(container);
+    }
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement && node.matches('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad')) {
+            this.createEndscreenMainSuggestionUpdater(node);
+            return;
+          }
+          const potential_parent: HTMLElement =
+            node instanceof Element && node.closest('.ytp-ce-element.ytp-ce-video.ytp-ce-large-round.ytp-ce-bottom-left-quad');
+            if (potential_parent) {
+            this.createEndscreenMainSuggestionUpdater(potential_parent);
+          }
+        });
+      });
+    });
+
+    this.observers.push(observer);
+    observer.observe(video_player, {
+      childList: true,
+      subtree: true,
+    });
   }
 }
