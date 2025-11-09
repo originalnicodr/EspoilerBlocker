@@ -84,7 +84,6 @@ export class BaseVideoThumbnailUpdater extends BaseUpdater {
 
     const showTotalScoreFunction = (show_total_score) => {
       const score_element = this.added_thumbnail_element.querySelector('.espn-spoilerblocker-total-score');
-      console.log('score_element', score_element);
       if (score_element && !show_total_score) {
         this.removeScoreFromThumbnail();
       } else if (!score_element && show_total_score) {

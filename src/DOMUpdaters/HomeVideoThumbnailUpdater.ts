@@ -8,12 +8,6 @@ export class HomeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   public async update() {
-    //const element = this.container.querySelector('.yt-lockup-view-model__content-image') as HTMLAnchorElement;
-    //if (element.href != 'https://www.youtube.com/watch?v=fH2uk0g-8Rc')
-    //{
-    //  return;
-    //}
-
     //this.debugPrintMembers();
     if (this.is_active !== undefined && !this.is_active) {
       return;
@@ -21,7 +15,6 @@ export class HomeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
-    //console.log('Should block spoiler:', should_block_spoiler);
     if (!should_block_spoiler) {
       return;
     }
@@ -86,7 +79,7 @@ export class HomeVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getTitle(): HTMLElement {
-    var potential_container: HTMLElement = this.container.querySelector('#video-title');
+    let potential_container: HTMLElement = this.container.querySelector('#video-title');
     if (!potential_container) {
       // homepage videos have a different div
       potential_container = this.container.querySelector('.yt-core-attributed-string');

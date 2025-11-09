@@ -8,12 +8,6 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   public async update() {
-    //const element = this.container.querySelector('.yt-lockup-view-model__content-image') as HTMLAnchorElement;
-    //if (element.href != 'https://www.youtube.com/watch?v=fH2uk0g-8Rc')
-    //{
-    //  return;
-    //}
-
     //this.debugPrintMembers();
     if (this.is_active !== undefined && !this.is_active) {
       return;
@@ -21,7 +15,6 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     this.retrieveUpdaterData();
     const should_block_spoiler: boolean = await this.shouldBlockSpoiler();
-    //console.log('Should block spoiler:', should_block_spoiler);
     if (!should_block_spoiler) {
       return;
     }
@@ -61,7 +54,7 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     return 'ESPN Fans';
   }
 
-  // Since videos in the search page seem to lazyload their progress bar, the updater wont be able to find it
+  // Since videos in the side panel seem to lazyload their progress bar, the updater wont be able to find it
   protected getIfAlreadyWatched(): boolean {
     const progress_bar = this.container.querySelector<HTMLDivElement>('#progress');
     return progress_bar?.style.width === '100%' || false;
@@ -82,9 +75,7 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getTitle(): HTMLElement {
-    var potential_container: HTMLElement = this.container.querySelector('.yt-core-attributed-string');
-
-    return potential_container;
+    return this.container.querySelector('.yt-core-attributed-string');
   }
 
   protected getThumbnail(): HTMLElement {
@@ -94,7 +85,6 @@ export class SidePanelVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     }
 
     if (!thumbnail_element) {
-      // homepage videos have a different div
       thumbnail_element = this.container.querySelector('.ytThumbnailViewModelHost');
     }
 

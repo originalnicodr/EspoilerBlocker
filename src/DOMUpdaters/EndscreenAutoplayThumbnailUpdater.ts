@@ -53,7 +53,6 @@ export class EndscreenAutoplayThumbnailUpdater extends BaseVideoThumbnailUpdater
     return 'ESPN Fans';
   }
 
-  // YouTube won't recommend videos the user already watched
   protected getIfAlreadyWatched(): boolean {
     return false;
   }
