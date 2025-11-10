@@ -4,11 +4,23 @@
   <img align="center" src="images/logo/logo.png" width="300" width="300">
 </p>
 
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/espoiler-blocker/lihboebejkheicnehddaaejleopnnhea">
+    <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/lihboebejkheicnehddaaejleopnnhea">
+  </a>
+  <a href="https://chromewebstore.google.com/detail/espoiler-blocker/lihboebejkheicnehddaaejleopnnhea">
+    <img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/lihboebejkheicnehddaaejleopnnhea">
+  </a>
+  <a href="https://chromewebstore.google.com/detail/espoiler-blocker/lihboebejkheicnehddaaejleopnnhea">
+    <img alt="Chrome Web Store Rankings" src="https://img.shields.io/chrome-web-store/stars/lihboebejkheicnehddaaejleopnnhea">
+  </a>
+</p>
+
 ---
 
-Extensión de Chrome para ocultar spoilers de los videos de highlights publicados por [ESPN Fans](https://www.youtube.com/ESPNFans). Modifica los thumbnail y título para evitar mostrar los resultados, cambia los múltiples títulos del video actual para solo mencionar los equipos, muestra los logos (cuando estos están disponibles) en la miniatura, no bloquear spoilers de videos ya vistos, da la posibilidad de revelar la cantidad de goles totales de un partido específico o el resultado total, entre otras cosas.
+Extensión de Chrome para ocultar spoilers de los videos de highlights publicados por [ESPN Fans](https://www.youtube.com/ESPNFans) en YouTube. Modifica los thumbnail y títulos para evitar mostrar los resultados, cambia los múltiples títulos del video actual para solo mencionar los equipos, muestra los logos (cuando estos están disponibles) en la miniatura, evita bloquear spoilers de videos ya vistos, da la posibilidad de revelar la cantidad de goles totales de un partido específico o el resultado total, entre otras cosas.
 
-Se buscó bloquear spoilers de todos los lugares comunes que vienen de navegar naturalmente por YouTube, lo cual incluye pero no se limita a la página principal, el canal de ESPN Fans, videos sugeridos en la barra derecha y los sugeridos en múltiples lugares dentro del reproductor.
+Se busca bloquear spoilers de todos los lugares comunes que vienen de navegar naturalmente por YouTube, lo cual incluye pero no se limita a la página principal, el canal de ESPN Fans, videos sugeridos en la barra derecha, los sugeridos en múltiples lugares dentro del reproductor, y más.
 
 <img width="1338" height="917" alt="XKMSJNSqQE" src="https://github.com/user-attachments/assets/d2e72d70-fa4a-413f-8a94-b5fc358172b5" />
 
