@@ -1,14 +1,15 @@
 {
-  "name": "espn-fans-spoiler-blocker",
+  "name": "espoiler-blocker",
   "version": "1.0.0",
   "description": "Oculta información de partidos en los highlights subidos en YouTube por la cuenta ESPN Fans.",
   "main": "main.js",
   "scripts": {
-    "build": "del dist && webpack"
+    "build": "rm -rf ./dist && webpack",
+    "build-release": "npm run build && mkdir -p release && zip -r release/EspoilerBlocker.zip dist football-logos html images manifest.json -x '*.DS_Store'"
   },
   "repository": {
     "type": "git",
-    "url": "git@github-2tt:originalnicodr/espn-fans-spoiler-blocker.git"
+    "url": "git@github-2tt:originalnicodr/EspoilerBlocker.git"
   },
   "keywords": [],
   "author": "",
