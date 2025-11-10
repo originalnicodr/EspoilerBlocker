@@ -22,23 +22,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build and create zip
+      - name: Build
         run: npm run build-ci
 
       - name: Get commit hash
         id: vars
         run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Create zip with commit hash
-        run: |
-          cd release
-          zip -r EspoilerBlocker-${{ steps.vars.outputs.hash }}.zip . -x '*.DS_Store'
-          cd ..
-
       - name: Upload nightly artifact
         uses: actions/upload-artifact@v4
         with:
           name: EspoilerBlocker-${{ steps.vars.outputs.hash }}
-          path: release/EspoilerBlocker-${{ steps.vars.outputs.hash }}.zip
+          path: release/
           if-no-files-found: error
           compression-level: 0
