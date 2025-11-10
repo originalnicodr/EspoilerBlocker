@@ -295,10 +295,7 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (
-            node instanceof HTMLElement &&
-            this.isNodeAYoutubeVideo(node)
-          ) {
+          if (node instanceof HTMLElement && this.isNodeAYoutubeVideo(node)) {
             if (window.location.href == 'https://www.youtube.com/') this.createNewHomeVideoUpdater(node);
             else this.createNewVideoUpdater(node);
           }
@@ -360,10 +357,7 @@ export class EspnSpoilerBlocker {
       mutations.forEach((mutation) => {
         // Get any newly added video elements
         mutation.addedNodes.forEach((node) => {
-          if (
-            node instanceof HTMLElement &&
-            this.isNodeAYoutubeVideo(node)
-          ) {
+          if (node instanceof HTMLElement && this.isNodeAYoutubeVideo(node)) {
             this.createNewVideoUpdater(node);
           }
         });
@@ -434,7 +428,7 @@ export class EspnSpoilerBlocker {
     container
       // legacy youtube style
       //.querySelectorAll(this.youtubeMediaSelectors.join(','))
-      .querySelectorAll(".ytp-modern-videowall-still.ytp-suggestion-set")
+      .querySelectorAll('.ytp-modern-videowall-still.ytp-suggestion-set')
       .forEach((video: HTMLElement) => this.createNewEndscreenVideoUpdater(video));
 
     // observe new added elements and do the same

@@ -89,10 +89,7 @@ export class BaseUpdater {
 
     const title_text: string = this.getTitleText();
 
-    if (
-      typeof title_text === 'undefined' ||
-      !this.videoTitleContainsSpoilers(title_text)
-    ) {
+    if (typeof title_text === 'undefined' || !this.videoTitleContainsSpoilers(title_text)) {
       this.highlight_type = VideoHighlightType.None;
     } else {
       this.total_score = getTotalGoals(title_text);

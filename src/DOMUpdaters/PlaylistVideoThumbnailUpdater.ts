@@ -27,6 +27,8 @@ export class PlaylistVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
 
     try {
       await this.spoilerBlockVideo();
+
+      this.title.title = this.title.innerText;
     } catch (error) {
       console.error('Error blocking spoiler from video:', { container: this.container, error });
       return;
@@ -36,7 +38,7 @@ export class PlaylistVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getIsESPNVideo(): boolean {
-    return this.getChannel().includes('ESPN Fans');
+    return this.getChannel() === 'ESPN Fans';
   }
 
   protected getChannel(): string {
@@ -86,6 +88,7 @@ export class PlaylistVideoThumbnailUpdater extends BaseVideoThumbnailUpdater {
     if (this.title) {
       this.title.textContent = this.originalState.titleTextContent;
       this.title.innerText = this.originalState.titleTextContent;
+      this.title.title = this.originalState.titleTextContent;
     }
   }
 

@@ -38,9 +38,9 @@ class ExtensionMenu {
       displayScores: this.display_scores_checkbox.checked,
     };
 
-    //chrome.storage.sync.set(settings, () => {
+    chrome.storage.sync.set(settings, () => {
     //  console.log('Settings saved.');
-    //});
+    });
   }
 
   private sendMessageToAllTabs(message: object): void {

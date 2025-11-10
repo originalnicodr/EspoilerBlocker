@@ -39,7 +39,7 @@ export class EndscreenThumbnailUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getIsESPNVideo(): boolean {
-    return this.getChannel().includes('ESPN Fans');
+    return this.getChannel() === 'ESPN Fans';
   }
 
   protected getChannel(): string {

@@ -36,7 +36,7 @@ export class EndscreenMainSuggestionUpdater extends BaseVideoThumbnailUpdater {
   }
 
   protected getIsESPNVideo(): boolean {
-    return this.getChannel().includes('ESPN Fans');
+    return this.getChannel() === 'ESPN Fans';
   }
 
   // We might get main suggestions when watching videos that arent from ESPN Fans

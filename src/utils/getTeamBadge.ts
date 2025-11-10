@@ -1,11 +1,10 @@
 import { VideoHighlightType } from './getHighlightType';
 
 export function getTeamBadge(team: string, highlight_type: VideoHighlightType): string {
-  var badge_url: string = getTeamBadgeURL(team, highlight_type);
+  let badge_url: string = getTeamBadgeURL(team, highlight_type);
   if (badge_url) {
     badge_url = chrome.runtime.getURL(badge_url);
-  }
-  else {
+  } else {
     badge_url = getCountryFlagURL(team);
   }
 

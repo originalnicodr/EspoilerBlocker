@@ -109,7 +109,7 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'R. Sociedad':
       return 'Real Sociedad';
     case 'U.D. Las Palmas':
-    case 'U.D. Las Palmas':
+      return 'U.D. Las Palmas';
     case 'Las Palmas':
       return 'Las Palmas';
   }
@@ -119,7 +119,7 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Cagliari':
       return 'Cagliari';
     case 'Cremonese':
-      return 'Cremonese'
+      return 'Cremonese';
     case 'Hellas Verona':
     case 'H. Verona':
     case 'Verona':
@@ -336,9 +336,6 @@ export function standarizeTeamsName(team_alias: string): string {
     case 'Republica Dominicana':
     case 'República Dominicana':
       return 'Republica Dominicana';
-    case 'USA':
-    case 'EEUU':
-      return 'Estados Unidos';
   }
 
   // Couldn't find teams name, return passed alias
