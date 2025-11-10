@@ -6,13 +6,16 @@
 
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/espoiler-blocker/lihboebejkheicnehddaaejleopnnhea">
-    <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/lihboebejkheicnehddaaejleopnnhea">
+    <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/lihboebejkheicnehddaaejleopnnhea?style=for-the-badge&logo=googlechrome&logoColor=white">
   </a>
   <a href="https://chromewebstore.google.com/detail/espoiler-blocker/lihboebejkheicnehddaaejleopnnhea">
-    <img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/lihboebejkheicnehddaaejleopnnhea">
+    <img alt="Chrome Web Store Users" src="https://img.shields.io/chrome-web-store/users/lihboebejkheicnehddaaejleopnnhea?style=for-the-badge">
   </a>
   <a href="https://chromewebstore.google.com/detail/espoiler-blocker/lihboebejkheicnehddaaejleopnnhea">
-    <img alt="Chrome Web Store Rankings" src="https://img.shields.io/chrome-web-store/stars/lihboebejkheicnehddaaejleopnnhea">
+    <img alt="Chrome Web Store Stars" src="https://img.shields.io/chrome-web-store/stars/lihboebejkheicnehddaaejleopnnhea?style=for-the-badge">
+  </a>
+  <a href="https://github.com/originalnicodr/EspoilerBlocker/actions">
+    <img alt="Nightly Build" src="https://img.shields.io/badge/nightly-latest-blue?logo=githubactions&logoColor=white&style=for-the-badge">
   </a>
 </p>
 
