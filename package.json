@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "build": "rm -rf ./dist && webpack",
-    "build-release": "npm run build && mkdir -p release && zip -r release/EspoilerBlocker.zip dist football-logos html images manifest.json -x '*.DS_Store'"
+    "build-ci": "npm run build && mkdir -p release && cp -r dist football-logos html images manifest.json release/",
+    "build-release": "npm run build-ci && cd release && zip -r EspoilerBlocker.zip . -x '*.DS_Store' && cd .."
   },
   "repository": {
     "type": "git",
