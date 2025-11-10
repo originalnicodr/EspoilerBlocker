@@ -32,7 +32,7 @@ jobs:
       - name: Create zip with commit hash
         run: |
           cd release
-          zip -r EspoilerBlocker-nightly-${{ steps.vars.outputs.hash }}.zip . -x '*.DS_Store'
+          zip -r EspoilerBlocker-${{ steps.vars.outputs.hash }}.zip . -x '*.DS_Store'
           cd ..
 
       - name: Upload nightly artifact
