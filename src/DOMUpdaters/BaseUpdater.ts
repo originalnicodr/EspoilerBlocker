@@ -228,14 +228,41 @@ export class BaseUpdater {
   }
 
   protected async loadSettings(): Promise<Settings> {
+    const defaultSettings: Settings = {
+      block_spoilers_basketball: false,
+      block_spoilers_football: true,
+      block_spoilers_expiration_days: null,
+      display_total_score: false,
+    };
+
     return new Promise((resolve) => {
       chrome.storage.sync.get(null, function (data) {
-        resolve({
-          block_spoilers_basketball: Boolean(data.basketball),
-          block_spoilers_football: Boolean(data.football),
-          block_spoilers_expiration_days: data.hasOwnProperty('expirationDays') ? data.expirationDays : '',
-          display_total_score: Boolean(data.displayScores),
-        });
+        const settings: Settings = {
+          block_spoilers_basketball: data.hasOwnProperty('basketball')
+            ? Boolean(data.basketball)
+            : defaultSettings.block_spoilers_basketball,
+          block_spoilers_football: data.hasOwnProperty('football')
+            ? Boolean(data.football)
+            : defaultSettings.block_spoilers_football,
+          block_spoilers_expiration_days: data.hasOwnProperty('expirationDays')
+            ? data.expirationDays
+            : defaultSettings.block_spoilers_expiration_days,
+          display_total_score: data.hasOwnProperty('displayScores')
+            ? Boolean(data.displayScores)
+            : defaultSettings.display_total_score,
+        };
+
+        // If no data exists yet, initialize defaults in storage for consistency
+        if (Object.keys(data).length === 0) {
+          chrome.storage.sync.set({
+            basketball: defaultSettings.block_spoilers_basketball,
+            football: defaultSettings.block_spoilers_football,
+            expirationDays: defaultSettings.block_spoilers_expiration_days,
+            displayScores: defaultSettings.display_total_score,
+          });
+        }
+
+        resolve(settings);
       });
     });
   }
