@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ESPOILER Blocker",
   "description": "Oculta información de partidos en los highlights subidos en YouTube por la cuenta ESPN Fans.",
-  "version": "1.0",
+  "version": "1.0.1",
   "author": "originalnicodr",
   "icons": {
     "16": "images/logo/icon16.png",
